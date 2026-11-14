@@ -1,0 +1,620 @@
+{
+  "about": "Cases and answers for Spot a candidate (spot-a-candidate.html, js/spot.js). Every picture is drawn by our own code from these numbers, made to look like the pipeline's pictures (41 by 41 pixels, noisy, magma colours, each stretched on its own, cyan circle at the chosen position), but none of it is SPHEREx data. Positions are in percent of the picture from the top-left corner; the chosen position is always the centre. b is brightness (0 = not there). field scales every source in that picture (a different colour). kind: star (a blob a few pixels across) or blip (one hot pixel). masked: [x0, y0, x1, y1] box of masked pixels, drawn white. look: [x, y, r] the teaching box.",
+  "answers_checked": true,
+  "answers_note": "Drafted by Claude Code on 12 November 2026 for the team to check. Answer keys belong with the game data (RULES section 12): Elisabetta to confirm the cases and answers, Fateme the wording. 13 November 2026: Elisabetta checked the answers against the rules and confirmed the WISE 0855 case (18:48 S/N 5.92 faint, 18:50 S/N 0.01 not detected). Later on 13 November she checked the remaining numbers against her tables: Epsilon Indi B, 27 April 2025 16:59:45, S/N 8.91 faint at 1.33 um and S/N 156.79 clear at 4.09 um, no flags; R Draconis, 534 of 536 pictures with masked pixels in the aperture, 499 with no brightness measured. She also checked the WISE 0855 cutouts: the 18:48 bright pixel has flat neighbours (fairly confident it is a hot pixel or cosmic ray), and the 18:50 streak is a thin straight line across the whole cutout, in that exposure only, more like a satellite trail (pixel mask not checked). All answers and real numbers are checked. Still to do: Fateme to check the wording.",
+  "check": {
+    "question": "Which sentence is true about a candidate?",
+    "choices": [
+      {
+        "id": "found",
+        "text": "I have discovered a new object.",
+        "right": false,
+        "why": "Not quite. Marking a picture never means a discovery. Most candidates turn out to be something ordinary once someone checks them, and that is fine."
+      },
+      {
+        "id": "second",
+        "text": "This picture is worth a second look.",
+        "right": true,
+        "why": "Yes! A candidate is a picture you think is worth checking again. Someone, maybe you, looks closer later. That is how volunteers have helped astronomers for over a century."
+      },
+      {
+        "id": "nasa",
+        "text": "NASA has confirmed what is in this picture.",
+        "right": false,
+        "why": "Not quite. Nobody has checked it yet. That is exactly why you mark it: so it can be checked."
+      }
+    ]
+  },
+  "signs": [
+    {
+      "id": "moved",
+      "title": "It moved",
+      "short": "A spot changes place against the far-away stars.",
+      "seed": 11,
+      "target": [
+        50,
+        50
+      ],
+      "look": [
+        32,
+        30,
+        19
+      ],
+      "pictures": [
+        {
+          "date": "3 August 2025",
+          "microns": 2.1
+        },
+        {
+          "date": "10 August 2025",
+          "microns": 2.1
+        },
+        {
+          "date": "17 August 2025",
+          "microns": 2.1
+        }
+      ],
+      "objects": [
+        {
+          "kind": "star",
+          "x": [
+            50,
+            50,
+            50
+          ],
+          "y": [
+            50,
+            50,
+            50
+          ],
+          "b": [
+            0.6,
+            0.6,
+            0.6
+          ]
+        },
+        {
+          "kind": "star",
+          "x": [
+            22,
+            32,
+            42
+          ],
+          "y": [
+            26,
+            30,
+            34
+          ],
+          "b": [
+            0.9,
+            0.9,
+            0.9
+          ]
+        }
+      ],
+      "words": "Three pictures of the same patch, a week apart, all in the same colour, 2.1 microns. A faint object sits in the cyan circle in the middle each time. Up and to the left, a bright blob steps down and to the right in each picture, while the other stars stay put.",
+      "lesson": "Far-away stars stay put from week to week. Something that steps across them in a week is close by: a comet or an asteroid (a nearby star only moves visibly over years). In the sky viewer the cyan circle follows the object you chose, so your own target stays in the circle; look for anything else that moves. That is worth marking."
+    },
+    {
+      "id": "appeared",
+      "title": "It appeared, and stayed",
+      "short": "Something new shows up, and is still there later.",
+      "seed": 23,
+      "target": [
+        50,
+        50
+      ],
+      "look": [
+        70,
+        30,
+        10
+      ],
+      "pictures": [
+        {
+          "date": "3 August 2025",
+          "microns": 3.4
+        },
+        {
+          "date": "10 August 2025",
+          "microns": 3.4
+        },
+        {
+          "date": "17 August 2025",
+          "microns": 3.4
+        }
+      ],
+      "objects": [
+        {
+          "kind": "star",
+          "x": [
+            70,
+            70,
+            70
+          ],
+          "y": [
+            30,
+            30,
+            30
+          ],
+          "b": [
+            0,
+            1,
+            0.9
+          ]
+        }
+      ],
+      "words": "Three pictures in the same colour, 3.4 microns. In the first, there is only noise up and to the right of the circle. In the second, a bright blob appears there, and it is still there in the third.",
+      "lesson": "A blob a few pixels wide that appears and is still there a week later, in the same colour, could be something that lit up or moved into view. That is worth marking."
+    },
+    {
+      "id": "brightened",
+      "title": "It got brighter in the same colour",
+      "short": "One star changes while the stars around it do not.",
+      "seed": 37,
+      "target": [
+        50,
+        50
+      ],
+      "look": [
+        50,
+        50,
+        13
+      ],
+      "pictures": [
+        {
+          "date": "16 May 2025",
+          "microns": 1.6
+        },
+        {
+          "date": "20 November 2025",
+          "microns": 1.6
+        }
+      ],
+      "objects": [
+        {
+          "kind": "star",
+          "x": [
+            50,
+            50
+          ],
+          "y": [
+            50,
+            50
+          ],
+          "b": [
+            0.35,
+            1.6
+          ]
+        }
+      ],
+      "words": "Two pictures six months apart, both at 1.6 microns. The object in the cyan circle is faint in the first picture and a big bright blob in the second. The stars around it look about the same.",
+      "lesson": "Same colour, and only this one star changed: that can be real. Stars like R Draconis brighten and fade over months. That is worth marking."
+    }
+  ],
+  "traps": [
+    {
+      "id": "colour",
+      "title": "A different colour",
+      "seed": 41,
+      "target": [
+        50,
+        50
+      ],
+      "look": [
+        50,
+        50,
+        13
+      ],
+      "pictures": [
+        {
+          "date": "3 August 2025",
+          "microns": 1.1,
+          "field": 0.5
+        },
+        {
+          "date": "3 August 2025",
+          "microns": 4.6,
+          "field": 1.7
+        }
+      ],
+      "objects": [
+        {
+          "kind": "star",
+          "x": [
+            50,
+            50
+          ],
+          "y": [
+            50,
+            50
+          ],
+          "b": [
+            0.5,
+            1.3
+          ]
+        }
+      ],
+      "words": "Two pictures taken the same day, one at 1.1 microns and one at 4.6 microns. The object in the circle is brighter in the second, but so is every other star in the picture.",
+      "answer": "wait",
+      "lesson": "Every SPHEREx picture is a different colour. Here every star got brighter together, because the colour changed, not the object. Each picture is also stretched on its own, so a picture that looks more orange or more purple overall means nothing by itself. Compare pictures taken in the same colour before you mark.",
+      "real": {
+        "title": "The same trap in real SPHEREx data",
+        "text": "Epsilon Indi B, two pictures taken at the same moment, 27 April 2025 at 16:59 UTC. At 1.33 microns the pipeline calls it faint (signal 8.9 times the noise). At 4.09 microns it is a clear detection (157 times the noise). Nothing changed in between: brown dwarfs like this are much brighter at longer wavelengths. Notice too how differently the two backgrounds are coloured: each picture is stretched on its own.",
+        "images": [
+          {
+            "src": "data/pictures/epsilon_indi_b/all_images/2025-04-27_165945_1.33um.png",
+            "label": "1.33 µm · Faint",
+            "alt": "Real SPHEREx picture of Epsilon Indi B at 1.33 microns, 27 April 2025: a small pale blob in the cyan circle on a purple-to-orange speckled background."
+          },
+          {
+            "src": "data/pictures/epsilon_indi_b/all_images/2025-04-27_165945_4.09um.png",
+            "label": "4.09 µm · Clear detection",
+            "alt": "Real SPHEREx picture of Epsilon Indi B at 4.09 microns, taken at the same moment: a bigger, brighter pale yellow blob fills the cyan circle on an orange speckled background."
+          }
+        ]
+      }
+    },
+    {
+      "id": "blip",
+      "title": "A one-picture blip",
+      "seed": 53,
+      "target": [
+        50,
+        50
+      ],
+      "look": [
+        30,
+        68,
+        9
+      ],
+      "pictures": [
+        {
+          "date": "3 August 2025",
+          "microns": 2.4
+        },
+        {
+          "date": "10 August 2025",
+          "microns": 2.4
+        },
+        {
+          "date": "17 August 2025",
+          "microns": 2.4
+        }
+      ],
+      "objects": [
+        {
+          "kind": "blip",
+          "x": [
+            30,
+            30,
+            30
+          ],
+          "y": [
+            68,
+            68,
+            68
+          ],
+          "b": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "words": "Three pictures in the same colour. Below and to the left of the circle, a single very bright pixel appears in the middle picture only. It is gone in the third.",
+      "answer": "wait",
+      "lesson": "One bright pixel on its own, in one picture only, is often a cosmic ray or a hot pixel on the camera. Our pipeline even has a flag for it: one bright pixel dominates the signal. Look at the pictures before and after. If it never comes back, it is probably not worth marking.",
+      "real": {
+        "title": "The same trap in real SPHEREx data",
+        "text": "WISE 0855, 7 November 2025. At 18:48 UTC, at 4.00 microns, the pipeline found a faint signal but flagged it: one bright pixel dominates the signal, which may be a hot pixel or a cosmic ray. Two minutes later, at almost the same colour (4.03 microns), nothing is there. That is why you check the next picture. The second picture also has a long straight streak crossing it diagonally, about 40 pixels long; streaks like that are often a satellite or a cosmic-ray track, not your target.",
+        "images": [
+          {
+            "src": "data/pictures/wise0855/all_images/2025-11-07_184811_4.00um.png",
+            "label": "18:48 · 4.00 µm · Faint, flagged",
+            "alt": "Real SPHEREx picture of WISE 0855 at 4.00 microns: an orange speckled background with one small bright pixel inside the cyan circle."
+          },
+          {
+            "src": "data/pictures/wise0855/all_images/2025-11-07_185020_4.03um.png",
+            "label": "18:50 · 4.03 µm · Not detected",
+            "alt": "Real SPHEREx picture of WISE 0855 two minutes later at 4.03 microns: nothing stands out in the cyan circle, and a long pale straight streak crosses the picture diagonally."
+          }
+        ]
+      }
+    },
+    {
+      "id": "masked",
+      "title": "A flagged picture",
+      "seed": 67,
+      "target": [
+        50,
+        50
+      ],
+      "look": [
+        50,
+        50,
+        13
+      ],
+      "pictures": [
+        {
+          "date": "16 May 2025",
+          "microns": 4.4
+        },
+        {
+          "date": "23 May 2025",
+          "microns": 4.4,
+          "status": "Flagged",
+          "masked": [
+            46,
+            46,
+            54,
+            54
+          ]
+        }
+      ],
+      "objects": [
+        {
+          "kind": "star",
+          "x": [
+            50,
+            50
+          ],
+          "y": [
+            50,
+            50
+          ],
+          "b": [
+            1.6,
+            1.6
+          ]
+        }
+      ],
+      "words": "Two pictures in the same colour. Both show a bright star in the circle. In the second, a few pixels in the middle of the star are white holes, and the picture is labelled Flagged.",
+      "answer": "wait",
+      "lesson": "This picture is Flagged: some pixels inside the circle are masked, and they show as white holes. The measurement there cannot be trusted, so the star may seem to change when it has not. Open the Details tab and read the flags before you mark.",
+      "real": {
+        "title": "The same trap in real SPHEREx data",
+        "text": "R Draconis, 1 December 2025, at 3.99 microns. The star is so bright that pixels at its centre are masked: they show as white holes inside the circle, the pipeline could not measure the brightness, and the picture is Flagged. Masked pixels show up in 534 of the 536 R Draconis pictures, and in 499 of them the pipeline could not measure the brightness at all, so for this star the Details tab matters every time.",
+        "images": [
+          {
+            "src": "data/pictures/r_dra/all_images/2025-12-01_003956_3.99um.png",
+            "label": "3.99 µm · Flagged",
+            "alt": "Real SPHEREx picture of R Draconis at 3.99 microns: a huge pale yellow glow fills the middle, with a few white square holes inside the cyan circle, on a dark purple background."
+          }
+        ]
+      }
+    }
+  ],
+  "rounds": [
+    {
+      "id": "r1",
+      "seed": 71,
+      "target": [
+        50,
+        50
+      ],
+      "pictures": [
+        {
+          "date": "1 August 2025",
+          "microns": 3.0
+        },
+        {
+          "date": "8 August 2025",
+          "microns": 3.0
+        },
+        {
+          "date": "15 August 2025",
+          "microns": 3.0
+        }
+      ],
+      "objects": [
+        {
+          "kind": "star",
+          "x": [
+            50,
+            50,
+            50
+          ],
+          "y": [
+            50,
+            50,
+            50
+          ],
+          "b": [
+            0.5,
+            0.5,
+            0.5
+          ]
+        },
+        {
+          "kind": "star",
+          "x": [
+            74,
+            66,
+            58
+          ],
+          "y": [
+            24,
+            29,
+            34
+          ],
+          "b": [
+            0.9,
+            0.9,
+            0.9
+          ]
+        }
+      ],
+      "words": "Three pictures a week apart, all at 3.0 microns. Up and to the right, a bright blob moves down and to the left in each picture, towards the circle. The other stars stay put.",
+      "answer": "mark",
+      "why": "It moved against the background stars in pictures of the same colour. Worth marking."
+    },
+    {
+      "id": "r2",
+      "seed": 83,
+      "target": [
+        50,
+        50
+      ],
+      "pictures": [
+        {
+          "date": "9 December 2025",
+          "microns": 0.9,
+          "field": 0.5
+        },
+        {
+          "date": "9 December 2025",
+          "microns": 4.2,
+          "field": 1.7
+        }
+      ],
+      "objects": [
+        {
+          "kind": "star",
+          "x": [
+            50,
+            50
+          ],
+          "y": [
+            50,
+            50
+          ],
+          "b": [
+            0.5,
+            1.3
+          ]
+        }
+      ],
+      "words": "Two pictures from the same day, at 0.9 and 4.2 microns. The object in the circle is brighter in the second, and every other star is brighter too.",
+      "answer": "wait",
+      "why": "Everything got brighter together, and the colours are different. That is the colour, not a change in the star. Not yet."
+    },
+    {
+      "id": "r3",
+      "seed": 97,
+      "target": [
+        50,
+        50
+      ],
+      "pictures": [
+        {
+          "date": "1 August 2025",
+          "microns": 2.2
+        },
+        {
+          "date": "8 August 2025",
+          "microns": 2.2
+        },
+        {
+          "date": "15 August 2025",
+          "microns": 2.2
+        }
+      ],
+      "objects": [
+        {
+          "kind": "star",
+          "x": [
+            32,
+            32,
+            32
+          ],
+          "y": [
+            66,
+            66,
+            66
+          ],
+          "b": [
+            0,
+            0.9,
+            1
+          ]
+        }
+      ],
+      "words": "Three pictures in the same colour. Below and to the left of the circle there is only noise in the first picture, then a bright blob appears in the second and is still there in the third.",
+      "answer": "mark",
+      "why": "A blob a few pixels wide appeared and stayed, in the same colour. Worth marking."
+    },
+    {
+      "id": "r4",
+      "seed": 109,
+      "target": [
+        50,
+        50
+      ],
+      "pictures": [
+        {
+          "date": "1 August 2025",
+          "microns": 1.8
+        },
+        {
+          "date": "8 August 2025",
+          "microns": 1.8
+        },
+        {
+          "date": "15 August 2025",
+          "microns": 1.8
+        }
+      ],
+      "objects": [
+        {
+          "kind": "blip",
+          "x": [
+            72,
+            72,
+            72
+          ],
+          "y": [
+            26,
+            26,
+            26
+          ],
+          "b": [
+            0,
+            0,
+            1
+          ]
+        }
+      ],
+      "words": "Three pictures in the same colour. A single very bright pixel shows up at the top right in the third picture only.",
+      "answer": "wait",
+      "why": "One bright pixel in one picture only looks like a cosmic ray or a hot pixel. Check the next picture before you mark it. Not yet."
+    },
+    {
+      "id": "r5",
+      "seed": 113,
+      "target": [
+        50,
+        50
+      ],
+      "pictures": [
+        {
+          "date": "20 May 2025",
+          "microns": 4.0
+        },
+        {
+          "date": "22 November 2025",
+          "microns": 4.0
+        }
+      ],
+      "objects": [
+        {
+          "kind": "star",
+          "x": [
+            50,
+            50
+          ],
+          "y": [
+            50,
+            50
+          ],
+          "b": [
+            1.6,
+            0.35
+          ]
+        }
+      ],
+      "words": "Two pictures six months apart, both at 4.0 microns. The object in the circle is a big bright blob in the first and faint in the second. The stars around it look about the same.",
+      "answer": "mark",
+      "why": "Same colour, and only this star faded. It may be a variable star. Worth marking."
+    }
+  ]
+}

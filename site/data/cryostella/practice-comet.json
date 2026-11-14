@@ -1,0 +1,393 @@
+{
+ "id": "practice-comet",
+ "name": "Practice comet",
+ "kind": "comet",
+ "placeholder": true,
+ "release": null,
+ "ra": null,
+ "dec": null,
+ "unit": "relative",
+ "summary": "A practice spectrum drawn by our own code, shaped like a comet: reflected sunlight plus a few bright bumps. It is not SPHEREx data.",
+ "explain": "A comet reflects sunlight, which fades towards the longer colours. Gas around a comet can also glow at particular colours, which makes a bump in the graph. In this practice curve the bumps are placed at made-up colours.",
+ "story": null,
+ "features": [
+  {
+   "kind": "bump",
+   "wavelength_um": 2.0,
+   "label": "Practice bump A",
+   "molecule": null,
+   "verified": false,
+   "source": null
+  },
+  {
+   "kind": "bump",
+   "wavelength_um": 3.3,
+   "label": "Practice bump B",
+   "molecule": null,
+   "verified": false,
+   "source": null
+  }
+ ],
+ "points": [
+  {
+   "wavelength_um": 0.75,
+   "value": 1.028,
+   "error": 0.025,
+   "n_images": 3
+  },
+  {
+   "wavelength_um": 0.822,
+   "value": 0.9843,
+   "error": 0.025,
+   "n_images": 4
+  },
+  {
+   "wavelength_um": 0.894,
+   "value": 0.9474,
+   "error": 0.025,
+   "n_images": 5
+  },
+  {
+   "wavelength_um": 0.966,
+   "value": 0.8873,
+   "error": 0.025,
+   "n_images": 6
+  },
+  {
+   "wavelength_um": 1.038,
+   "value": 0.8856,
+   "error": 0.025,
+   "n_images": 7
+  },
+  {
+   "wavelength_um": 1.11,
+   "value": 0.8404,
+   "error": 0.025,
+   "n_images": 3
+  },
+  {
+   "wavelength_um": 1.182,
+   "value": 0.8064,
+   "error": 0.025,
+   "n_images": 4
+  },
+  {
+   "wavelength_um": 1.254,
+   "value": 0.7617,
+   "error": 0.025,
+   "n_images": 5
+  },
+  {
+   "wavelength_um": 1.326,
+   "value": 0.7658,
+   "error": 0.025,
+   "n_images": 6
+  },
+  {
+   "wavelength_um": 1.398,
+   "value": 0.7176,
+   "error": 0.025,
+   "n_images": 7
+  },
+  {
+   "wavelength_um": 1.47,
+   "value": 0.6896,
+   "error": 0.025,
+   "n_images": 3
+  },
+  {
+   "wavelength_um": 1.542,
+   "value": 0.6597,
+   "error": 0.025,
+   "n_images": 4
+  },
+  {
+   "wavelength_um": 1.614,
+   "value": 0.6636,
+   "error": 0.025,
+   "n_images": 5
+  },
+  {
+   "wavelength_um": 1.686,
+   "value": 0.6148,
+   "error": 0.025,
+   "n_images": 6
+  },
+  {
+   "wavelength_um": 1.758,
+   "value": 0.6061,
+   "error": 0.025,
+   "n_images": 7
+  },
+  {
+   "wavelength_um": 1.831,
+   "value": 0.6285,
+   "error": 0.025,
+   "n_images": 3
+  },
+  {
+   "wavelength_um": 1.903,
+   "value": 0.7121,
+   "error": 0.025,
+   "n_images": 4
+  },
+  {
+   "wavelength_um": 1.975,
+   "value": 0.7387,
+   "error": 0.025,
+   "n_images": 5
+  },
+  {
+   "wavelength_um": 2.047,
+   "value": 0.7142,
+   "error": 0.025,
+   "n_images": 6
+  },
+  {
+   "wavelength_um": 2.119,
+   "value": 0.6145,
+   "error": 0.025,
+   "n_images": 7
+  },
+  {
+   "wavelength_um": 2.191,
+   "value": 0.5329,
+   "error": 0.025,
+   "n_images": 3
+  },
+  {
+   "wavelength_um": 2.263,
+   "value": 0.4605,
+   "error": 0.025,
+   "n_images": 4
+  },
+  {
+   "wavelength_um": 2.335,
+   "value": 0.4564,
+   "error": 0.025,
+   "n_images": 5
+  },
+  {
+   "wavelength_um": 2.407,
+   "value": 0.4468,
+   "error": 0.025,
+   "n_images": 6
+  },
+  {
+   "wavelength_um": 2.479,
+   "value": 0.4303,
+   "error": 0.025,
+   "n_images": 7
+  },
+  {
+   "wavelength_um": 2.551,
+   "value": 0.396,
+   "error": 0.025,
+   "n_images": 3
+  },
+  {
+   "wavelength_um": 2.623,
+   "value": 0.4055,
+   "error": 0.025,
+   "n_images": 4
+  },
+  {
+   "wavelength_um": 2.695,
+   "value": 0.3947,
+   "error": 0.025,
+   "n_images": 5
+  },
+  {
+   "wavelength_um": 2.767,
+   "value": 0.3728,
+   "error": 0.025,
+   "n_images": 6
+  },
+  {
+   "wavelength_um": 2.839,
+   "value": 0.3512,
+   "error": 0.025,
+   "n_images": 7
+  },
+  {
+   "wavelength_um": 2.911,
+   "value": 0.3638,
+   "error": 0.025,
+   "n_images": 3
+  },
+  {
+   "wavelength_um": 2.983,
+   "value": 0.3487,
+   "error": 0.025,
+   "n_images": 4
+  },
+  {
+   "wavelength_um": 3.055,
+   "value": 0.3295,
+   "error": 0.025,
+   "n_images": 5
+  },
+  {
+   "wavelength_um": 3.127,
+   "value": 0.3652,
+   "error": 0.025,
+   "n_images": 6
+  },
+  {
+   "wavelength_um": 3.199,
+   "value": 0.5528,
+   "error": 0.025,
+   "n_images": 7
+  },
+  {
+   "wavelength_um": 3.271,
+   "value": 0.7757,
+   "error": 0.025,
+   "n_images": 3
+  },
+  {
+   "wavelength_um": 3.343,
+   "value": 0.7194,
+   "error": 0.025,
+   "n_images": 4
+  },
+  {
+   "wavelength_um": 3.415,
+   "value": 0.4687,
+   "error": 0.025,
+   "n_images": 5
+  },
+  {
+   "wavelength_um": 3.487,
+   "value": 0.3269,
+   "error": 0.025,
+   "n_images": 6
+  },
+  {
+   "wavelength_um": 3.559,
+   "value": 0.2747,
+   "error": 0.025,
+   "n_images": 7
+  },
+  {
+   "wavelength_um": 3.631,
+   "value": 0.2573,
+   "error": 0.025,
+   "n_images": 3
+  },
+  {
+   "wavelength_um": 3.703,
+   "value": 0.2698,
+   "error": 0.025,
+   "n_images": 4
+  },
+  {
+   "wavelength_um": 3.775,
+   "value": 0.2635,
+   "error": 0.025,
+   "n_images": 5
+  },
+  {
+   "wavelength_um": 3.847,
+   "value": 0.2427,
+   "error": 0.025,
+   "n_images": 6
+  },
+  {
+   "wavelength_um": 3.919,
+   "value": 0.2354,
+   "error": 0.025,
+   "n_images": 7
+  },
+  {
+   "wavelength_um": 3.992,
+   "value": 0.2517,
+   "error": 0.025,
+   "n_images": 3
+  },
+  {
+   "wavelength_um": 4.064,
+   "value": 0.2347,
+   "error": 0.025,
+   "n_images": 4
+  },
+  {
+   "wavelength_um": 4.136,
+   "value": 0.2197,
+   "error": 0.025,
+   "n_images": 5
+  },
+  {
+   "wavelength_um": 4.208,
+   "value": 0.2194,
+   "error": 0.025,
+   "n_images": 6
+  },
+  {
+   "wavelength_um": 4.28,
+   "value": 0.2347,
+   "error": 0.025,
+   "n_images": 7
+  },
+  {
+   "wavelength_um": 4.352,
+   "value": 0.2087,
+   "error": 0.025,
+   "n_images": 3
+  },
+  {
+   "wavelength_um": 4.424,
+   "value": 0.2033,
+   "error": 0.025,
+   "n_images": 4
+  },
+  {
+   "wavelength_um": 4.496,
+   "value": 0.2072,
+   "error": 0.025,
+   "n_images": 5
+  },
+  {
+   "wavelength_um": 4.568,
+   "value": 0.2177,
+   "error": 0.025,
+   "n_images": 6
+  },
+  {
+   "wavelength_um": 4.64,
+   "value": 0.1865,
+   "error": 0.025,
+   "n_images": 7
+  },
+  {
+   "wavelength_um": 4.712,
+   "value": 0.1927,
+   "error": 0.025,
+   "n_images": 3
+  },
+  {
+   "wavelength_um": 4.784,
+   "value": 0.1966,
+   "error": 0.025,
+   "n_images": 4
+  },
+  {
+   "wavelength_um": 4.856,
+   "value": 0.2005,
+   "error": 0.025,
+   "n_images": 5
+  },
+  {
+   "wavelength_um": 4.928,
+   "value": 0.1689,
+   "error": 0.025,
+   "n_images": 6
+  },
+  {
+   "wavelength_um": 5.0,
+   "value": 0.1866,
+   "error": 0.025,
+   "n_images": 7
+  }
+ ]
+}
