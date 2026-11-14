@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -2 68 68">
+  <!-- Ashesha mark: the A turned over (∀, "for all"), a comet streaking through it as the crossbar. -->
+  <style>
+    .legs { fill: #2A1247; } .head { fill: #A8327A; } .cut { fill: #F4EEFA; } .a { stop-color: #A8327A; stop-opacity: 0.4; } .b { stop-color: #A8327A; }
+    @media (prefers-color-scheme: dark) { .legs { fill: #ECE9F1; } .head { fill: #F2A7D3; } .cut { fill: #0B0A0E; } .a, .b { stop-color: #F2A7D3; } }
+  </style>
+  <defs><linearGradient id="t" x1="0" x2="1"><stop offset="0" class="a"/><stop offset="1" class="b"/></linearGradient></defs>
+  <path class="legs" d="M4 6H16L32 42L48 6H60L37 58H27Z"/>
+  <path class="cut" d="M1 20.2 52 16.6V29.4L1 25.8Z"/>
+  <path fill="url(#t)" d="M2 21.6 52 18V28L2 24.4Z"/>
+  <circle class="cut" cx="52" cy="23" r="9"/>
+  <circle class="head" cx="52" cy="23" r="6.5"/>
+</svg>

@@ -1,0 +1,574 @@
+{
+ "about": "Every recorded line, by its exact words (spaces tidied). js/selene.js plays a line only when its words match, so a changed line goes silent until it is recorded again. Made with ElevenLabs; see docs/selene-voice-script.md.",
+ "voices": {
+  "selene": "ElevenLabs library voice flHkNRp1BlvT73UL6gyz",
+  "iris": "ElevenLabs Bella, hpp4J3VqNfWAUOO0d1Us"
+ },
+ "lines": [
+  {
+   "guide": "selene",
+   "text": "Welcome to the sky viewer. It shows every picture the SPHEREx space telescope took of one patch of sky, in date order, so you can spot things that move or change. I'll walk you through it one page at a time, and you'll do the clicking.",
+   "file": "selene-tour-welcome.mp3"
+  },
+  {
+   "guide": "selene",
+   "text": "The sky viewer works in three steps, and this bar always shows which one you are on: choose a patch of sky, watch it change, then your candidates. Step 2 opens once you have picked something.",
+   "file": "selene-tour-steps.mp3"
+  },
+  {
+   "guide": "selene",
+   "text": "Each card is a patch of sky prepared in advance. The headline one is comet 3I/ATLAS, a visitor from another star system. The others are nearby stars and brown dwarfs that move, or stars whose brightness changes. Cards marked Pictures not ready yet are still waiting for their SPHEREx data.",
+   "file": "selene-tour-examples-2a3d30.mp3"
+  },
+  {
+   "guide": "selene",
+   "text": "The last card holds practice pictures: made-up pictures for trying the viewer. They are not SPHEREx data, and the page always says so.",
+   "file": "selene-tour-practice-d9f89b.mp3"
+  },
+  {
+   "guide": "selene",
+   "text": "When you pick a card it is marked Selected, and this bar says what you picked. Nothing opens until you press Next, so you can change your mind first.",
+   "file": "selene-tour-next-bar.mp3"
+  },
+  {
+   "guide": "selene",
+   "text": "If you know where to look, you can type a position in the sky here, as right ascension and declination. Live search is not ready yet, so for now the cards are the way in.",
+   "file": "selene-tour-search-3f3fab.mp3"
+  },
+  {
+   "guide": "selene",
+   "text": "On every page I leave a short tip that says what to do next. If you don't need them, press Hide tips.",
+   "file": "selene-tour-tips.mp3"
+  },
+  {
+   "guide": "selene",
+   "text": "Click Practice pictures now. I'll use them to show you the viewer.",
+   "file": "selene-tour-do-pick-43f4a4.mp3"
+  },
+  {
+   "guide": "selene",
+   "text": "Practice pictures is selected. Now click Watch it change in the step bar to move on to step 2.",
+   "file": "selene-tour-do-watch-b5754d.mp3"
+  },
+  {
+   "guide": "selene",
+   "text": "Every picture shows the same patch of sky. The small cross marks the position you chose: it is a pointer, not a discovery. The corners show the picture's number, status, date and colour. These are practice pictures, not real SPHEREx data.",
+   "file": "selene-tour-stage-fdbe4e.mp3"
+  },
+  {
+   "guide": "selene",
+   "text": "If a picture is worth another look, press Mark as candidate. A candidate is something to check again, not a discovery. The line beside the button says which picture you would mark.",
+   "file": "selene-tour-mark.mp3"
+  },
+  {
+   "guide": "selene",
+   "text": "Each mark is one picture, placed by its real date, so a gap in time shows as a gap. Its shape tells you what was seen: a solid disc is a clear detection, a half ring is faint, a plain ring is not detected and a dashed ring means no picture.",
+   "file": "selene-tour-timeline.mp3"
+  },
+  {
+   "guide": "selene",
+   "text": "Press Play to watch the pictures in date order. It stops at the last one. The arrows step one picture at a time, or jump to the first and the last.",
+   "file": "selene-tour-play.mp3"
+  },
+  {
+   "guide": "selene",
+   "text": "Some controls are tucked away to keep the screen calm. Click More controls to see them. If you don't need them now, choose Skip this part.",
+   "file": "selene-tour-more-open.mp3"
+  },
+  {
+   "guide": "selene",
+   "text": "Type a picture's number here and press Go, or Enter, to jump straight to it. Handy when you want to look at one picture again.",
+   "file": "selene-tour-more-goto.mp3"
+  },
+  {
+   "guide": "selene",
+   "text": "Speed sets how fast Play moves through the pictures: Slow, Normal or Fast. It changes straight away, even while playing.",
+   "file": "selene-tour-more-speed.mp3"
+  },
+  {
+   "guide": "selene",
+   "text": "Compare two lays two pictures on top of each other. Choose a Then picture and a Now picture, then drag the divider across, or use the arrow keys. Each picture is a different colour, so a change in brightness is not always a real change.",
+   "file": "selene-tour-more-compare.mp3"
+  },
+  {
+   "guide": "selene",
+   "text": "Labels shows or hides the words in the corners of the picture: its number, status, date and colour. Hide them for a clear view of the sky.",
+   "file": "selene-tour-more-labels.mp3"
+  },
+  {
+   "guide": "selene",
+   "text": "These four tabs hold the facts. About, open now, explains this target and what each shape means. Click Colour to open the next tab, or press Next.",
+   "file": "selene-tour-tabs-about.mp3"
+  },
+  {
+   "guide": "selene",
+   "text": "SPHEREx sees infrared colours our eyes cannot. Drag along this bar to move through them. Each mark is one picture, and the sentence underneath says what was seen at that colour. Click Details next.",
+   "file": "selene-tour-tabs-colour.mp3"
+  },
+  {
+   "guide": "selene",
+   "text": "Details describes the picture on screen: its date, colour, status, position and a link to it in the archive. Click Table next.",
+   "file": "selene-tour-tabs-details.mp3"
+  },
+  {
+   "guide": "selene",
+   "text": "Table lists every picture, one row each, with its date, colour, status and brightness. Screen readers can read it row by row and column by column.",
+   "file": "selene-tour-tabs-table.mp3"
+  },
+  {
+   "guide": "selene",
+   "text": "Here are all the pictures side by side, each with its date and status. Pick one to jump straight to it.",
+   "file": "selene-tour-strip.mp3"
+  },
+  {
+   "guide": "selene",
+   "text": "That's the viewer. Now click My candidates in the step bar to see where your marked pictures go.",
+   "file": "selene-tour-do-candidates.mp3"
+  },
+  {
+   "guide": "selene",
+   "text": "Pictures you mark as candidates are listed here. They are saved in this browser only, and a candidate is a picture worth another look, not a discovery.",
+   "file": "selene-tour-candidates.mp3"
+  },
+  {
+   "guide": "selene",
+   "text": "When you want more sky, go back to step 1 and pick another example. The step bar takes you to any step you have opened.",
+   "file": "selene-tour-again.mp3"
+  },
+  {
+   "guide": "selene",
+   "text": "Last thing: switch between Light, Dark and Colour-blind friendly here. Everything works with a keyboard and a screen reader too. Enjoy exploring!",
+   "file": "selene-tour-themes.mp3"
+  },
+  {
+   "guide": "iris",
+   "text": "I'm the goddess of the rainbow, and a messenger of the gods. Welcome to Cryostella, the icy star, where we look for the marks ice leaves in the colours of light. I'll show you every step, and you'll do the clicking.",
+   "file": "iris-cryostella-tour-welcome.mp3"
+  },
+  {
+   "guide": "iris",
+   "text": "Cryo comes from the Greek for icy cold, and stella is Latin for star. Ice in the cold clouds where stars and planets form is one of the things SPHEREx was built to study.",
+   "file": "iris-cryostella-tour-name.mp3"
+  },
+  {
+   "guide": "iris",
+   "text": "Cryostella has four short steps, and this bar shows which one you are on. You can jump to any of them, and the Back button works too.",
+   "file": "iris-cryostella-tour-steps.mp3"
+  },
+  {
+   "guide": "iris",
+   "text": "On every step I leave a tip that says what to do now. If you don't need them, press Hide tips.",
+   "file": "iris-cryostella-tour-tips-5e0b92.mp3"
+  },
+  {
+   "guide": "iris",
+   "text": "This band is light, from violet on the left, past red, into infrared. The narrow rainbow is all our eyes can see. SPHEREx sees the long stretch on the right, out to 5 microns, in 102 colours.",
+   "file": "iris-cryostella-tour-band.mp3"
+  },
+  {
+   "guide": "iris",
+   "text": "Drag the slider to the right, past red, into the infrared. Take your time: watch the swatch and the words change as you go.",
+   "file": "iris-cryostella-tour-do-walk.mp3"
+  },
+  {
+   "guide": "iris",
+   "text": "The micron number, the colour's name and a sentence follow the slider. In the infrared the swatch turns striped: a colour we cannot see.",
+   "file": "iris-cryostella-tour-readout.mp3"
+  },
+  {
+   "guide": "iris",
+   "text": "Click Read a spectrum in the step bar.",
+   "file": "iris-cryostella-tour-do-read.mp3"
+  },
+  {
+   "guide": "iris",
+   "text": "It shows how bright the light is at each colour: colour along the bottom, brightness up the side. Each dot is one picture SPHEREx took, at one colour. Triangles mark the bumps and dips: filled for a bump, outlined for a dip.",
+   "file": "iris-cryostella-tour-chart.mp3"
+  },
+  {
+   "guide": "iris",
+   "text": "Move this slider a few steps, by dragging or with the arrow keys. The ring walks along the curve, and the line underneath reads out each point.",
+   "file": "iris-cryostella-tour-do-explore.mp3"
+  },
+  {
+   "guide": "iris",
+   "text": "This opens the full list of bumps and dips, whether each one has been checked, and every number as a table, for screen readers too.",
+   "file": "iris-cryostella-tour-more.mp3"
+  },
+  {
+   "guide": "iris",
+   "text": "Click Hear it in the step bar.",
+   "file": "iris-cryostella-tour-do-hear.mp3"
+  },
+  {
+   "guide": "iris",
+   "text": "Every sound has words, written here from our sound key. The team chooses the sounds; for now these are practice ones.",
+   "file": "iris-cryostella-tour-key-fce8a3.mp3"
+  },
+  {
+   "guide": "iris",
+   "text": "Sound settings has two sliders. Sweep length is how many seconds the sound takes to go from the shortest colour to the longest: slower makes small dips easier to hear. Volume sets how loud it plays.",
+   "file": "iris-cryostella-tour-settings.mp3"
+  },
+  {
+   "guide": "iris",
+   "text": "Click Name that spectrum in the step bar.",
+   "file": "iris-cryostella-tour-do-game.mp3"
+  },
+  {
+   "guide": "iris",
+   "text": "Press Play the mystery spectrum and listen, as often as you like.",
+   "file": "iris-cryostella-tour-mystery.mp3"
+  },
+  {
+   "guide": "iris",
+   "text": "Rather look than listen? Show the mystery graph: no names and no marks, just its shape.",
+   "file": "iris-cryostella-tour-look.mp3"
+  },
+  {
+   "guide": "iris",
+   "text": "Then choose: a cold cloud, with dips, or a comet, with bumps. Three rounds, and no timer.",
+   "file": "iris-cryostella-tour-answer.mp3"
+  },
+  {
+   "guide": "iris",
+   "text": "Come back to any step from this bar, and press Take the tour whenever you'd like me again. Enjoy the colours!",
+   "file": "iris-cryostella-tour-end.mp3"
+  },
+  {
+   "guide": "iris",
+   "text": "Hi, I'm Iris, goddess of the rainbow. Welcome to Cryostella, the icy star, where we look for ice in the colours of light. Each colour has a wavelength, measured in microns. Drag the slider under the rainbow to the right, past red.",
+   "file": "iris-tip-c-walk-6900e3.mp3"
+  },
+  {
+   "guide": "iris",
+   "text": "Past red, our eyes see nothing, but SPHEREx keeps going, out to 5 microns, in 102 colours. Ice and gas can leave marks in these colours. Press Next to learn how to read them.",
+   "file": "iris-tip-c-ir-278874.mp3"
+  },
+  {
+   "guide": "iris",
+   "text": "This graph is a spectrum: how bright something is at each colour. Move the slider under the graph, and the ring walks along the curve.",
+   "file": "iris-tip-r-explore-264217.mp3"
+  },
+  {
+   "guide": "iris",
+   "text": "Now a challenge: find the dip near 3.05 microns, where the curve drops. Move the ring into it.",
+   "file": "iris-tip-r-find-bdd756.mp3"
+  },
+  {
+   "guide": "iris",
+   "text": "You found a dip! Less light arrived at that colour, as if something soaked it up. In a cold cloud, ice can do that, but the team has not checked yet what causes this one. Try another spectrum, or press Next.",
+   "file": "iris-tip-r-found-dip-f20607.mp3"
+  },
+  {
+   "guide": "iris",
+   "text": "You found a bump! More light arrived at that colour. Around a comet, glowing gas can do that, but the team has not checked yet what causes this one. Try another spectrum, or press Next.",
+   "file": "iris-tip-r-found-bump-13700c.mp3"
+  },
+  {
+   "guide": "iris",
+   "text": "No bumps or dips are marked on this one yet, so there is nothing to hunt for. Look at its shape instead: where does it rise, and where does it drop? Then try another spectrum, or press Next.",
+   "file": "iris-tip-r-open-f2533a.mp3"
+  },
+  {
+   "guide": "iris",
+   "text": "Now listen to a spectrum. Press Play the spectrum. What each sound means is written just under the player, and a line shows where it is on the graph.",
+   "file": "iris-tip-h-play-cd2ad5.mp3"
+  },
+  {
+   "guide": "iris",
+   "text": "Did you hear it change where the graph changes? Play the other spectrum to compare, or press Next for a listening game.",
+   "file": "iris-tip-h-heard-3232e0.mp3"
+  },
+  {
+   "guide": "iris",
+   "text": "A listening game: press Play the mystery spectrum, then choose cloud or comet. You can play it as often as you like. If you prefer to look, choose Show the mystery graph.",
+   "file": "iris-tip-g-play-75875b.mp3"
+  },
+  {
+   "guide": "iris",
+   "text": "That's all three rounds. Well played! When real SPHEREx spectra are ready, they will be here to explore. Want more sky? The sky viewer is waiting.",
+   "file": "iris-tip-g-done-183895.mp3"
+  },
+  {
+   "guide": "iris",
+   "text": "Now a challenge: look at its shape: where it rises and where it drops. Move the ring into it.",
+   "file": "iris-tip-r-find-69ed29.mp3"
+  },
+  {
+   "guide": "iris",
+   "text": "All the spectra here are real SPHEREx data: Elias 16, a star behind an icy cloud; Comet 3I/ATLAS, December 2025; and Comet 3I/ATLAS, August 2025.",
+   "file": "iris-cryostella-tour-practice-fe40d1.mp3"
+  },
+  {
+   "guide": "iris",
+   "text": "Here are 3 real SPHEREx spectra. The tick shows which one is open. We'll start with this one, and you can read the others after.",
+   "file": "iris-cryostella-tour-pick-757a18.mp3"
+  },
+  {
+   "guide": "iris",
+   "text": "This line says what Elias 16 is and how many pictures went into its curve. A dip is marked near 3.05 microns. The team has not checked yet what causes it, so I won't guess.",
+   "file": "iris-cryostella-tour-about-7ab0e8.mp3"
+  },
+  {
+   "guide": "iris",
+   "text": "Now my tip sets you a challenge: find the dip near 3.05 microns, where the curve drops.",
+   "file": "iris-cryostella-tour-challenge-269009.mp3"
+  },
+  {
+   "guide": "iris",
+   "text": "Move the ring into the dip near 3.05 microns. You'll know when you've found it.",
+   "file": "iris-cryostella-tour-do-find-6241d7.mp3"
+  },
+  {
+   "guide": "iris",
+   "text": "Here Elias 16, a star behind an icy cloud becomes sound. It is a sonification: sounds mapped by rules we chose, not the sound of the object. A line moves across the graph while it plays, from the shortest colour to the longest.",
+   "file": "iris-cryostella-tour-sonify-828d1f.mp3"
+  },
+  {
+   "guide": "iris",
+   "text": "Press Play the spectrum and listen to the end. The dip near 3.05 microns comes about halfway through: the sound key below says how it is marked.",
+   "file": "iris-cryostella-tour-do-play-e508ef.mp3"
+  },
+  {
+   "guide": "iris",
+   "text": "There are 2 more spectra to read. Click Comet 3I/ATLAS, December 2025 and I'll tell you what to look for. Or choose Skip this part to go on.",
+   "file": "iris-cryostella-tour-do-other-1-1e5a74.mp3"
+  },
+  {
+   "guide": "iris",
+   "text": "This line says what 3I/ATLAS, December 2025 is and how many pictures went into its curve. No bumps or dips are marked on this one yet, so read its shape: where does it rise, and where does it drop?",
+   "file": "iris-cryostella-tour-about-8f9a84.mp3"
+  },
+  {
+   "guide": "iris",
+   "text": "On this one my tip has no challenge: nothing is marked yet, so there is nothing to hunt for. It asks you to look at the shape instead.",
+   "file": "iris-cryostella-tour-challenge-100470.mp3"
+  },
+  {
+   "guide": "iris",
+   "text": "Here Comet 3I/ATLAS, December 2025 becomes sound. It is a sonification: sounds mapped by rules we chose, not the sound of the object. A line moves across the graph while it plays, from the shortest colour to the longest.",
+   "file": "iris-cryostella-tour-sonify-cf903f.mp3"
+  },
+  {
+   "guide": "iris",
+   "text": "Press Play the spectrum and listen to the end. Nothing is marked on this one, so follow how the sound changes as the curve rises and drops.",
+   "file": "iris-cryostella-tour-do-play-3ccca4.mp3"
+  },
+  {
+   "guide": "iris",
+   "text": "There is one more spectrum to read. Click Comet 3I/ATLAS, August 2025 and I'll tell you what to look for. Or choose Skip this part to go on.",
+   "file": "iris-cryostella-tour-do-other-2-3f3334.mp3"
+  },
+  {
+   "guide": "iris",
+   "text": "This line says what 3I/ATLAS, August 2025 is and how many pictures went into its curve. No bumps or dips are marked on this one yet, so read its shape: where does it rise, and where does it drop?",
+   "file": "iris-cryostella-tour-about-9768fe.mp3"
+  },
+  {
+   "guide": "iris",
+   "text": "Here Comet 3I/ATLAS, August 2025 becomes sound. It is a sonification: sounds mapped by rules we chose, not the sound of the object. A line moves across the graph while it plays, from the shortest colour to the longest.",
+   "file": "iris-cryostella-tour-sonify-0dd379.mp3"
+  },
+  {
+   "guide": "iris",
+   "text": "Want to hear how a different one sounds? Click Comet 3I/ATLAS, December 2025, then play it too. Or choose Skip this part.",
+   "file": "iris-cryostella-tour-do-hear-other-2078ba.mp3"
+  },
+  {
+   "guide": "iris",
+   "text": "Press Play the spectrum and listen to 3I/ATLAS, December 2025. Nothing is marked on this one, so follow how the sound changes as the curve rises and drops. Does it sound different from the last one?",
+   "file": "iris-cryostella-tour-do-play-other-5603cb.mp3"
+  },
+  {
+   "guide": "iris",
+   "text": "Press Play the spectrum and listen to 3I/ATLAS, August 2025. Nothing is marked on this one, so follow how the sound changes as the curve rises and drops. Does it sound different from the last one?",
+   "file": "iris-cryostella-tour-do-play-other-8a0bfb.mp3"
+  },
+  {
+   "guide": "iris",
+   "text": "There is one more spectrum to read. Click Comet 3I/ATLAS, December 2025 and I'll tell you what to look for. Or choose Skip this part to go on.",
+   "file": "iris-cryostella-tour-do-other-2-7ae16f.mp3"
+  },
+  {
+   "guide": "iris",
+   "text": "There are 2 more spectra to read. Click Elias 16, a star behind an icy cloud and I'll tell you what to look for. Or choose Skip this part to go on.",
+   "file": "iris-cryostella-tour-do-other-1-d2abcf.mp3"
+  },
+  {
+   "guide": "iris",
+   "text": "Want to hear how a different one sounds? Click Elias 16, a star behind an icy cloud, then play it too. Or choose Skip this part.",
+   "file": "iris-cryostella-tour-do-hear-other-636603.mp3"
+  },
+  {
+   "guide": "iris",
+   "text": "Press Play the spectrum and listen to Elias 16. The dip near 3.05 microns comes about halfway through: the sound key below says how it is marked. Does it sound different from the last one?",
+   "file": "iris-cryostella-tour-do-play-other-d4677b.mp3"
+  },
+  {
+   "guide": "iris",
+   "text": "There is one more spectrum to read. Click Elias 16, a star behind an icy cloud and I'll tell you what to look for. Or choose Skip this part to go on.",
+   "file": "iris-cryostella-tour-do-other-2-499899.mp3"
+  },
+  {
+   "guide": "selene",
+   "text": "Pick one of the examples below. Comet 3I/ATLAS is a good first one. Nothing opens yet, so you can change your mind.",
+   "file": "selene-tip-pick-36494f.mp3"
+  },
+  {
+   "guide": "selene",
+   "text": "There are no pictures to show for this one yet. Go back and pick another example, or try the practice pictures below.",
+   "file": "selene-tip-empty-011e5f.mp3"
+  },
+  {
+   "guide": "selene",
+   "text": "Press Play under the picture to watch every picture in date order. You can also drag along the timeline, or use the arrow buttons.",
+   "file": "selene-tip-play-595a12.mp3"
+  },
+  {
+   "guide": "selene",
+   "text": "When a picture catches your eye, press Pause to stop on it. Then press Mark as candidate, just under the picture.",
+   "file": "selene-tip-mark-b369d3.mp3"
+  },
+  {
+   "guide": "selene",
+   "text": "You marked a picture as a candidate. Mark more if you like. When you are ready, press Next to see your list.",
+   "file": "selene-tip-next-saved-385d43.mp3"
+  },
+  {
+   "guide": "selene",
+   "text": "You pressed Mark as candidate. Saving is not switched on in this version yet, so the picture was not kept. When you are ready, press Next.",
+   "file": "selene-tip-next-unsaved-f3d089.mp3"
+  },
+  {
+   "guide": "selene",
+   "text": "No need to mark anything. When you are ready, press Next to see the My candidates page.",
+   "file": "selene-tip-next-skip-6249d1.mp3"
+  },
+  {
+   "guide": "selene",
+   "text": "Pictures you mark as candidates are listed here. A candidate is a picture worth another look, not a discovery. Ready for more sky?",
+   "file": "selene-tip-line-97e7e4.mp3"
+  },
+  {
+   "guide": "selene",
+   "text": "You picked Comet 3I/ATLAS. Press Next to open it in the sky viewer.",
+   "file": "selene-tip-picked-3i-atlas-a4c998.mp3"
+  },
+  {
+   "guide": "selene",
+   "text": "You picked Barnard's Star. Press Next to open it in the sky viewer.",
+   "file": "selene-tip-picked-barnards-star-ece319.mp3"
+  },
+  {
+   "guide": "selene",
+   "text": "You picked Epsilon Indi B. Press Next to open it in the sky viewer.",
+   "file": "selene-tip-picked-epsilon-indi-b-b78e5e.mp3"
+  },
+  {
+   "guide": "selene",
+   "text": "You picked WISE 0855. Press Next to open it in the sky viewer.",
+   "file": "selene-tip-picked-wise-0855-bd25a2.mp3"
+  },
+  {
+   "guide": "selene",
+   "text": "You picked RW Aurigae. Press Next to open it in the sky viewer.",
+   "file": "selene-tip-picked-rw-aur-406ba6.mp3"
+  },
+  {
+   "guide": "selene",
+   "text": "You picked R Draconis. Press Next to open it in the sky viewer.",
+   "file": "selene-tip-picked-r-dra-513728.mp3"
+  },
+  {
+   "guide": "selene",
+   "text": "You picked Practice pictures. Press Next to open it in the sky viewer.",
+   "file": "selene-tip-picked-practice-fb8e4e.mp3"
+  },
+  {
+   "guide": "selene",
+   "text": "I'm named after the Greek goddess of the Moon, and I look after this whole site. It lets you watch pictures from NASA's SPHEREx space telescope change over time, spot things that move, and explore the colours of light. Let me show you around. You'll do the clicking.",
+   "file": "selene-home-tour-welcome.mp3"
+  },
+  {
+   "guide": "selene",
+   "text": "SPHEREx photographs the whole sky every six months, in 102 colours of infrared light. Put its pictures of one patch of sky in date order, and anything that moves or changes gives itself away. That idea is behind everything here.",
+   "file": "selene-home-tour-idea.mp3"
+  },
+  {
+   "guide": "selene",
+   "text": "This menu sits at the top of every page: Home, the Sky viewer, Cryostella and My candidates. The soft pill shows where you are. On a phone the menu folds away behind the Menu button.",
+   "file": "selene-home-tour-menu-8974dd.mp3"
+  },
+  {
+   "guide": "selene",
+   "text": "This is my tour of the whole site. Each part also has its own tour, led by its own guide: press Take the tour on any page to meet them.",
+   "file": "selene-home-tour-tours.mp3"
+  },
+  {
+   "guide": "selene",
+   "text": "This little game is the idea in twenty seconds: two pictures of the same patch of sky, and one spot that moves. The pictures are practice ones, drawn by our code.",
+   "file": "selene-home-tour-try-df1adf.mp3"
+  },
+  {
+   "guide": "selene",
+   "text": "Press Blink and watch the picture flick. Which spot jumps? You can pick it after the tour.",
+   "file": "selene-home-tour-do-blink.mp3"
+  },
+  {
+   "guide": "selene",
+   "text": "These are the parts of the site, each with its guide. I look after the sky viewer, where you watch real pictures change. Iris, goddess of the rainbow, looks after Cryostella, where you read, hear and play with the colours of light.",
+   "file": "selene-home-tour-places-59c6db.mp3"
+  },
+  {
+   "guide": "selene",
+   "text": "Press Say hello on Iris's card. She'll introduce herself, and I'll carry on when she's done.",
+   "file": "selene-home-tour-do-hello.mp3"
+  },
+  {
+   "guide": "selene",
+   "text": "More parts are on their way this weekend: the Cosmic Orchestra with Orpheus, puzzles made from SPHEREx pictures, and Your Beginnings. They join the menu when they're ready.",
+   "file": "selene-home-tour-soon-ccb458.mp3"
+  },
+  {
+   "guide": "selene",
+   "text": "In the sky viewer you can mark a picture as a candidate: something worth another look, never a discovery. They're kept here, in this browser only.",
+   "file": "selene-home-tour-candidates.mp3"
+  },
+  {
+   "guide": "selene",
+   "text": "Each place you visit lights a star. It's kept in this browser only, and nothing expires, so take your time.",
+   "file": "selene-home-tour-skymap.mp3"
+  },
+  {
+   "guide": "selene",
+   "text": "Everything works with a keyboard and a screen reader. Every sound has words, every chart has a table, and nothing moves on until you choose.",
+   "file": "selene-home-tour-everyone.mp3"
+  },
+  {
+   "guide": "selene",
+   "text": "These are the six people who made this site, and me with it. Pawana leads the team. Each of them gets a moon of their own.",
+   "file": "selene-home-tour-team-48913e.mp3"
+  },
+  {
+   "guide": "selene",
+   "text": "Switch between Light, Dark and Colour-blind friendly here. Your choice is kept for every page.",
+   "file": "selene-home-tour-themes.mp3"
+  },
+  {
+   "guide": "selene",
+   "text": "Open the Sky viewer or Cryostella. Its guide will take over from me with a tour of its own.",
+   "file": "selene-home-tour-go-7df19d.mp3"
+  },
+  {
+   "guide": "selene",
+   "text": "Hi, I'm Selene, goddess of the Moon. Come and watch the sky change, and spot what moves!",
+   "file": "selene-hello-a01a98.mp3"
+  },
+  {
+   "guide": "iris",
+   "text": "Hi, I'm Iris, goddess of the rainbow. Come and see the colours your eyes can't, and hear them too!",
+   "file": "iris-hello-148d9a.mp3"
+  }
+ ]
+}
