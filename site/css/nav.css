@@ -133,6 +133,21 @@ html[data-tour-seen] .sn-tour { border-color: color-mix(in srgb, var(--rule) 70%
 
 .sn-toggle { display: none; }
 
+/* ---------- Moving between pages ----------
+   The menu holds still while one page fades into the next, and the pill glides from the old
+   section to the new one (js/nav.js names the pill and the links just for the change). Each
+   page also waits for its menu before it first paints (<link rel="expect"> in its head), so the
+   menu never pops in late. Off with reduced motion: the page simply changes. */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition { navigation: auto; }
+}
+::view-transition-group(root) { animation-duration: 260ms; }
+::view-transition-group(sn-pill) { animation-duration: 340ms; animation-timing-function: var(--ease-out-quart, cubic-bezier(0.25, 1, 0.5, 1)); }
+/* The pill changes width, not shape: stretch its picture to the box instead of scaling it up. */
+::view-transition-old(sn-pill), ::view-transition-new(sn-pill) { height: 100%; animation: none; }
+::view-transition-old(sn-pill) { display: none; }
+::view-transition-group(sn-links) { animation-duration: 340ms; }
+
 /* ---------- Narrow windows and phones: a Menu button and a panel ---------- */
 @media (max-width: 959px) {
   .sn { padding-block: 8px; }

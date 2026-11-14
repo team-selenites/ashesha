@@ -348,14 +348,32 @@
     requestAnimationFrame(function () { follow(document.documentElement.getAttribute("data-view")); placePill(); });
   }
 
-  // A click moves the pill to the section, then the next page opens once it has arrived.
+  // ---------- moving between pages ----------
+  // Where the browser can carry a view from one page to the next (cross-document view
+  // transitions, css/nav.css), the menu stays put while the page fades over, and the pill glides
+  // from the old section to the new one. Only the pill and the row of links are named, and only
+  // for the moment of the change: a name makes an element its own layer, which would cut the
+  // capsule's frosted blur off from the page behind it.
   var reduceQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+  var crossPage = "onpagereveal" in window && !!(window.CSS && CSS.supports && CSS.supports("view-transition-name", "sn-pill"));
+  function nameNav(on) {
+    pill.style.viewTransitionName = on ? "sn-pill" : "";
+    list.style.viewTransitionName = on ? "sn-links" : "";
+  }
+  window.addEventListener("pageswap", function (e) { if (e.viewTransition) nameNav(true); });
+  window.addEventListener("pagereveal", function (e) {
+    if (!e.viewTransition) { nameNav(false); return; }   // also a page brought back with Back
+    nameNav(true);
+    e.viewTransition.finished.then(function () { nameNav(false); }, function () { nameNav(false); });
+  });
+
+  // Elsewhere, a click moves the pill to the section, then the next page opens once it has arrived.
   list.addEventListener("click", function (e) {
     var a = e.target.closest ? e.target.closest(".sn-link") : null;
     if (!a || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
     var href = a.getAttribute("href");
     if (href.charAt(0) === "#") { if (!narrowQuery.matches) pillTo(a); return; }   // a step of this page
-    if (a === currentLink || narrowQuery.matches || reduceQuery.matches) return;
+    if (a === currentLink || narrowQuery.matches || reduceQuery.matches || crossPage) return;
     e.preventDefault();
     setCurrent(a);
     pillTo(a);
