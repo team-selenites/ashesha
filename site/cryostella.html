@@ -1,0 +1,608 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="assets/ashesha-mark.svg" type="image/svg+xml">
+<meta name="theme-color" content="#F4EEFA">
+<title>Cryostella · Ashesha</title>
+<meta name="description" content="Cryostella, the frozen water section: walk along a rainbow into infrared, read a spectrum, hear it, and play a listening game. With Iris.">
+<script>
+// Apply a saved colour choice before the page paints, to avoid a flash (same key as every page).
+try { var t = localStorage.getItem("selenites-theme"); if (t === "light" || t === "dark" || t === "colour-blind-friendly") { document.documentElement.setAttribute("data-theme", t); document.querySelector('meta[name="theme-color"]').setAttribute("content", { "light": "#F4EEFA", "dark": "#0B0A0E", "colour-blind-friendly": "#1E1238" }[t]); } } catch (e) {}</script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<link rel="stylesheet" href="css/tokens.css?v=1">
+<link rel="stylesheet" href="css/app.css?v=1">
+<link rel="stylesheet" href="css/nav.css?v=1">
+<link rel="stylesheet" href="css/cryostella.css?v=1">
+</head>
+<body class="cryostella">
+<div class="sky" aria-hidden="true">
+  <svg width="100%" height="100%" focusable="false">
+    <defs>
+      <g id="cloud">
+        <circle cx="30" cy="42" r="18"/><circle cx="55" cy="30" r="24"/><circle cx="82" cy="40" r="20"/><circle cx="100" cy="48" r="14"/>
+        <rect x="18" y="44" width="92" height="18" rx="9"/>
+      </g>
+      <g id="cloud-face" class="cloud-face">
+        <circle cx="48" cy="44" r="2" class="dot"/><circle cx="66" cy="44" r="2" class="dot"/>
+        <path d="M53 50q4 3.4 8 0" fill="none" stroke-width="1.6" stroke-linecap="round" class="line"/>
+        <circle cx="41" cy="50" r="3.6" class="blush"/><circle cx="73" cy="50" r="3.6" class="blush"/>
+      </g>
+      <pattern id="sky-pattern" width="760" height="600" patternUnits="userSpaceOnUse">
+        <g class="cloud-shape" transform="translate(40 60) scale(1.6)"><use href="#cloud"/><use href="#cloud-face"/></g>
+        <g class="cloud-shape" transform="translate(440 24) scale(0.9)"><use href="#cloud"/></g>
+        <g class="cloud-shape" transform="translate(300 310) scale(1.3)"><use href="#cloud"/><use href="#cloud-face"/></g>
+        <g class="cloud-shape" transform="translate(620 380) scale(0.8)"><use href="#cloud"/></g>
+        <g class="cloud-shape" transform="translate(50 440) scale(0.7)"><use href="#cloud"/></g>
+      </pattern>
+    </defs>
+    <rect width="100%" height="100%" fill="url(#sky-pattern)"/>
+  </svg>
+</div>
+<svg class="svg-defs" width="0" height="0" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="guide-shine" x1="0" y1="0" x2="0" y2="1"><stop offset="0" class="cloud-shine-a"/><stop offset="1" class="cloud-shine-b"/></linearGradient>
+    <filter id="guide-blur" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="8"/></filter>
+    <!-- Ragged, painted edges for the tour's arrow (drawn in code, no picture used). -->
+    <filter id="brush-edge" x="-15%" y="-15%" width="130%" height="130%"><feTurbulence type="fractalNoise" baseFrequency="0.09 0.5" numOctaves="2" seed="7" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="5" xChannelSelector="R" yChannelSelector="G"/></filter>
+  </defs>
+</svg>
+<div class="twinkle" aria-hidden="true"><i></i><i></i><i></i></div>
+<a class="skip" href="#main">Skip to the main content</a>
+<div class="sn" data-page="cryostella"></div>
+
+<header class="site-head cr-head">
+  <div class="ts-slot" data-theme-switch></div>
+  <p class="kicker">Cryostella · with Iris</p>
+  <h1 id="top" tabindex="-1">Ice leaves fingerprints on light</h1>
+  <p class="lede">Four short steps with Iris: walk past red into colours your eyes can't see, learn to read a spectrum, listen to one, then test your ears.</p>
+  <p class="cr-name"><strong>Why Cryostella?</strong> <i lang="el-Latn">Cryo</i> comes from the Greek <i lang="el-Latn">kryos</i>, icy cold, and <i lang="la">stella</i> is Latin for star. Cryostella, the icy star, is where we look for the marks ice leaves on light from space.</p>
+  <button type="button" class="tour-chip tour-open"><span class="selene-slot selene-avatar selene-avatar-sm" data-variant="head" data-character="iris"></span>New here? Take the tour with Iris</button>
+  <p class="placeholder-flag cr-practice-note">All the spectra here are real SPHEREx data</p>
+</header>
+
+<nav class="steps cr-steps" id="steps" aria-label="Cryostella steps">
+  <ol>
+    <li><a href="#colours" data-view="colours"><span class="step-n" aria-hidden="true">1</span><span class="step-t">Colours of light</span></a></li>
+    <li><a href="#read" data-view="read"><span class="step-n" aria-hidden="true">2</span><span class="step-t">Read a spectrum</span></a></li>
+    <li><a href="#hear" data-view="hear"><span class="step-n" aria-hidden="true">3</span><span class="step-t">Hear it</span></a></li>
+    <li><a href="#game" data-view="game"><span class="step-n" aria-hidden="true">4</span><span class="step-t">Name that spectrum</span></a></li>
+  </ol>
+</nav>
+
+<main id="main">
+
+  <!-- Step 1: walk along the rainbow, past red, into infrared. -->
+  <section class="view" data-view="colours" aria-labelledby="colours-h">
+    <div class="view-top">
+      <div class="view-head">
+        <p class="view-step">Step 1 of 4</p>
+        <h2 id="colours-h" class="view-title" tabindex="-1">Colours of light</h2>
+        <p class="view-lede">Your eyes see only a sliver of the colours out there. SPHEREx sees far past red.</p>
+      </div>
+    <aside class="guide" data-guide="colours" aria-label="Iris's tip">
+      <button type="button" class="guide-open" aria-expanded="true"><span class="selene-slot selene-avatar selene-avatar-sm" data-variant="head" data-character="iris"></span>Show Iris's tip</button>
+      <div class="guide-body">
+        <div class="guide-figure" aria-hidden="true"><div class="selene-slot guide-selene" data-variant="figure" data-character="iris"></div></div>
+        <div class="guide-thought">
+          <div class="guide-bubble">
+            <svg class="guide-cloud" aria-hidden="true" focusable="false"></svg>
+            <div class="guide-say" data-when="c-walk">
+              <p class="guide-part">Step 1 · Part 1 of 2</p>
+              <p class="guide-text">Hi, I'm Iris, goddess of the rainbow. Welcome to Cryostella, the icy star, where we look for ice in the colours of light. Each colour has a wavelength, measured in microns. Drag the slider under the rainbow to the right, past red.</p>
+            </div>
+            <div class="guide-say" data-when="c-ir" hidden>
+              <p class="guide-part">Step 1 · Part 2 of 2</p>
+              <p class="guide-text">Past red, our eyes see nothing, but SPHEREx keeps going, out to 5 microns, in 102 colours. Ice and gas can leave marks in these colours. Press Next to learn how to read them.</p>
+            </div>
+            <div class="guide-actions">
+              <a class="guide-next" data-when="c-ir" href="#read" data-view="read" hidden><span>Next: Read a spectrum</span><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 5l7 7-7 7"/></svg></a>
+              <button type="button" class="guide-voice" aria-pressed="false" hidden><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 9.5h3.6L12 6v12l-4.4-3.5H4z"/><path class="gv-on" d="M15.6 9a4.2 4.2 0 0 1 0 6M18.2 6.6a7.6 7.6 0 0 1 0 10.8"/><path class="gv-off" d="M16 9.5l5 5M21 9.5l-5 5"/></svg><span>Iris's voice</span></button>
+              <button type="button" class="guide-hide">Hide tips</button>
+            </div>
+          </div>
+        </div>
+        <span class="guide-trail" aria-hidden="true"><i></i><i></i><i></i></span>
+      </div>
+    </aside>
+    </div>
+    <div class="panel rb">
+      <div class="rb-band-box"><svg class="rb-band" id="rb-band" viewBox="0 0 1000 150" aria-hidden="true" focusable="false"></svg></div>
+      <label class="rb-label" for="rb-range">Walk along the colours</label>
+      <input type="range" id="rb-range" min="0" max="1000" step="1" value="120">
+      <div class="rb-readout" aria-hidden="true">
+        <span class="rb-swatch" id="rb-swatch"></span>
+        <span><span class="rb-um" id="rb-um"></span> <span class="rb-name" id="rb-name"></span></span>
+      </div>
+      <p class="rb-say" id="rb-say"></p>
+      <p class="fine">A micron is a thousandth of a millimetre. The scale stretches the short colours so the rainbow is easy to see.</p>
+    </div>
+    <div class="cr-pager"><a class="btn cr-pager-next" href="#read" data-view="read"><span>Next: Read a spectrum</span><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 5l7 7-7 7"/></svg></a></div>
+  </section>
+
+  <!-- Step 2: read a spectrum, and find a dip or a bump. -->
+  <section class="view" data-view="read" aria-labelledby="read-h" hidden>
+    <div class="view-top">
+      <div class="view-head">
+        <a class="back-link" href="#colours" data-view="colours"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 5l-7 7 7 7"/></svg>Colours of light</a>
+        <p class="view-step">Step 2 of 4</p>
+        <h2 id="read-h" class="view-title" tabindex="-1">Read a spectrum</h2>
+        <p class="view-lede">Light carries a fingerprint of whatever made it. A spectrum is how you read it: how bright the light is at each colour.</p>
+      </div>
+    <aside class="guide" data-guide="read" aria-label="Iris's tip">
+      <button type="button" class="guide-open" aria-expanded="true"><span class="selene-slot selene-avatar selene-avatar-sm" data-variant="head" data-character="iris"></span>Show Iris's tip</button>
+      <div class="guide-body">
+        <div class="guide-figure" aria-hidden="true"><div class="selene-slot guide-selene" data-variant="figure" data-character="iris"></div></div>
+        <div class="guide-thought">
+          <div class="guide-bubble">
+            <svg class="guide-cloud" aria-hidden="true" focusable="false"></svg>
+            <div class="guide-say" data-when="r-explore">
+              <p class="guide-part">Step 2 · Part 1 of 3</p>
+              <p class="guide-text">This graph is a spectrum: how bright something is at each colour. Move the slider under the graph, and the ring walks along the curve.</p>
+            </div>
+            <div class="guide-say" data-when="r-find" hidden>
+              <p class="guide-part">Step 2 · Part 2 of 3</p>
+              <p class="guide-text">Now a challenge: <span class="cr-find-what">find a dip, where the curve drops</span>. Move the ring into it.</p>
+            </div>
+            <div class="guide-say" data-when="r-found-dip" hidden>
+              <p class="guide-part">Step 2 · Part 3 of 3</p>
+              <p class="guide-text">You found a dip! Less light arrived at that colour, as if something soaked it up. In a cold cloud, ice can do that, but the team has not checked yet what causes this one. Try another spectrum, or press Next.</p>
+            </div>
+            <div class="guide-say" data-when="r-found-bump" hidden>
+              <p class="guide-part">Step 2 · Part 3 of 3</p>
+              <p class="guide-text">You found a bump! More light arrived at that colour. Around a comet, glowing gas can do that, but the team has not checked yet what causes this one. Try another spectrum, or press Next.</p>
+            </div>
+            <div class="guide-say" data-when="r-open" hidden>
+              <p class="guide-part">Step 2 · Part 2 of 2</p>
+              <p class="guide-text">No bumps or dips are marked on this one yet, so there is nothing to hunt for. Look at its shape instead: where does it rise, and where does it drop? Then try another spectrum, or press Next.</p>
+            </div>
+            <div class="guide-actions">
+              <a class="guide-next" data-when="r-found-dip r-found-bump r-open" href="#hear" data-view="hear" hidden><span>Next: Hear it</span><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 5l7 7-7 7"/></svg></a>
+              <button type="button" class="guide-voice" aria-pressed="false" hidden><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 9.5h3.6L12 6v12l-4.4-3.5H4z"/><path class="gv-on" d="M15.6 9a4.2 4.2 0 0 1 0 6M18.2 6.6a7.6 7.6 0 0 1 0 10.8"/><path class="gv-off" d="M16 9.5l5 5M21 9.5l-5 5"/></svg><span>Iris's voice</span></button>
+              <button type="button" class="guide-hide">Hide tips</button>
+            </div>
+          </div>
+        </div>
+        <span class="guide-trail" aria-hidden="true"><i></i><i></i><i></i></span>
+      </div>
+    </aside>
+    </div>
+    <div class="panel cr-panel">
+      <div class="cr-pick" role="group" aria-label="Choose a spectrum"><span class="cr-pick-btns" data-pick="read"></span></div>
+      <p class="cr-summary" id="read-summary"></p>
+      <figure class="cr-figure">
+        <svg class="cr-chart" id="read-chart" role="img" aria-labelledby="read-chart-title read-chart-desc" focusable="false"><title id="read-chart-title"></title><desc id="read-chart-desc"></desc></svg>
+      </figure>
+      <div class="cr-explore">
+        <label for="read-cursor">Move along the spectrum, one colour at a time</label>
+        <input type="range" id="read-cursor" min="0" max="0" step="1" value="0">
+        <p class="cr-readout" id="read-readout"></p>
+      </div>
+      <p class="cr-found" id="read-found" role="status" aria-live="polite"></p>
+      <details class="cr-more">
+        <summary>More about this graph, and the numbers as a table</summary>
+        <div class="cr-more-body">
+          <p class="fine">Each dot is one colour band. The short bars show how uncertain each value is. On the graph a filled triangle marks a bump (brighter) and an outlined one a dip (fainter).</p>
+          <h3 class="cr-h3">Bumps and dips on this graph</h3>
+          <ul class="cr-features" id="read-features"></ul>
+          <p class="fine">We name a molecule only after the team has checked the feature against published work. Until then it says "not yet checked".</p>
+          <p class="fine" id="read-release"></p>
+          <div class="cr-table-scroll" tabindex="0" role="region" aria-labelledby="read-table-cap">
+            <table class="cr-table">
+              <caption id="read-table-cap"></caption>
+              <thead><tr><th scope="col">Colour (microns)</th><th scope="col" id="read-th-value">Brightness</th><th scope="col">Uncertainty</th><th scope="col">Images used</th></tr></thead>
+              <tbody id="read-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </details>
+    </div>
+    <div class="cr-pager"><a class="btn cr-pager-next" href="#hear" data-view="hear"><span>Next: Hear it</span><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 5l7 7-7 7"/></svg></a></div>
+  </section>
+
+  <!-- Step 3: hear the spectrum (a sonification). -->
+  <section class="view" data-view="hear" aria-labelledby="hear-h" hidden>
+    <div class="view-top">
+      <div class="view-head">
+        <a class="back-link" href="#read" data-view="read"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 5l-7 7 7 7"/></svg>Read a spectrum</a>
+        <p class="view-step">Step 3 of 4</p>
+        <h2 id="hear-h" class="view-title" tabindex="-1">Hear it</h2>
+        <p class="view-lede">A sonification: sounds mapped by rules we chose. It is not the sound of the object.</p>
+      </div>
+    <aside class="guide" data-guide="hear" aria-label="Iris's tip">
+      <button type="button" class="guide-open" aria-expanded="true"><span class="selene-slot selene-avatar selene-avatar-sm" data-variant="head" data-character="iris"></span>Show Iris's tip</button>
+      <div class="guide-body">
+        <div class="guide-figure" aria-hidden="true"><div class="selene-slot guide-selene" data-variant="figure" data-character="iris"></div></div>
+        <div class="guide-thought">
+          <div class="guide-bubble">
+            <svg class="guide-cloud" aria-hidden="true" focusable="false"></svg>
+            <div class="guide-say" data-when="h-play">
+              <p class="guide-part">Step 3 · Part 1 of 2</p>
+              <p class="guide-text">Now listen to a spectrum. Press Play the spectrum. What each sound means is written just under the player, and a line shows where it is on the graph.</p>
+            </div>
+            <div class="guide-say" data-when="h-heard" hidden>
+              <p class="guide-part">Step 3 · Part 2 of 2</p>
+              <p class="guide-text">Did you hear it change where the graph changes? Play the other spectrum to compare, or press Next for a listening game.</p>
+            </div>
+            <div class="guide-actions">
+              <a class="guide-next" data-when="h-heard" href="#game" data-view="game" hidden><span>Next: Name that spectrum</span><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 5l7 7-7 7"/></svg></a>
+              <button type="button" class="guide-voice" aria-pressed="false" hidden><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 9.5h3.6L12 6v12l-4.4-3.5H4z"/><path class="gv-on" d="M15.6 9a4.2 4.2 0 0 1 0 6M18.2 6.6a7.6 7.6 0 0 1 0 10.8"/><path class="gv-off" d="M16 9.5l5 5M21 9.5l-5 5"/></svg><span>Iris's voice</span></button>
+              <button type="button" class="guide-hide">Hide tips</button>
+            </div>
+          </div>
+        </div>
+        <span class="guide-trail" aria-hidden="true"><i></i><i></i><i></i></span>
+      </div>
+    </aside>
+    </div>
+    <div class="panel cr-panel">
+      <div class="cr-pick" role="group" aria-label="Choose a spectrum"><span class="cr-pick-btns" data-pick="hear"></span></div>
+      <figure class="cr-figure">
+        <svg class="cr-chart cr-chart-small" id="hear-chart" role="img" aria-labelledby="hear-chart-title hear-chart-desc" focusable="false"><title id="hear-chart-title"></title><desc id="hear-chart-desc"></desc></svg>
+      </figure>
+      <div class="cr-controls">
+        <button type="button" class="btn cr-play" id="hear-play">Play the spectrum</button>
+        <p class="cr-now" id="hear-now" aria-hidden="true"></p>
+      </div>
+      <h3 class="cr-h3">What each sound means</h3>
+      <ul class="cr-sound-key" id="cr-sound-key"></ul>
+      <p class="placeholder-flag" id="cr-key-practice" hidden>Practice sound key: the team has not chosen these sounds yet</p>
+      <details class="cr-more">
+        <summary>Sound settings</summary>
+        <div class="cr-sliders">
+          <div class="field">
+            <label for="cr-speed">Sweep length</label>
+            <input type="range" id="cr-speed" min="4" max="20" step="1" value="8" aria-describedby="cr-speed-out">
+            <output id="cr-speed-out" for="cr-speed"></output>
+          </div>
+          <div class="field">
+            <label for="cr-volume">Volume</label>
+            <input type="range" id="cr-volume" min="0" max="100" step="5" value="70" aria-describedby="cr-volume-out">
+            <output id="cr-volume-out" for="cr-volume"></output>
+          </div>
+        </div>
+      </details>
+    </div>
+    <div class="cr-pager"><a class="btn cr-pager-next" href="#game" data-view="game"><span>Next: Name that spectrum</span><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 5l7 7-7 7"/></svg></a></div>
+  </section>
+
+  <!-- Step 4: a listening game. -->
+  <section class="view" data-view="game" aria-labelledby="game-h" hidden>
+    <div class="view-top">
+      <div class="view-head">
+        <a class="back-link" href="#hear" data-view="hear"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 5l-7 7 7 7"/></svg>Hear it</a>
+        <p class="view-step">Step 4 of 4</p>
+        <h2 id="game-h" class="view-title" tabindex="-1">Name that spectrum</h2>
+        <p class="view-lede">Cloud or comet? Three rounds, no timer. Trust your ears, or your eyes.</p>
+      </div>
+    <aside class="guide" data-guide="game" aria-label="Iris's tip">
+      <button type="button" class="guide-open" aria-expanded="true"><span class="selene-slot selene-avatar selene-avatar-sm" data-variant="head" data-character="iris"></span>Show Iris's tip</button>
+      <div class="guide-body">
+        <div class="guide-figure" aria-hidden="true"><div class="selene-slot guide-selene" data-variant="figure" data-character="iris"></div></div>
+        <div class="guide-thought">
+          <div class="guide-bubble">
+            <svg class="guide-cloud" aria-hidden="true" focusable="false"></svg>
+            <div class="guide-say" data-when="g-play">
+              <p class="guide-part">Step 4 · Part 1 of 2</p>
+              <p class="guide-text">A listening game: press Play the mystery spectrum, then choose cloud or comet. You can play it as often as you like. If you prefer to look, choose Show the mystery graph.</p>
+            </div>
+            <div class="guide-say" data-when="g-done" hidden>
+              <p class="guide-part">Step 4 · Part 2 of 2</p>
+              <p class="guide-text">That's all three rounds. Well played! When real SPHEREx spectra are ready, they will be here to explore. Want more sky? The sky viewer is waiting.</p>
+            </div>
+            <div class="guide-actions">
+              <a class="guide-next" data-when="g-done" href="viewer.html" hidden><span>Open the sky viewer</span><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 5l7 7-7 7"/></svg></a>
+              <button type="button" class="guide-voice" aria-pressed="false" hidden><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 9.5h3.6L12 6v12l-4.4-3.5H4z"/><path class="gv-on" d="M15.6 9a4.2 4.2 0 0 1 0 6M18.2 6.6a7.6 7.6 0 0 1 0 10.8"/><path class="gv-off" d="M16 9.5l5 5M21 9.5l-5 5"/></svg><span>Iris's voice</span></button>
+              <button type="button" class="guide-hide">Hide tips</button>
+            </div>
+          </div>
+        </div>
+        <span class="guide-trail" aria-hidden="true"><i></i><i></i><i></i></span>
+      </div>
+    </aside>
+    </div>
+    <div class="panel cr-panel game">
+      <p class="game-round" id="game-round"></p>
+      <div class="cr-controls">
+        <button type="button" class="btn" id="game-play">Play the mystery spectrum</button>
+        <button type="button" class="btn btn-quiet" id="game-look" aria-expanded="false" aria-controls="game-look-box">Show the mystery graph</button>
+      </div>
+      <div id="game-look-box" hidden>
+        <figure class="cr-figure">
+          <svg class="cr-chart cr-chart-small" id="game-chart" role="img" aria-labelledby="game-chart-title game-chart-desc" focusable="false"><title id="game-chart-title"></title><desc id="game-chart-desc"></desc></svg>
+        </figure>
+      </div>
+      <fieldset class="game-answer">
+        <legend>Which one is it?</legend>
+        <div class="game-btns">
+          <button type="button" class="game-choice" data-answer="ice-source">Star behind an icy cloud <small>with dips</small></button>
+          <button type="button" class="game-choice" data-answer="comet">Comet <small>with bumps</small></button>
+        </div>
+      </fieldset>
+      <p class="game-result" id="game-result" role="status" aria-live="polite"></p>
+      <div class="cr-controls">
+        <button type="button" class="btn" id="game-next" hidden>Next round</button>
+        <button type="button" class="btn btn-quiet" id="game-again" hidden>Play again</button>
+      </div>
+    </div>
+  </section>
+
+  <p class="sr-only" id="cr-live" aria-live="polite"></p>
+</main>
+
+<footer class="site-foot">
+  <p>Data: NASA/IPAC Infrared Science Archive (IRSA). Acknowledgement and data DOIs are listed in the project's ACKNOWLEDGEMENTS.md. This project is not endorsed by NASA or IRSA.</p>
+  <p>Iris's portrait was made with Google Gemini, an AI image generator, from a prompt written by the team.</p>
+  <p>Iris's recorded voice was made with ElevenLabs, an AI text-to-speech tool, from lines written by the team.</p>
+</footer>
+
+<dialog class="tour" id="tour" aria-labelledby="tour-title" aria-describedby="tour-text">
+  <div class="tour-spot" id="tour-spot" aria-hidden="true"></div>
+  <svg class="tour-arrow" id="tour-arrow" aria-hidden="true" focusable="false" hidden>
+    <g class="arrow-nudge" filter="url(#brush-edge)">
+      <path class="arrow-paint arrow-wash" id="arrow-wash" pathLength="1"/>
+      <path class="arrow-paint arrow-body" id="arrow-body" pathLength="1"/>
+      <path class="arrow-paint arrow-core" id="arrow-core" pathLength="1"/>
+      <path class="arrow-paint arrow-wash arrow-head" id="arrow-head-wash" pathLength="1"/>
+      <path class="arrow-paint arrow-body arrow-head" id="arrow-head-body" pathLength="1"/>
+    </g>
+  </svg>
+  <div class="tour-card" id="tour-card" data-side="none">
+    <div class="tour-figure" aria-hidden="true">
+      <div class="tour-selene selene-slot" id="tour-selene" data-variant="figure" data-character="iris"></div>
+      <span class="tour-moon"></span>
+    </div>
+    <div class="tour-thought">
+      <div class="moon-bubble" id="tour-bubble">
+        <svg class="cloud" id="tour-cloud" aria-hidden="true" focusable="false">
+          <defs>
+            <clipPath id="cloud-clip"><path id="cloud-clip-path"/></clipPath>
+            <linearGradient id="cloud-shine" x1="0" y1="0" x2="0" y2="1"><stop offset="0" class="cloud-shine-a"/><stop offset="1" class="cloud-shine-b"/></linearGradient>
+            <pattern id="cloud-dots" width="22" height="22" patternUnits="userSpaceOnUse"><circle class="cloud-dot" cx="4" cy="4" r="1.3"/><path class="cloud-dot" d="M15 11.5l1 2.5 2.5 1-2.5 1-1 2.5-1-2.5-2.5-1 2.5-1z"/></pattern>
+            <filter id="cloud-blur" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="10"/></filter>
+            <filter id="cloud-soft" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="5"/></filter>
+          </defs>
+          <path id="cloud-glow" class="cloud-glow" filter="url(#cloud-blur)"/>
+          <path id="cloud-fill" class="cloud-fill" fill="url(#cloud-shine)"/>
+          <g clip-path="url(#cloud-clip)">
+            <rect id="cloud-pattern" fill="url(#cloud-dots)"/>
+            <ellipse id="cloud-gloss" class="cloud-gloss" filter="url(#cloud-soft)"/>
+          </g>
+          <path id="cloud-edge" class="cloud-edge"/>
+          <g id="cloud-stickers"></g>
+        </svg>
+        <div class="tour-body" aria-live="polite" aria-atomic="true">
+          <p class="tour-step" id="tour-step"></p>
+          <h2 class="tour-title" id="tour-title"></h2>
+          <p class="sr-only" id="tour-text"></p>
+          <p class="tour-typed" aria-hidden="true"><span class="tour-ghost" id="tour-ghost"></span><span class="tour-ink" id="tour-ink"></span></p>
+        </div>
+      </div>
+      <span class="tour-trail" aria-hidden="true"><i></i><i></i><i></i></span>
+    </div>
+    <div class="tour-actions">
+      <button type="button" class="ctl" id="tour-back">Back</button>
+      <button type="button" class="ctl ctl-main" id="tour-next" autofocus>Next</button>
+      <button type="button" class="voice-btn" id="tour-voice" aria-pressed="false" aria-describedby="tour-voice-note">
+        <svg class="i-voice-off" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 9.5h3.6L12 6v12l-4.4-3.5H4z"/><path class="stroke" d="M16 9.5l5 5M21 9.5l-5 5"/></svg>
+        <svg class="i-voice-on" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 9.5h3.6L12 6v12l-4.4-3.5H4z"/><path class="stroke" d="M15.6 9a4.2 4.2 0 0 1 0 6M18.2 6.6a7.6 7.6 0 0 1 0 10.8"/></svg>
+        <span class="voice-bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+        <span class="sr-only">Iris's voice</span>
+      </button>
+      <button type="button" class="ctl tour-skip-part" id="tour-skip-part" hidden>Skip this part</button>
+      <button type="button" class="tour-skip" id="tour-skip">Skip the tour</button>
+      <p class="sr-only" id="tour-voice-note">Reads each step aloud in a calm voice. Turn it off if you use a screen reader.</p>
+    </div>
+  </div>
+</dialog>
+
+<script src="js/selene.js?v=1"></script>
+<script src="js/nav.js?v=1"></script>
+<script src="js/theme.js?v=1"></script>
+<script src="js/cloud.js?v=1"></script>
+<script src="js/cryostella.js?v=1"></script>
+<script src="js/guide.js?v=1"></script>
+<script>
+// Iris's tour of Cryostella: every step, hands-on. On a "your turn" part she waits for the
+// visitor to do it (cryostella:progress events from js/cryostella.js), with "Skip this part"
+// for anyone who would rather not. Selene's tour of the whole site is on the home page.
+(function () {
+  var PAGES = ["Welcome", "Colours of light", "Read a spectrum", "Hear it", "Name that spectrum"];
+  function app() { return window.CryostellaApp || {}; }
+
+  // ---- Iris's words fit the spectrum on screen ----
+  // Names, positions and marks come from the data files (through CryostellaApp), so a new
+  // spectrum added to data/cryostella/index.json gets its own words with no change here. Iris
+  // never names a cause the team has not checked, and never says what a sound means: that is
+  // in the sound key.
+  var MAX_OTHERS = 6;                 // the optional walk covers up to this many more spectra
+  var seen = {}, heard = {};          // spectra opened, and played to the end, during this tour
+  function sp() { return app().spectrum ? app().spectrum() : null; }
+  function all() { return app().spectra ? app().spectra() : []; }
+  function um(w) { return app().fmtUm ? app().fmtUm(w) : String(w); }
+  function count() { return Object.keys(seen).length; }
+  function unseen() { return all().filter(function (s) { return !seen[s.id]; }); }
+  function noteOpen() { var s = sp(); if (s) seen[s.id] = true; return Promise.resolve(); }
+  document.addEventListener("cryostella:progress", function (e) {
+    var id = e.detail && e.detail.id, s = sp();
+    if (id === "picked") noteOpen();
+    if (id === "played" && s) heard[s.id] = true;
+  });
+  // The mark the page's challenge asks for (the same rule as js/cryostella.js).
+  function mark(s) {
+    if (!s || !s.features || !s.features.length) return null;
+    var want = s.kind === "ice-source" ? "dip" : s.kind === "comet" ? "bump" : null;
+    return s.features.filter(function (f) { return f.kind === want; })[0] || s.features[0];
+  }
+  // "Elias 16, a star behind an icy cloud" -> "Elias 16"; "Comet 3I/ATLAS, December 2025" keeps its month.
+  function short(s) {
+    if (!s) return "this one";
+    var n = s.name.replace(/^Comet /, "");
+    return /\d{4}$/.test(n) ? n : n.split(",")[0];
+  }
+  function names(list) {
+    var n = list.map(function (s) { return s.name; });
+    return n.length < 2 ? n.join("") : n.slice(0, -1).join("; ") + "; and " + n[n.length - 1];
+  }
+  function markWords(s) {
+    if (!s.features.length) return "No bumps or dips are marked on this one yet, so read its shape: where does it rise, and where does it drop?";
+    return s.features.map(function (f) {
+      return "A " + f.kind + " is marked near " + um(f.wavelength_um) + " microns. " +
+        (f.verified && f.molecule ? "The team has checked it: " + f.molecule + "." : "The team has not checked yet what causes it, so I won't guess.");
+    }).join(" ");
+  }
+  // The lit line is the spectrum's own summary (what it is, how many pictures went into it), so
+  // Iris points at it rather than reading it twice, and adds what the marks say.
+  function about() { var s = sp(); return s ? "This line says what " + short(s) + " is and how many pictures went into its curve. " + markWords(s) : ""; }
+  function aboutTitle() { return "About " + short(sp()); }
+  function where(s, f) {
+    var p = s.points, a = p[0].wavelength_um, b = p[p.length - 1].wavelength_um, x = b > a ? (f.wavelength_um - a) / (b - a) : 0;
+    return x < 0.35 ? "early on" : x < 0.65 ? "about halfway through" : "near the end";
+  }
+  function findText() { var m = mark(sp()); return m ? "Move the ring into the [" + m.kind + "] near " + um(m.wavelength_um) + " microns. You'll know when you've found it." : ""; }
+  function unheard() { return all().filter(function (s) { return !heard[s.id]; }); }
+  function pickSel(view, list) {
+    return function () { var u = list()[0]; return u ? '.view[data-view="' + view + '"] .cr-pick-btn[data-id="' + u.id + '"]' : null; };
+  }
+
+  // Read a spectrum: about the open one, explore, find its mark, then (optional) the others.
+  function readSteps() {
+    var list = [
+      { id: "pick", page: 2, view: "read", target: '.view[data-view="read"] .cr-pick', fit: ".cr-pick-btn", title: "Choose a spectrum",
+        text: function () { return "Here are " + all().length + " real SPHEREx spectra. The tick shows which one is open. We'll start with this one, and you can read the others after."; } },
+      { id: "chart", page: 2, view: "read", target: '.view[data-view="read"] .cr-figure', title: "This is a spectrum",
+        text: "It shows how bright the light is at each colour: colour along the bottom, brightness up the side. Each dot is one picture SPHEREx took, at one colour. Triangles mark the bumps and dips: filled for a bump, outlined for a dip." },
+      { id: "about", page: 2, view: "read", target: "#read-summary", prepare: noteOpen, title: aboutTitle, text: about },
+      { id: "do-explore", page: 2, view: "read", target: "#read-cursor", skipTo: "challenge", title: "Your turn: explore",
+        text: "Move this [slider] a few steps, by dragging or with the arrow keys. The ring walks along the curve, and the line underneath reads out each point.",
+        doneTitle: "That's how to read it",
+        action: { event: "cryostella:progress", id: "moved", settle: true } },
+      { id: "challenge", page: 2, view: "read", target: '.guide[data-guide="read"] .guide-thought', title: "My challenge",
+        text: function () {
+          var m = mark(sp());
+          return m ? "Now my tip sets you a challenge: find the " + m.kind + " near " + um(m.wavelength_um) + " microns, where the curve " + (m.kind === "dip" ? "drops" : "rises") + "."
+            : "On this one my tip has no challenge: nothing is marked yet, so there is nothing to hunt for. It asks you to look at the shape instead.";
+        } },
+      { id: "do-find", page: 2, view: "read", target: "#read-cursor", skipTo: "next", title: "Your turn: find it",
+        when: function () { return !!mark(sp()); }, text: findText,
+        doneTitle: "You found it",
+        action: { event: "cryostella:progress", id: "found", settle: true } }
+    ];
+    // The optional walk: one more spectrum at a time, for as long as the visitor wants.
+    // Skip this part on any "read another" goes straight on to the rest of the step.
+    for (var k = 1; k <= MAX_OTHERS; k++) (function (k) {
+      list.push(
+        { id: "do-other-" + k, page: 2, view: "read", target: pickSel("read", unseen), skipTo: "more",
+          title: k === 1 ? "Your turn: read another" : "Your turn: one more?",
+          when: function () { return count() === k && unseen().length > 0; },
+          text: function () {
+            var u = unseen(), n = u.length;
+            return (n === 1 ? "There is one more spectrum" : "There are " + n + " more spectra") + " to read. Click [" + u[0].name +
+              "] and I'll tell you what to look for. Or choose Skip this part to go on.";
+          },
+          action: { event: "cryostella:progress", id: "picked" } },
+        { id: "about-" + k, page: 2, view: "read", target: "#read-summary", title: aboutTitle, text: about,
+          when: function () { return count() > k; } },
+        { id: "find-" + k, page: 2, view: "read", target: "#read-cursor", skipTo: "next", title: "Your turn: find it",
+          when: function () { return count() > k && !!mark(sp()); }, text: findText,
+          doneTitle: "You found it",
+          action: { event: "cryostella:progress", id: "found", settle: true } });
+    })(k);
+    list.push(
+      { id: "more", page: 2, view: "read", target: '.view[data-view="read"] .cr-more > summary', title: "More about this graph",
+        text: "This opens the full list of bumps and dips, whether each one has been checked, and every number as a table, for screen readers too." },
+      { id: "do-hear", page: 2, view: "read", target: '#steps a[data-view="hear"]', title: "Your turn: step 3",
+        text: "Click [Hear it] in the step bar.",
+        action: { event: "selenites:view", view: "hear" } });
+    return list;
+  }
+
+  // Hear it: what to listen for in the open spectrum, then (optional) hear a different one.
+  function hearSteps() {
+    function listenFor(s) {
+      var m = mark(s);
+      return m ? "The " + m.kind + " near " + um(m.wavelength_um) + " microns comes " + where(s, m) + ": the sound key below says how it is marked."
+        : "Nothing is marked on this one, so follow how the sound changes as the curve rises and drops.";
+    }
+    return [
+      { id: "sonify", page: 3, view: "hear", target: '.view[data-view="hear"] .cr-figure', title: "Light as sound",
+        text: function () {
+          return "Here " + (sp() ? sp().name : "the same spectrum") + " becomes sound. It is a sonification: sounds mapped by rules we chose, not the sound of the object. A line moves across the graph while it plays, from the shortest colour to the longest.";
+        } },
+      { id: "do-play", page: 3, view: "hear", target: "#hear-play", skipTo: "key", title: "Your turn: listen",
+        text: function () { return "Press [Play the spectrum] and listen to the end. " + listenFor(sp()); },
+        doneTitle: "You heard a spectrum",
+        action: { event: "cryostella:progress", id: "played", settle: true } },
+      { id: "do-hear-other", page: 3, view: "hear", target: pickSel("hear", unheard), skipTo: "key", title: "Your turn: compare",
+        when: function () { return Object.keys(heard).length === 1 && !!heard[(sp() || {}).id] && unheard().length > 0; },
+        text: function () { return "Want to hear how a different one sounds? Click [" + unheard()[0].name + "], then play it too. Or choose Skip this part."; },
+        action: { event: "cryostella:progress", id: "picked" } },
+      { id: "do-play-other", page: 3, view: "hear", target: "#hear-play", skipTo: "key", title: "Your turn: listen again",
+        when: function () { return Object.keys(heard).length >= 1 && !heard[(sp() || {}).id]; },
+        text: function () { return "Press [Play the spectrum] and listen to " + short(sp()) + ". " + listenFor(sp()) + " Does it sound different from the last one?"; },
+        doneTitle: "Two spectra heard",
+        action: { event: "cryostella:progress", id: "played", settle: true } },
+      { id: "key", page: 3, view: "hear", target: "#cr-sound-key", title: "What the sounds mean",
+        text: "Every sound has words, written here from our sound key. The team chooses the sounds; for now these are practice ones." },
+      { id: "settings", page: 3, view: "hear", target: '.view[data-view="hear"] .cr-more > summary', title: "Sound settings",
+        text: "Sound settings has two sliders. Sweep length is how many seconds the sound takes to go from the shortest colour to the longest: slower makes small dips easier to hear. Volume sets how loud it plays." }
+    ];
+  }
+  window.SELENITES_TOUR = {
+    page: "cryostella",
+    guide: "iris", guideName: "Iris", voiceKey: "selenites-iris-voice",
+    continueAt: "welcome",
+    showView: function (v) { if (app().showView) app().showView(v); },
+    heading: function () { return app().heading ? app().heading() : null; },
+    label: function (step, k, n) {
+      // Short, so it fits on one line in the cloud; the step's name is in the step bar.
+      return step.page === 0 ? "Welcome · Part " + k + " of " + n : "Step " + step.page + " of 4 · Part " + k + " of " + n;
+    },
+    steps: [
+      { id: "welcome", page: 0, view: "colours", welcome: true, title: "Hi, I'm Iris",
+        text: "I'm the goddess of the rainbow, and a messenger of the gods. Welcome to Cryostella, the icy star, where we look for the marks ice leaves in the colours of light. I'll show you every step, and you'll do the clicking.",
+        next: "Start the tour" },
+      { id: "name", page: 0, view: "colours", target: ".cr-name", title: "Why Cryostella",
+        text: "Cryo comes from the Greek for icy cold, and stella is Latin for star. Ice in the cold clouds where stars and planets form is one of the things SPHEREx was built to study." },
+      { id: "practice", page: 0, view: "colours", target: ".cr-practice-note", title: "An honest note",
+        text: function () { var a = all(); return "All the spectra here are real SPHEREx data" + (a.length ? ": " + names(a) : "") + "."; } },
+      { id: "steps", page: 0, view: "colours", target: "#steps", title: "Four steps",
+        text: "Cryostella has four short steps, and this bar shows which one you are on. You can jump to any of them, and the Back button works too." },
+      { id: "tips", page: 0, view: "colours", target: '.guide[data-guide="colours"] .guide-thought', title: "My tips",
+        text: "On every step I leave a tip that says what to do now. If you don't need them, press Hide tips." },
+
+      { id: "band", page: 1, view: "colours", target: ".rb-band-box", title: "The colours of light",
+        text: "This band is light, from violet on the left, past red, into infrared. The narrow rainbow is all our eyes can see. SPHEREx sees the long stretch on the right, out to 5 microns, in 102 colours." },
+      { id: "do-walk", page: 1, view: "colours", target: "#rb-range", skipTo: "readout", title: "Your turn: walk past red",
+        text: "Drag the [slider] to the right, past red, into the infrared. Take your time: watch the swatch and the words change as you go.",
+        doneTitle: "You're in the infrared",
+        action: { event: "cryostella:progress", id: "ir", settle: true } },
+      { id: "readout", page: 1, view: "colours", target: ".rb-readout", title: "Where you are",
+        text: "The micron number, the colour's name and a sentence follow the slider. In the infrared the swatch turns striped: a colour we cannot see." },
+      { id: "do-read", page: 1, view: "colours", target: '#steps a[data-view="read"]', title: "Your turn: step 2",
+        text: "Click [Read a spectrum] in the step bar.",
+        action: { event: "selenites:view", view: "read" } },
+
+    ].concat(readSteps(), hearSteps(), [
+      { id: "do-game", page: 3, view: "hear", target: '#steps a[data-view="game"]', title: "Your turn: step 4",
+        text: "Click [Name that spectrum] in the step bar.",
+        action: { event: "selenites:view", view: "game" } },
+
+      { id: "mystery", page: 4, view: "game", target: "#game-play", title: "A listening game",
+        text: "Press Play the mystery spectrum and listen, as often as you like." },
+      { id: "look", page: 4, view: "game", target: "#game-look", title: "Or look instead",
+        text: "Rather look than listen? Show the mystery graph: no names and no marks, just its shape." },
+      { id: "answer", page: 4, view: "game", target: ".game-answer", title: "Decide",
+        text: "Then choose: a cold cloud, with dips, or a comet, with bumps. Three rounds, and no timer." },
+      { id: "end", page: 4, view: "game", target: "#steps", title: "That's Cryostella",
+        text: "Come back to any step from this bar, and press Take the tour whenever you'd like me again. Enjoy the colours!",
+        next: "Finish" }
+    ])
+  };
+})();
+</script>
+<script src="js/tour.js?v=1"></script>
+</body>
+</html>

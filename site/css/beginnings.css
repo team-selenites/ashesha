@@ -1,0 +1,312 @@
+/* Your Beginnings (beginnings.html, js/beginnings.js). Layout, step bar, Selene's tips and the
+   pager reuse app.css and cryostella.css. Colours come from tokens.css; the sky maps are a
+   night-sky window in every theme, with their own small set of tokens below. */
+
+/* ---------- Map tokens: a night-sky window in every theme ---------- */
+:root {
+  --map-sky: #14111C; --map-edge: #6B6478; --map-grid: rgba(236, 233, 241, 0.13); --map-path: rgba(236, 233, 241, 0.5);
+  --map-text: #CFC8DC; --map-pt: #ECE9F1; --map-sun: #F4D774; --map-spark: #F2A7D3; --map-far: rgba(236, 233, 241, 0.34);
+  --map-ninety: #F2A7D3; --map-now: #F4D774;
+  --paper: color-mix(in srgb, var(--accent) 10%, var(--bg));
+  --ticket: color-mix(in srgb, var(--accent) 16%, var(--bg));
+}
+:root[data-theme="light"] {
+  --map-sky: #2A1247; --map-edge: #2A1247; --map-grid: rgba(244, 238, 250, 0.14); --map-path: rgba(244, 238, 250, 0.55);
+  --map-text: #E4D9F2; --map-pt: #F7F2FC; --map-sun: #F4D774; --map-spark: #F7B7D6; --map-far: rgba(244, 238, 250, 0.36);
+  --map-ninety: #F7B7D6; --map-now: #F4D774;
+  --paper: color-mix(in srgb, var(--bg) 62%, #FFFFFF);
+  --ticket: color-mix(in srgb, color-mix(in srgb, var(--bg) 45%, #FFFFFF) 92%, var(--pop));
+}
+:root[data-theme="colour-blind-friendly"] {
+  --map-sky: #120A28; --map-edge: #DCCFF2; --map-grid: rgba(220, 207, 242, 0.14); --map-path: rgba(255, 255, 255, 0.55);
+  --map-text: #DCCFF2; --map-pt: #FFFFFF; --map-sun: #F0E442; --map-spark: #E69F00; --map-far: rgba(220, 207, 242, 0.34);
+  --map-ninety: #56B4E9; --map-now: #F0E442;
+  --paper: color-mix(in srgb, var(--accent) 10%, var(--bg));
+  --ticket: color-mix(in srgb, var(--accent) 18%, var(--bg));
+}
+
+/* ---------- Header ---------- */
+.bg-honest { max-width: 62ch; }
+
+/* ---------- The working card of each step ---------- */
+.bg-panel {
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  border: 1px solid color-mix(in srgb, var(--rule) 45%, transparent);
+  border-radius: 18px; padding: 20px; margin-top: 12px;
+}
+@media (max-width: 520px) { .bg-panel { padding: 14px 12px; } }
+.bg-h3 { font-size: var(--step-0); margin: 0 0 8px; }
+
+/* ---------- Step 1: a paper ticket ---------- */
+.bd-ticket {
+  position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 16px 32px; align-items: center;
+  padding: 26px 34px; border-radius: 22px;
+  /* Two half-moon notches cut into the sides, like a ticket, painted in the page colour. */
+  background:
+    radial-gradient(circle at 0 50%, var(--bg) 13px, transparent 14px),
+    radial-gradient(circle at 100% 50%, var(--bg) 13px, transparent 14px),
+    var(--ticket);
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--rule) 40%, transparent), 0 14px 30px -20px color-mix(in srgb, var(--ink) 45%, transparent);
+}
+.bd-ticket::before {
+  content: ""; position: absolute; inset: 9px; border: 2px dashed color-mix(in srgb, var(--rule) 70%, transparent);
+  border-radius: 15px; pointer-events: none;
+}
+.bd-h { font-size: var(--step-1); margin: 0 0 14px; }
+.bd-fields { display: flex; flex-wrap: wrap; gap: 14px 18px; border-radius: 16px; }
+.bd-field { display: grid; gap: 6px; }
+.bd-field label { font-weight: 700; }
+.bd-field select {
+  appearance: none; -webkit-appearance: none; min-width: 190px; min-height: 56px; padding: 0 48px 0 16px;
+  font: inherit; font-size: 21px; font-weight: 700; color: var(--ink);
+  background: var(--bg) no-repeat right 16px center / 16px 16px;
+  border: 2px solid var(--rule); border-radius: 14px; cursor: pointer;
+  background-image: linear-gradient(45deg, transparent 46%, var(--ink) 47% 59%, transparent 60%), linear-gradient(-45deg, transparent 46%, var(--ink) 47% 59%, transparent 60%);
+  background-size: 9px 9px, 9px 9px; background-position: right 26px center, right 18px center;
+}
+.bd-field + .bd-field select { min-width: 130px; }
+.bd-field select:disabled { opacity: 0.55; cursor: not-allowed; }
+@media (hover: hover) { .bd-field select:not(:disabled):hover { border-color: var(--accent); } }
+.bd-field select:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+.bd-surprise {
+  display: inline-flex; align-items: center; gap: 8px; min-height: 44px; margin-top: 10px; padding: 0 2px;
+  font: inherit; color: var(--link); background: none; border: 0; cursor: pointer;
+  text-decoration: underline dotted 2px; text-underline-offset: 5px;
+}
+.bd-surprise svg { width: 18px; height: 18px; fill: var(--pop); flex: none; }
+.bd-surprise:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; border-radius: 6px; }
+.bd-privacy { margin: 4px 0 0; max-width: 52ch; }
+
+/* A full moon (decoration only; it does not show the Moon's phase on the day). */
+.bd-moon { display: grid; justify-items: center; gap: 4px; width: 168px; }
+.bd-moon svg { width: 128px; height: 128px; overflow: visible; }
+.bd-moon-disc { fill: color-mix(in srgb, var(--bg) 40%, #FFFFFF); stroke: color-mix(in srgb, var(--rule) 60%, transparent); stroke-width: 1.5; }
+.bd-moon-sea { fill: color-mix(in srgb, var(--rule) 30%, transparent); }
+:root:not([data-theme="light"]) .bd-moon-disc { fill: #D9D3E6; }
+:root:not([data-theme="light"]) .bd-moon-sea { fill: rgba(80, 70, 104, 0.35); }
+.bd-moon-date { margin: 0; min-height: 1.5em; font-size: 20px; font-weight: 700; color: var(--pop); text-align: center; }
+@media (max-width: 640px) {
+  .bd-ticket { grid-template-columns: minmax(0, 1fr); padding: 22px 20px; }
+  .bd-moon { display: none; }
+  .bd-field, .bd-field select { width: 100%; }
+}
+
+/* The year, as ticket stubs. */
+.bd-years { border: 0; padding: 0; margin: 22px 0 0; min-width: 0; }
+.bd-years legend { font-weight: 700; font-size: 18px; padding: 0; margin-bottom: 10px; }
+.bd-stubs { display: flex; flex-wrap: wrap; gap: 14px; border-radius: 18px; }
+.bd-stub {
+  position: relative; display: grid; grid-template-columns: auto 1fr; column-gap: 14px; align-items: baseline;
+  min-width: 240px; padding: 14px 20px 14px 22px; cursor: pointer;
+  background: var(--paper); border: 2px dashed var(--rule); border-radius: 16px;
+  transition: border-color 0.15s ease-out, background-color 0.15s ease-out;
+}
+.bd-stub input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.stub-y { grid-row: span 2; font-size: 34px; font-weight: 700; line-height: 1; color: var(--ink); font-variant-numeric: tabular-nums; }
+.stub-d { font-weight: 700; }
+.stub-n { grid-column: 2; font-size: 14px; color: var(--muted); }
+.bd-stub:has(input:checked) { border-style: solid; border-color: var(--accent); background: color-mix(in srgb, var(--accent) 14%, var(--paper)); }
+.bd-stub:has(input:checked) .stub-y::after { content: " \2726"; font-size: 20px; color: var(--pop); vertical-align: top; }
+.bd-stub:has(input:focus-visible) { outline: 3px solid var(--focus); outline-offset: 3px; }
+@media (hover: hover) { .bd-stub:hover { border-color: var(--accent); } }
+.bd-status { margin: 16px 0 0; min-height: 1.6em; font-weight: 700; }
+
+/* ---------- Sky maps ---------- */
+.bg-when { margin: 0 0 6px; font-size: var(--step-1); font-weight: 700; }
+.bg-map-fig { margin: 0; }
+.bg-map { display: block; width: 100%; height: auto; overflow: visible; }
+.map-sky { fill: var(--map-sky); }
+.map-edge { fill: none; stroke: var(--map-edge); stroke-width: 2; }
+.map-grid path { fill: none; stroke: var(--map-grid); stroke-width: 1.4; }
+.map-ecliptic { fill: none; stroke: var(--map-path); stroke-width: 2.4; }
+.map-tick { stroke: var(--map-path); stroke-width: 2; }
+.map-months text, .map-path-label { fill: var(--map-text); font-family: var(--font); font-size: 17px; }
+.map-path-label { font-style: italic; }
+.pt { r: 4.4; fill: var(--map-pt); opacity: 0; }
+.pt.is-on { opacity: 0.82; }
+.pt.is-quiet { opacity: 0.4; }
+.now-glow { fill: var(--map-now); opacity: 0.75; }
+.now-ring { fill: none; stroke: var(--map-now); stroke-width: 3; }
+.sun-glow { fill: var(--map-sun); opacity: 0.8; }
+.sun-disc { fill: var(--map-sun); }
+.sun-label, .ninety-label { fill: var(--map-text); font-family: var(--font); font-size: 20px; font-weight: 700; stroke: var(--map-sky); stroke-width: 6px; paint-order: stroke; stroke-linejoin: round; }
+.map-ninety path { fill: none; stroke: var(--map-ninety); stroke-width: 2.6; stroke-dasharray: 10 8; }
+.ninety-label { fill: var(--map-ninety); }
+.far-dot { fill: var(--map-far); }
+.spark { fill: var(--map-spark); cursor: pointer; transform-box: fill-box; transform-origin: center; }
+.spark.is-picked { fill: var(--map-sun); scale: 1.55; }
+.spark-label { fill: #FFFFFF; font-family: var(--font); font-size: 22px; font-weight: 700; stroke: var(--map-sky); stroke-width: 5px; paint-order: stroke; stroke-linejoin: round; pointer-events: none; }
+@media (prefers-reduced-motion: no-preference) {
+  .pt { transition: opacity 180ms var(--ease-out-quart); }
+  .bg-map.is-full .map-ninety { animation: bg-fade 700ms var(--ease-out-quart) both; }
+  .spark { transition: scale 200ms var(--ease-out-quart); }
+  @keyframes bg-fade { from { opacity: 0; } to { opacity: 1; } }
+}
+/* Small screens: the map's small words would be too small to read, so the month names step
+   aside (the caption says the same) and the rest grow. */
+@media (max-width: 640px) {
+  .map-months text, .map-path-label { display: none; }
+  .sun-label, .ninety-label, .spark-label { font-size: 38px; }
+  .pt { r: 7; }
+}
+.bg-cap { margin-top: 10px; font-size: 15px; color: var(--muted); }
+.bg-cap-key { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin-left: 4px; color: var(--ink); }
+.bg-key { display: inline-block; width: 12px; height: 12px; border-radius: 50%; vertical-align: middle; }
+.bg-key-pic { background: var(--map-pt); box-shadow: 0 0 0 3px var(--map-sky); }
+.bg-key-sun { background: var(--map-sun); box-shadow: 0 0 0 3px var(--map-sky); }
+.bg-key-far { width: 8px; height: 8px; background: var(--map-far); box-shadow: 0 0 0 5px var(--map-sky); }
+.bg-key-spark { width: 14px; height: 14px; border-radius: 0; background: var(--map-spark); clip-path: polygon(50% 0, 61% 39%, 100% 50%, 61% 61%, 50% 100%, 39% 61%, 0 50%, 39% 39%); box-shadow: none; }
+
+/* Replay controls */
+.ring-controls { display: flex; flex-wrap: wrap; align-items: end; gap: 12px 20px; margin-top: 16px; border-radius: 16px; }
+.ring-play { display: inline-flex; align-items: center; gap: 8px; min-width: 176px; justify-content: center; }
+.ring-play svg { width: 20px; height: 20px; fill: currentColor; flex: none; }
+.ring-play .i-pause, .ring-play.is-playing .i-play { display: none; }
+.ring-play.is-playing .i-pause { display: inline; }
+.ring-scrub { flex: 1 1 260px; display: grid; gap: 4px; }
+.ring-scrub label { font-weight: 700; }
+.ring-scrub input { width: 100%; min-height: 44px; margin: 0; }
+.ring-readout { margin: 8px 0 0; min-height: 1.6em; font-weight: 700; font-variant-numeric: tabular-nums; }
+.bg-more { margin-top: 12px; }
+.bg-why p { max-width: 70ch; }
+.bg-why-fig { display: block; width: 100%; max-width: 520px; height: auto; margin: 4px 0 10px; }
+.why-sun { fill: var(--map-sun); stroke: color-mix(in srgb, var(--rule) 60%, transparent); stroke-width: 1.5; }
+.why-earth { fill: var(--link); }
+.why-orbit { fill: none; stroke: var(--rule); stroke-width: 2; stroke-dasharray: 5 6; }
+.why-craft { fill: var(--pop); }
+.why-ray { stroke: var(--rule); stroke-width: 2; stroke-dasharray: 3 7; }
+.why-look, .why-head { fill: none; stroke: var(--mark); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.why-angle { fill: none; stroke: var(--muted); stroke-width: 2; }
+.why-label { fill: var(--muted); font-family: var(--font); font-size: 16px; }
+.why-small { font-size: 14px; }
+
+/* ---------- Step 3: who it met ---------- */
+.meet-grid { display: grid; gap: 20px 32px; align-items: start; }
+@media (min-width: 960px) { .meet-grid { grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); } }
+.meet-sheet { padding-top: 4px; }
+.meet-kicker { margin: 0; font-weight: 700; color: var(--pop); }
+.meet-name {
+  margin: 2px 0 12px; font-size: clamp(30px, 1.2vw + 22px, 40px); line-height: 1.1;
+  text-decoration: underline wavy color-mix(in srgb, var(--pop) 70%, transparent) 2px; text-underline-offset: 10px; text-decoration-skip-ink: none;
+}
+.meet-what, .meet-seen { margin: 0 0 10px; max-width: 46ch; }
+.meet-seen { font-size: 17px; }
+.meet-honest { margin: 0; max-width: 46ch; }
+.meet-others { margin-top: 22px; }
+.meet-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px 18px; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); border-radius: 16px; }
+.meet-pick {
+  display: grid; grid-template-columns: 22px 1fr; column-gap: 10px; align-items: center; width: 100%;
+  min-height: 52px; padding: 6px 10px; text-align: left; font: inherit; color: var(--ink);
+  background: transparent; border: 0; border-radius: 12px; cursor: pointer;
+}
+.meet-pick-ic { grid-row: span 2; width: 18px; height: 18px; fill: var(--mark); }
+.meet-pick-name { font-weight: 700; }
+.meet-pick-meta { grid-column: 2; font-size: 14px; color: var(--muted); }
+.meet-pick[aria-pressed="true"] { background: color-mix(in srgb, var(--accent) 13%, transparent); }
+.meet-pick[aria-pressed="true"] .meet-pick-name { text-decoration: underline dotted 2px; text-underline-offset: 4px; }
+.meet-pick[aria-pressed="true"] .meet-pick-ic { scale: 1.25; }
+@media (hover: hover) { .meet-pick:hover { background: color-mix(in srgb, var(--accent) 9%, transparent); } }
+.meet-pick:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.meet-empty p { font-size: 18px; font-weight: 700; }
+.meet-near { display: flex; flex-wrap: wrap; gap: 10px; border-radius: 16px; }
+
+/* The collection: 110 dots, one per Messier object. */
+.meet-collect { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 8px 20px; align-items: center; margin-top: 24px; padding-top: 18px; border-top: 1px dashed var(--rule); }
+.collect-dots { display: grid; grid-template-columns: repeat(22, 10px); gap: 5px; }
+.collect-dots i { width: 10px; height: 10px; border-radius: 50%; border: 1.5px solid color-mix(in srgb, var(--rule) 80%, transparent); }
+.collect-dots i.is-today { border-color: var(--mark); }
+.collect-dots i.is-met { background: var(--mark); border-color: var(--mark); }
+.collect-say { margin: 0; }
+.collect-say span { color: var(--muted); }
+.collect-reset { grid-column: 2; justify-self: start; min-height: 44px; padding: 0 2px; font: inherit; font-size: 15px; color: var(--link); background: none; border: 0; cursor: pointer; text-decoration: underline dotted 2px; text-underline-offset: 4px; }
+.collect-reset:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; border-radius: 6px; }
+@media (prefers-reduced-motion: no-preference) {
+  .collect-dots i.is-fresh { animation: bg-pop 520ms var(--ease-out-expo) both; }
+  @keyframes bg-pop { from { scale: 2.2; } to { scale: 1; } }
+}
+@media (max-width: 640px) {
+  .meet-collect { grid-template-columns: minmax(0, 1fr); }
+  .collect-dots { grid-template-columns: repeat(11, 10px); }
+  .collect-reset { grid-column: 1; }
+}
+
+/* ---------- Step 4: the card ---------- */
+.card-wrap { display: grid; gap: 24px 40px; align-items: start; }
+@media (min-width: 860px) { .card-wrap { grid-template-columns: minmax(260px, 380px) minmax(0, 1fr); } }
+/* The story-shaped card, tilted a little like a print on a table. */
+.card-frame { justify-self: center; width: 100%; max-width: 380px; }
+.card-canvas {
+  display: block; width: 100%; height: auto; border-radius: 26px; rotate: -1.4deg;
+  box-shadow: 0 2px 0 color-mix(in srgb, var(--rule) 35%, transparent), 0 26px 50px -24px color-mix(in srgb, var(--ink) 60%, transparent);
+}
+@media (prefers-reduced-motion: no-preference) { .card-canvas { transition: rotate 300ms var(--ease-out-quart); } .card-frame:hover .card-canvas { rotate: 0deg; } }
+@media (prefers-reduced-motion: reduce) { .card-canvas { rotate: none; } }
+@media (max-width: 859px) { .card-frame { max-width: 320px; } }
+.card-alt { margin: 0 0 18px; font-size: 17px; max-width: 52ch; }
+
+/* Card colours: three round samples with their names (plain, no pills). */
+.card-looks { border: 0; padding: 0; margin: 0 0 16px; min-width: 0; }
+.card-looks legend { font-weight: 700; padding: 0; margin-bottom: 6px; }
+.card-look-list { display: flex; flex-wrap: wrap; gap: 4px 18px; border-radius: 14px; }
+.card-look { position: relative; display: inline-flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 4px; cursor: pointer; }
+.card-look input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.look-swatch { width: 34px; height: 34px; border-radius: 50%; flex: none; box-shadow: 0 0 0 2px var(--bg), 0 0 0 3.5px color-mix(in srgb, var(--rule) 70%, transparent); }
+/* Each sample is that colour set's paper, with a tiny night-sky polaroid and its sparkle,
+   inside a holographic ring like the polaroid's rim. */
+.look-swatch {
+  background:
+    linear-gradient(var(--sw-sky), var(--sw-sky)) center / 12px 12px no-repeat,
+    radial-gradient(circle, var(--sw-paper) 0 13px, transparent 13.5px),
+    conic-gradient(from 200deg, #FFC6EA, #C3EEFF, #E0CFFF, #FFF0BC, #FFC6EA);
+}
+.look-night { --sw-paper: #1D1924; --sw-sky: #171130; }
+.look-dawn { --sw-paper: #FBF9FD; --sw-sky: #171130; }
+.look-cbf { --sw-paper: #30234C; --sw-sky: #120A28; }
+.card-look:has(input:checked) { font-weight: 700; }
+.card-look:has(input:checked) .look-swatch { box-shadow: 0 0 0 3px var(--bg), 0 0 0 6px var(--accent); }
+.card-look:has(input:checked)::after { content: "\2726"; color: var(--pop); margin-left: -4px; }
+.card-look:has(input:focus-visible) { outline: 3px solid var(--focus); outline-offset: 2px; border-radius: 10px; }
+
+.card-name-field { display: grid; gap: 6px; margin-bottom: 18px; max-width: 420px; }
+.card-name-field label { font-weight: 700; }
+.card-name-field input {
+  min-height: 48px; padding: 0 14px; font: inherit; font-size: 18px; color: var(--ink);
+  background: var(--bg); border: 2px solid var(--rule); border-radius: 12px;
+}
+.card-name-field input:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.card-name-field .fine { margin: 0; }
+
+.card-actions { display: flex; flex-wrap: wrap; gap: 10px; border-radius: 14px; }
+.card-actions .btn { display: inline-flex; align-items: center; gap: 8px; }
+.card-actions svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+.card-note { margin: 12px 0 0; max-width: 52ch; }
+.card-status { margin: 10px 0 0; min-height: 1.6em; font-weight: 700; overflow-wrap: anywhere; }
+.card-credit { margin: 14px 0 0; max-width: 56ch; }
+
+/* ---------- "Do this now": while Selene asks for something, it has a still ring ----------
+   The ring always sits on the control itself, following its own shape, never on the row or
+   list around it (a wide container boxed in empty space). Month first, then day; each year
+   stub; one suggested name in the list; the first nearby day; Share, or Save. */
+html[data-nudge="bd-fields"] .bd-fields:not(.has-month) #bd-month,
+html[data-nudge="bd-fields"] .bd-fields.has-month #bd-day,
+html[data-nudge="bd-stubs"] .bd-stub,
+html[data-nudge="ring-play"] #ring-play,
+html[data-nudge="meet-others"] .meet-pick.is-suggested,
+html[data-nudge="meet-near"] #meet-near .btn:first-child,
+html[data-nudge="card-save"] #card-share:not([hidden]),
+html[data-nudge="card-save"] #card-share[hidden] + #card-save {
+  box-shadow: 0 0 0 3px var(--bg), 0 0 0 6px var(--nudge);
+}
+html[data-nudge="bd-fields"] .bd-fields:not(.has-month) #bd-month,
+html[data-nudge="bd-fields"] .bd-fields.has-month #bd-day { box-shadow: 0 0 0 3px var(--ticket), 0 0 0 6px var(--nudge); }
+html.is-touring[data-nudge] #bd-month, html.is-touring[data-nudge] #bd-day, html.is-touring[data-nudge] .bd-stub, html.is-touring[data-nudge] #ring-play,
+html.is-touring[data-nudge] .meet-pick, html.is-touring[data-nudge] #meet-near .btn, html.is-touring[data-nudge] #card-share, html.is-touring[data-nudge] #card-save { box-shadow: none; }
+
+@media (forced-colors: active) {
+  .map-sky { fill: Canvas; } .pt, .sun-disc, .spark, .far-dot { fill: CanvasText; } .map-edge, .map-ninety path { stroke: CanvasText; }
+  .bd-ticket { border: 2px solid CanvasText; }
+  .collect-dots i.is-met { forced-color-adjust: none; background: Highlight; }
+  html[data-nudge="bd-fields"] .bd-fields:not(.has-month) #bd-month, html[data-nudge="bd-fields"] .bd-fields.has-month #bd-day,
+  html[data-nudge="bd-stubs"] .bd-stub, html[data-nudge="meet-others"] .meet-pick.is-suggested { outline: 3px dashed Highlight; outline-offset: 4px; }
+}
+@media print { .ring-controls, .card-actions, .card-looks, .card-name-field, .bd-surprise, .collect-reset { display: none; } }

@@ -1,0 +1,403 @@
+/* The home page (index.html, js/home.js). Every colour comes from tokens.css. */
+
+/* ---------- Hero ---------- */
+.hero h1 { font-size: clamp(36px, 3.4vw + 18px, 64px); line-height: 1.05; letter-spacing: -0.01em; }
+.hero-q { display: block; color: var(--pop); }
+.hero .lede { font-size: 19px; max-width: 56ch; }
+.hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; margin-top: 8px; }
+.hero-actions .tour-chip { margin-top: 0; }
+.hero-start { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; font-size: 18px; padding: 12px 22px; border-radius: 999px; }
+.hero-start svg, .try-next svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+@media (min-width: 860px) {
+  .site-head.hero > .hero-actions { grid-column: 1; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .hero-start { transition: transform 160ms var(--ease-out-quart), box-shadow 160ms ease-out; }
+  @media (hover: hover) { .hero-start:hover { transform: translateY(-1px); box-shadow: 0 8px 20px -10px var(--accent); } }
+}
+
+/* ---------- Cards: the sections you play with ----------
+   Spot the mover and the sky map sit on the same rounded card as the guide cards, sized to
+   what they hold, so there is no empty column and the tour's light fits round each one. */
+.card {
+  position: relative; margin-top: 32px; padding: 26px 28px; border-radius: 26px;
+  background:
+    radial-gradient(120% 90% at 0% 0%, color-mix(in srgb, var(--accent) 12%, transparent), transparent 60%),
+    color-mix(in srgb, var(--accent) 4%, var(--bg));
+  border: 1px solid color-mix(in srgb, var(--rule) 60%, transparent);
+  box-shadow: 0 26px 44px -36px color-mix(in srgb, var(--ink) 55%, transparent);
+}
+.card .panel-h { margin-bottom: 8px; }
+@media (max-width: 639px) { .card { padding: 18px 16px; border-radius: 22px; } }
+
+/* ---------- Spot the mover ----------
+   Left: what to do and the controls to do it with. Right: the picture, no wider than it needs. */
+.try { display: grid; gap: 20px 36px; grid-template-columns: minmax(0, 1fr); align-items: center; }
+@media (min-width: 900px) { .try { grid-template-columns: minmax(0, 1fr) minmax(0, 560px); } }
+.try-lede { margin: 0 0 4px; }
+.try-fig { margin: 0; }
+.try-canvas {
+  display: block; width: 100%; height: auto; aspect-ratio: 560 / 340;
+  border-radius: 16px; background: #050508; cursor: crosshair;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--rule) 70%, transparent), 0 18px 40px -26px #000;
+}
+.try-cap { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 12px; margin-top: 8px; font-size: 14px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.try-cap .placeholder-flag { margin: 0; font-size: 12.5px; padding: 2px 10px; }
+.try-controls { display: flex; flex-wrap: wrap; gap: 10px; margin: 14px 0; }
+.try-pick { border: 0; margin: 0; padding: 0; }
+.try-pick legend { font-weight: 700; padding: 0; margin-bottom: 8px; }
+.try-picks { display: flex; gap: 10px; }
+.try-choice {
+  min-width: 56px; min-height: 48px; font: inherit; font-weight: 700; font-size: 20px; cursor: pointer;
+  color: var(--ink); background: transparent; border: 2px solid var(--accent); border-radius: 12px;
+}
+@media (hover: hover) { .try-choice:hover { background: color-mix(in srgb, var(--accent) 14%, transparent); } }
+.try-choice.is-wrong { border-style: dashed; color: var(--muted); }
+.try-choice.is-wrong::after { content: " \2715"; font-size: 14px; }
+.try-choice.is-right { background: var(--accent); color: var(--accent-ink); }
+.try-choice.is-right::after { content: " \2713"; font-size: 15px; }
+.try-result { min-height: 1.6em; margin: 14px 0 0; }
+.try-result:empty { display: none; }
+.try-result p { margin: 0 0 10px; }
+.try-result.is-right p { font-weight: 700; }
+.try-next { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; }
+.try-describe { margin-top: 6px; }
+.try-describe summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; font-weight: 700; color: var(--link); }
+
+/* ---------- Pick where to go ----------
+   Each card is a small version of the guide on every step: the guide beside her thought cloud,
+   the details underneath, and a faint drawing of her motif in the corner. The cloud keeps its
+   size while she talks, so nothing on the card moves. */
+.adv-lede { margin-bottom: 20px; }
+.adv-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 24px; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 900px) { .adv-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.adv {
+  position: relative; isolation: isolate; overflow: hidden;
+  display: grid; grid-template-rows: auto 1fr; gap: 6px;
+  padding: 20px 24px 24px; border-radius: 26px;
+  background:
+    radial-gradient(120% 90% at 0% 0%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 62%),
+    color-mix(in srgb, var(--accent) 5%, var(--bg));
+  border: 1px solid color-mix(in srgb, var(--rule) 65%, transparent);
+  box-shadow: 0 26px 44px -34px color-mix(in srgb, var(--ink) 55%, transparent);
+}
+.adv-iris {
+  background:
+    radial-gradient(120% 90% at 0% 0%, color-mix(in srgb, var(--pop) 14%, transparent), transparent 62%),
+    color-mix(in srgb, var(--accent) 5%, var(--bg));
+}
+@media (prefers-reduced-motion: no-preference) {
+  .adv { transition: border-color 0.2s ease-out, transform 0.25s var(--ease-out-quart), box-shadow 0.25s ease-out; }
+  @media (hover: hover) { .adv:hover { transform: translateY(-2px); border-color: color-mix(in srgb, var(--accent) 70%, transparent); } }
+}
+
+/* The guide's motif, faint, in the bottom corner, behind the words. */
+.adv-decor { position: absolute; right: 18px; bottom: 16px; width: 110px; height: 77px; z-index: -1; pointer-events: none; opacity: 0.5; }
+.dc-moon { fill: var(--sn-moon); opacity: 0.55; }
+.dc-star { fill: var(--pop); }
+.dc-dot { fill: var(--muted); }
+.dc-bow { opacity: 0.6; }
+
+/* The guide and her cloud. */
+.adv-stage { position: relative; display: grid; grid-template-columns: 168px minmax(0, 1fr); column-gap: 8px; align-items: end; }
+.adv-fig { position: relative; width: 168px; height: 140px; align-self: end; }
+.adv-guide { position: absolute; inset: 0; }
+.adv-thought { position: relative; min-width: 0; }
+.adv-bubble { position: relative; isolation: isolate; padding: 40px 42px 32px; min-height: 140px; display: flex; align-items: center; color: var(--bubble-ink); }
+.adv-cloud { position: absolute; inset: 0; width: 100%; height: 100%; z-index: -1; overflow: visible; pointer-events: none; }
+.adv-says { margin: 0; font-size: 15.5px; line-height: 1.5; color: var(--bubble-ink); max-width: none; }
+.adv-trail { position: absolute; inset: 0; pointer-events: none; }
+.adv-trail i {
+  position: absolute; left: 0; top: 0; width: 8px; height: 8px; border-radius: 50%; translate: -50% -50%;
+  background: radial-gradient(circle at 34% 30%, var(--bubble-bg-2), var(--bubble-bg) 72%);
+  border: 2px solid var(--bubble-line); box-shadow: 0 0 10px var(--bubble-glow);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .adv.is-talking .adv-trail i { animation: trail-float 1.8s ease-in-out infinite alternate; }
+  .adv.is-talking .adv-trail i:nth-child(2) { animation-delay: 300ms; }
+  .adv.is-talking .adv-trail i:nth-child(3) { animation-delay: 600ms; }
+}
+
+/* The details. */
+.adv-body { position: relative; padding: 4px 4px 0; display: flex; flex-direction: column; }
+.adv-with { margin: 0 0 2px; font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--pop); }
+.adv-name { margin: 0 0 6px; font-size: var(--step-2); line-height: 1.1; }
+.adv-blurb { margin: 0 0 18px; color: var(--muted); max-width: 46ch; }
+.adv-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; margin-top: auto; }
+.adv-go { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; border-radius: 999px; padding-inline: 20px 16px; }
+.adv-go svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+.adv-hello {
+  display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 8px 14px 8px 10px;
+  font: inherit; font-weight: 700; font-size: 15px; color: var(--ink); background: transparent;
+  border: 0; border-radius: 999px; cursor: pointer;
+}
+.adv-hello svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+.adv-hello svg .fill { fill: currentColor; stroke: none; }
+@media (hover: hover) { .adv-hello:hover { background: color-mix(in srgb, var(--accent) 14%, transparent); } }
+.adv.is-talking .adv-hello svg { color: var(--pop); }
+@media (prefers-reduced-motion: no-preference) {
+  .adv-go svg { transition: transform 0.2s var(--ease-out-quart); }
+  @media (hover: hover) { .adv-go:hover svg { transform: translateX(3px); } }
+}
+
+/* Phones: the words sit in a rounded thought box, as in the step guide. */
+@media (max-width: 639px) {
+  .adv { padding: 16px 16px 20px; border-radius: 22px; }
+  .adv-stage { grid-template-columns: 104px minmax(0, 1fr); column-gap: 12px; align-items: center; }
+  .adv-fig { width: 104px; height: 88px; }
+  .adv-cloud { display: none; }
+  .adv-bubble {
+    min-height: 0; padding: 12px 14px; border-radius: 22px;
+    background: linear-gradient(var(--bubble-bg-2), var(--bubble-bg));
+    border: 2.5px solid var(--bubble-line); box-shadow: 0 0 16px var(--bubble-glow);
+  }
+  .adv-says { font-size: 14.5px; line-height: 1.45; }
+  .adv-trail { display: none; }
+  .adv-name { font-size: var(--step-1); }
+}
+@media (forced-colors: active) {
+  .adv-cloud, .adv-trail, .adv-decor { display: none; }
+  .adv-bubble { border: 2px solid CanvasText; border-radius: 16px; background: Canvas; color: CanvasText; }
+  .adv-says { color: CanvasText; }
+}
+
+.adv-soon-h { font-size: var(--step-0); margin: 32px 0 12px; color: var(--muted); letter-spacing: 0.04em; }
+.adv-soon { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+.adv-later {
+  display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 4px 12px; align-items: center;
+  padding: 12px 16px; border-radius: 18px; border: 1.5px dashed color-mix(in srgb, var(--rule) 80%, transparent);
+  background: color-mix(in srgb, var(--bg) 70%, transparent);
+}
+.adv-later img, .adv-later .sn-ic { width: 44px; height: 44px; object-fit: contain; object-position: 50% 0; }
+.adv-later .sn-ic { padding: 8px; color: var(--muted); }
+.adv-later strong { display: block; }
+.adv-later span span { font-size: 14px; color: var(--muted); }
+.adv-badge { grid-column: 2; justify-self: start; font-size: 12.5px; font-weight: 700; letter-spacing: 0.02em; padding: 2px 8px; border-left: 3px solid color-mix(in srgb, var(--pop) 70%, transparent); border-radius: 0 4px 4px 0; background: color-mix(in srgb, var(--pop) 10%, transparent); }
+
+/* ---------- Your sky map ---------- */
+.skymap { display: grid; gap: 12px 36px; grid-template-columns: minmax(0, 1fr); align-items: center; }
+@media (min-width: 900px) { .skymap { grid-template-columns: minmax(0, 1fr) minmax(0, 480px); } }
+.map-count { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+.map-count:focus { outline: none; }
+/* The same stars in words, in two columns so the card stays short. */
+.map-list { list-style: none; padding: 0; margin: 12px 0 8px; display: grid; gap: 2px 20px; grid-template-columns: repeat(2, minmax(0, max-content)); font-size: 15px; }
+@media (max-width: 420px) { .map-list { grid-template-columns: minmax(0, 1fr); } }
+.map-list li { display: flex; align-items: center; gap: 10px; min-height: 30px; }
+.map-reset {
+  font: inherit; font-size: 14.5px; min-height: 44px; padding: 0 2px; color: var(--link); background: none; border: 0;
+  text-decoration: underline; text-underline-offset: 3px; cursor: pointer;
+}
+.map-dot { width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--muted); flex: none; }
+.map-list li.is-lit .map-dot { background: var(--sn-moon); border-color: var(--sn-moon); box-shadow: 0 0 8px var(--sn-moon-glow); }
+.map-list li.is-later { color: var(--muted); }
+.map-list li.is-later .map-dot { border-style: dashed; }
+.map-svg { width: 100%; max-width: 480px; justify-self: center; height: auto; overflow: visible; }
+.map-line { stroke: var(--rule); stroke-width: 1.5; stroke-dasharray: 3 6; }
+.map-line.is-lit { stroke: var(--sn-moon); stroke-dasharray: none; opacity: 0.8; }
+.map-star.is-lit path { fill: var(--sn-moon); }
+.map-glow { fill: var(--sn-moon-glow); opacity: 0.6; }
+.map-star.is-dim { fill: var(--muted); }
+.map-star.is-later { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 3 3; }
+.map-label { fill: var(--muted); font-family: var(--font); font-size: 13px; }
+@media (prefers-reduced-motion: no-preference) {
+  .map-star.is-new { animation: star-pop 700ms var(--ease-out-expo) both; transform-box: fill-box; }
+  @keyframes star-pop { from { opacity: 0; scale: 0.2; } to { opacity: 1; scale: 1; } }
+}
+
+/* ---------- Built for everyone ---------- */
+.everyone-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px 24px; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+.everyone-list li { display: grid; gap: 2px; padding-left: 14px; border-left: 3px solid var(--pop); }
+.everyone-list span { color: var(--muted); font-size: 15px; }
+
+/* ---------- Meet the Selenites ----------
+   Scrapbook cards, shabby chic with a little Y2K, in the theme's own colours: paper a shade off
+   the page with a scalloped edge and a faint grain, a sewn stitch, a taped polaroid of the
+   person's constellation with a holographic rim, and a sparkle sticker. No boxes round the words:
+   the role is plain text after a small sparkle (the lead's has a marker swash), and links are
+   stitched underlines. The cards stack in columns, so each is only as tall as what it holds. */
+.team-lede { margin: 0 0 14px; max-width: 70ch; }
+.team-list { list-style: none; margin: 0; padding: 14px 4px 0; columns: 1; column-gap: 22px; }
+@media (min-width: 700px) { .team-list { columns: 2; } }
+@media (min-width: 1020px) { .team-list { columns: 3; } }
+
+.team-card {
+  --tape: var(--tape-1);
+  /* inline-grid keeps each card in one piece inside the columns, sparkle and all. */
+  position: relative; isolation: isolate; break-inside: avoid; margin: 0 0 28px;
+  display: inline-grid; width: 100%; vertical-align: top;
+  grid-template-columns: 88px minmax(0, 1fr); column-gap: 14px; align-items: start;
+  grid-template-areas: "photo id" "photo line" "photo links" "photo .";
+  grid-template-rows: auto auto auto 1fr;
+  padding: 16px 16px 12px;
+  outline: 1.5px dashed var(--stitch); outline-offset: -7px; border-radius: 10px;
+  filter: drop-shadow(0 10px 12px var(--card-shadow));
+}
+.team-card:nth-child(3n+2) { --tape: var(--tape-2); }
+.team-card:nth-child(3n) { --tape: var(--tape-3); }
+/* The paper: grain and a soft blush inside, and a row of half-circles round the edge. */
+.team-card::before {
+  content: ""; position: absolute; inset: -5px; z-index: -1; padding: 5px; border-radius: 14px;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .42 0 0 0 0 .28 0 0 0 0 .38 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E") 0 0 / 180px 180px repeat content-box,
+    radial-gradient(130% 90% at 100% 0%, var(--paper-2), transparent 60%) content-box,
+    linear-gradient(var(--paper), var(--paper)) content-box,
+    radial-gradient(circle closest-side, var(--paper) 95%, transparent) 0 0 / 12px 12px round border-box;
+}
+/* A sparkle sticker on the top edge. */
+.team-card::after {
+  content: ""; position: absolute; top: -12px; right: 20px; width: 24px; height: 24px; rotate: 10deg;
+  background: var(--pop); -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 0c.9 6.5 4.6 10.6 12 12-7.4 1.4-11.1 5.5-12 12-.9-6.5-4.6-10.6-12-12C7.4 10.6 11.1 6.5 12 0z'/%3E%3C/svg%3E") center / contain no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 0c.9 6.5 4.6 10.6 12 12-7.4 1.4-11.1 5.5-12 12-.9-6.5-4.6-10.6-12-12C7.4 10.6 11.1 6.5 12 0z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.team-card:nth-child(even)::after { right: 52px; width: 16px; height: 16px; top: -8px; rotate: -12deg; }
+
+/* Who they are: the name, then the role in plain words after a small sparkle. */
+.team-id { grid-area: id; min-width: 0; }
+.team-name { margin: 0; font-size: 20px; line-height: 1.15; }
+.team-role { margin: 3px 0 0; font-size: 14px; font-weight: 700; line-height: 1.35; color: var(--pop); }
+.team-role::before {
+  content: ""; display: inline-block; width: 10px; height: 10px; margin-right: 6px; vertical-align: 0;
+  background: currentColor; -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 0c.9 6.5 4.6 10.6 12 12-7.4 1.4-11.1 5.5-12 12-.9-6.5-4.6-10.6-12-12C7.4 10.6 11.1 6.5 12 0z'/%3E%3C/svg%3E") center / contain no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 0c.9 6.5 4.6 10.6 12 12-7.4 1.4-11.1 5.5-12 12-.9-6.5-4.6-10.6-12-12C7.4 10.6 11.1 6.5 12 0z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+/* The lead's title gets a hand-drawn squiggle under it, shading from pink to violet. */
+.team-tag { position: relative; display: inline-block; }
+.team-tag::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: -5px; height: 6px;
+  background: linear-gradient(90deg, var(--pop), var(--link));
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='6' viewBox='0 0 12 6'%3E%3Cpath d='M0 3q3-3.2 6 0t6 0' fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E") 0 0 / 12px 6px repeat-x; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='6' viewBox='0 0 12 6'%3E%3Cpath d='M0 3q3-3.2 6 0t6 0' fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E") 0 0 / 12px 6px repeat-x;
+}
+.team-what { margin-top: 3px; }
+.team-what { display: block; }
+.team-line { grid-area: line; margin: 6px 0 0; font-size: 15px; line-height: 1.5; }
+
+/* Read more, for longer lines. It shares the links row; opened, it takes the whole row and the
+   links move below it. */
+.team-more[open] { flex-basis: 100%; }
+.team-more summary {
+  display: inline-flex; align-items: center; gap: 6px; min-height: 44px; cursor: pointer; list-style: none;
+  font-size: 14px; font-weight: 700; color: var(--link);
+}
+.team-more summary::-webkit-details-marker { display: none; }
+.team-more summary::before { content: ""; width: 10px; height: 10px; background: currentColor; -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 0c.9 6.5 4.6 10.6 12 12-7.4 1.4-11.1 5.5-12 12-.9-6.5-4.6-10.6-12-12C7.4 10.6 11.1 6.5 12 0z'/%3E%3C/svg%3E") center / contain no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 0c.9 6.5 4.6 10.6 12 12-7.4 1.4-11.1 5.5-12 12-.9-6.5-4.6-10.6-12-12C7.4 10.6 11.1 6.5 12 0z'/%3E%3C/svg%3E") center / contain no-repeat; }
+.team-more[open] .more-open, .team-more:not([open]) .more-close { display: none; }
+.team-more p { margin: 0 0 2px; font-size: 15px; line-height: 1.5; }
+
+/* Links: words with a stitched underline that turns wavy when you point at it. */
+.team-links { grid-area: links; margin: 2px 0 0; display: flex; flex-wrap: wrap; align-items: center; column-gap: 18px; }
+.team-link {
+  display: inline-flex; align-items: center; gap: 1px; min-height: 44px;
+  font-size: 14.5px; font-weight: 700; color: var(--link);
+  text-decoration: underline dotted 2px; text-underline-offset: 5px;
+}
+.team-out { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+@media (hover: hover) { .team-link:hover { text-decoration-style: wavy; } }
+
+/* The polaroid: a little window of night sky with the constellation (js/home.js), its name on
+   the chin, a holographic rim, and a strip of washi tape holding it on. */
+.team-photo {
+  grid-area: photo; position: relative; margin-top: 4px; rotate: -3deg;
+  padding: 5px 5px 19px; border: 2px solid transparent; border-radius: 4px;
+  background:
+    linear-gradient(var(--polaroid), var(--polaroid)) padding-box,
+    conic-gradient(from 200deg, var(--holo-1), var(--holo-2), var(--holo-3), var(--holo-4), var(--holo-1)) border-box;
+  box-shadow: 0 6px 12px -6px var(--card-shadow);
+}
+.team-card:nth-child(even) .team-photo { rotate: 2.5deg; }
+.team-photo::after {
+  content: ""; position: absolute; top: -9px; left: 50%; width: 52px; height: 16px; translate: -50% 0; rotate: -7deg;
+  background: repeating-linear-gradient(135deg, var(--tape) 0 5px, color-mix(in srgb, var(--tape) 55%, transparent) 5px 10px);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+/* The holographic shine, which follows the pointer (js/home.js). */
+.team-photo::before {
+  content: ""; position: absolute; inset: 5px 5px 19px; z-index: 1; pointer-events: none; border-radius: 2px; opacity: 0;
+  background:
+    radial-gradient(circle at var(--mx, 30%) var(--my, 25%), rgba(255, 255, 255, 0.55), transparent 45%),
+    linear-gradient(115deg, transparent 18%, rgba(255, 160, 225, 0.4) 36%, rgba(150, 225, 255, 0.4) 50%, rgba(255, 240, 160, 0.35) 64%, transparent 82%) var(--hx, 50%) 50% / 240% 240%;
+  mix-blend-mode: screen;
+}
+.team-sky {
+  position: relative; aspect-ratio: 1; border-radius: 2px; overflow: hidden;
+  background:
+    radial-gradient(circle at 12% 22%, var(--sky-dust) 0 0.7px, transparent 1.3px),
+    radial-gradient(circle at 28% 80%, var(--sky-dust) 0 0.6px, transparent 1.2px),
+    radial-gradient(circle at 74% 14%, var(--sky-dust) 0 0.7px, transparent 1.3px),
+    radial-gradient(circle at 88% 66%, var(--sky-dust) 0 0.6px, transparent 1.2px),
+    radial-gradient(circle at 50% 46%, var(--sky-dust) 0 0.5px, transparent 1.1px),
+    radial-gradient(130% 130% at 100% 0%, var(--sky-haze), transparent 62%),
+    linear-gradient(160deg, var(--sky-a), var(--sky-b));
+}
+.team-stars { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.ts-line { stroke: var(--try-ring); stroke-width: 1.3; stroke-linecap: round; opacity: 0.55; }
+.ts-star { fill: var(--sky-star); }
+.ts-glow { fill: var(--try-ring); opacity: 0.3; }
+.ts-moon { fill: var(--sky-star); filter: drop-shadow(0 0 6px var(--sky-haze)); }
+.team-sign {
+  position: absolute; left: 0; right: 0; bottom: 3px; text-align: center; line-height: 1;
+  font-size: 10.5px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--polaroid-ink);
+}
+
+@media (max-width: 699px) {
+  .team-card { grid-template-columns: 80px minmax(0, 1fr); column-gap: 12px; padding: 14px 14px 10px; margin-bottom: 24px; }
+  .team-name { font-size: 19px; }
+}
+
+/* Pointing at a card lifts it, straightens the polaroid, lights the shine and the stars. */
+.team-card:hover .team-photo::before, .team-card:focus-within .team-photo::before { opacity: 0.9; }
+@media (prefers-reduced-motion: no-preference) {
+  .team-card { transition: translate 0.3s var(--ease-out-quart); }
+  .team-photo { transition: rotate 0.4s var(--ease-out-quart), scale 0.4s var(--ease-out-quart); }
+  .team-photo::before { transition: opacity 0.3s ease-out; }
+  .ts-line, .ts-glow { transition: opacity 0.4s ease-out; }
+  .ts-star { transition: scale 0.4s var(--ease-out-quart); transition-delay: calc(var(--i, 0) * 30ms); transform-box: fill-box; transform-origin: center; }
+  .team-link .team-out { transition: translate 0.2s var(--ease-out-quart); }
+  @media (hover: hover) {
+    .team-card:hover { translate: 0 -3px; }
+    .team-card:hover .team-photo { rotate: 0deg; scale: 1.05; }
+    .team-card:hover .ts-line { opacity: 0.95; }
+    .team-card:hover .ts-glow { opacity: 0.55; }
+    .team-card:hover .ts-star { scale: 1.35; }
+    .team-link:hover .team-out { translate: 2px -2px; }
+  }
+}
+@media (forced-colors: active) {
+  .team-card { outline-color: CanvasText; filter: none; }
+  .team-card::before { background: Canvas; border: 1px solid CanvasText; }
+  .team-card::after, .team-photo::before, .team-photo::after { display: none; }
+  .team-photo { border-color: CanvasText; background: Canvas; }
+  .team-sky { background: Canvas; }
+  .ts-star, .ts-moon { fill: CanvasText; filter: none; }
+  .ts-line { stroke: CanvasText; }
+  .ts-glow { display: none; }
+  .team-sign { color: CanvasText; }
+  .team-tag::after { background: CanvasText; }
+}
+
+@media (forced-colors: active) {
+  .adv, .adv-later { border-color: CanvasText; }
+  .try-choice.is-right { forced-color-adjust: none; background: Highlight; color: HighlightText; }
+}
+
+/* ---------- Theme colours for the game picture and the rainbow drawing ----------
+   The picture of the sky is always dark; its marks follow the theme. The colour-blind friendly
+   theme uses Okabe-Ito colours, which stay apart for common types of colour blindness, and
+   every mark also has a shape or a letter. */
+/* Team cards: the night sky in each polaroid, the paper, tape and holographic shine. The paper,
+   stitch and tape are mixed from each theme's own colours, so the cards always belong to the
+   page. Text on the paper uses the page's ink, link and pop colours (at least 4.5:1). */
+:root { --sky-a: #07060C; --sky-b: #171130; --sky-haze: rgba(150, 120, 230, 0.32);
+  --sky-star: #F4F1FA; --sky-dust: rgba(236, 233, 241, 0.5);
+  --holo-1: #FFC6EA; --holo-2: #C3EEFF; --holo-3: #E0CFFF; --holo-4: #FFF0BC; --polaroid: #FBF8FD; --polaroid-ink: #2A1247;
+  --paper: color-mix(in srgb, var(--accent) 9%, var(--bg)); --paper-2: color-mix(in srgb, var(--pop) 9%, var(--paper));
+  --stitch: color-mix(in srgb, var(--pop) 40%, transparent); --card-shadow: rgba(0, 0, 0, 0.45);
+  --tape-1: color-mix(in srgb, var(--pop) 55%, transparent); --tape-2: color-mix(in srgb, var(--accent) 50%, transparent); --tape-3: color-mix(in srgb, var(--link) 45%, transparent); }
+:root[data-theme="light"] { --paper: color-mix(in srgb, #FFFFFF 62%, var(--bg)); --paper-2: color-mix(in srgb, var(--pop) 7%, var(--paper));
+  --stitch: color-mix(in srgb, var(--link) 38%, transparent); --card-shadow: rgba(42, 18, 71, 0.14); --polaroid: #FFFFFF;
+  --tape-1: color-mix(in srgb, var(--pop) 34%, transparent); --tape-2: color-mix(in srgb, var(--link) 30%, transparent); --tape-3: color-mix(in srgb, #C2B0F0 70%, transparent); }
+:root[data-theme="colour-blind-friendly"] { --paper: color-mix(in srgb, var(--accent) 11%, var(--bg));
+  --tape-1: rgba(240, 228, 66, 0.55); --tape-2: rgba(86, 180, 233, 0.6); --tape-3: rgba(204, 121, 167, 0.6); }
+:root { --try-ring: #C2B0F0; --try-letter: #F2A7D3; --try-path: #F0E442;
+  --bow-1: #E86A6A; --bow-2: #F2B94B; --bow-3: #7FCB7A; --bow-4: #6AA8E8; --bow-5: #A47FE0; }
+:root[data-theme="colour-blind-friendly"] { --try-ring: #FFFFFF; --try-letter: #F0E442; --try-path: #56B4E9;
+  --bow-1: #D55E00; --bow-2: #E69F00; --bow-3: #F0E442; --bow-4: #009E73; --bow-5: #56B4E9; }
+.bow-1 { stroke: var(--bow-1); } .bow-2 { stroke: var(--bow-2); } .bow-3 { stroke: var(--bow-3); }
+.bow-4 { stroke: var(--bow-4); } .bow-5 { stroke: var(--bow-5); }

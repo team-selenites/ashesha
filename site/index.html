@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="assets/ashesha-mark.svg" type="image/svg+xml">
+<meta name="theme-color" content="#F4EEFA">
+<title>Ashesha · Follow a comet through SPHEREx</title>
+<meta name="description" content="Ashesha (Sanskrit for 'without remainder'): a sky tool for all. Something in the sky is moving. Play NASA SPHEREx pictures in date order and spot it. Built to be used by everyone.">
+<script>
+// Old permanent links (?target=, ?ra=&dec=, #watch/...) belong to the sky viewer, which now has
+// its own page: send them there, keeping the whole address.
+(function () {
+  var q = window.location.search, h = window.location.hash;
+  if (/[?&](target|ra|dec|obs)=/.test(q) || /^#(watch|choose|my-candidates)/.test(h)) window.location.replace("viewer.html" + q + h);
+})();
+// Apply a saved colour choice before the page paints, to avoid a flash.
+try { var t = localStorage.getItem("selenites-theme"); if (t === "light" || t === "dark" || t === "colour-blind-friendly") { document.documentElement.setAttribute("data-theme", t); document.querySelector('meta[name="theme-color"]').setAttribute("content", { "light": "#F4EEFA", "dark": "#0B0A0E", "colour-blind-friendly": "#1E1238" }[t]); } } catch (e) {}</script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<link rel="stylesheet" href="css/tokens.css?v=1">
+<link rel="stylesheet" href="css/app.css?v=1">
+<link rel="stylesheet" href="css/nav.css?v=1">
+<link rel="stylesheet" href="css/home.css?v=1">
+</head>
+<body class="home">
+<div class="sky" aria-hidden="true">
+  <svg width="100%" height="100%" focusable="false">
+    <defs>
+      <g id="cloud">
+        <circle cx="30" cy="42" r="18"/><circle cx="55" cy="30" r="24"/><circle cx="82" cy="40" r="20"/><circle cx="100" cy="48" r="14"/>
+        <rect x="18" y="44" width="92" height="18" rx="9"/>
+      </g>
+      <g id="cloud-face" class="cloud-face">
+        <circle cx="48" cy="44" r="2" class="dot"/><circle cx="66" cy="44" r="2" class="dot"/>
+        <path d="M53 50q4 3.4 8 0" fill="none" stroke-width="1.6" stroke-linecap="round" class="line"/>
+        <circle cx="41" cy="50" r="3.6" class="blush"/><circle cx="73" cy="50" r="3.6" class="blush"/>
+      </g>
+      <pattern id="sky-pattern" width="760" height="600" patternUnits="userSpaceOnUse">
+        <g class="cloud-shape" transform="translate(40 60) scale(1.6)"><use href="#cloud"/><use href="#cloud-face"/></g>
+        <g class="cloud-shape" transform="translate(440 24) scale(0.9)"><use href="#cloud"/></g>
+        <g class="cloud-shape" transform="translate(300 310) scale(1.3)"><use href="#cloud"/><use href="#cloud-face"/></g>
+        <g class="cloud-shape" transform="translate(620 380) scale(0.8)"><use href="#cloud"/></g>
+        <g class="cloud-shape" transform="translate(50 440) scale(0.7)"><use href="#cloud"/></g>
+      </pattern>
+    </defs>
+    <rect width="100%" height="100%" fill="url(#sky-pattern)"/>
+  </svg>
+</div>
+<svg class="svg-defs" width="0" height="0" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="guide-shine" x1="0" y1="0" x2="0" y2="1"><stop offset="0" class="cloud-shine-a"/><stop offset="1" class="cloud-shine-b"/></linearGradient>
+    <filter id="guide-blur" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="8"/></filter>
+    <!-- Ragged, painted edges for the tour's arrow (drawn in code, no picture used). -->
+    <filter id="brush-edge" x="-15%" y="-15%" width="130%" height="130%"><feTurbulence type="fractalNoise" baseFrequency="0.09 0.5" numOctaves="2" seed="7" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="5" xChannelSelector="R" yChannelSelector="G"/></filter>
+  </defs>
+</svg>
+<div class="twinkle" aria-hidden="true"><i></i><i></i><i></i></div>
+<a class="skip" href="#main">Skip to the main content</a>
+<div class="sn" data-page="home"></div>
+
+<header class="site-head hero">
+  <div class="ts-slot" data-theme-switch></div>
+  <p class="kicker">Team Selenites · NASA Space Apps 2026</p>
+  <h1 id="top" tabindex="-1">Something in the sky is moving. <span class="hero-q">Can you spot it?</span></h1>
+  <p class="lede">Every six months, NASA's SPHEREx telescope photographs the entire sky in 102 colours of light your eyes can't see. Play its pictures in date order and the still sky starts to move: comets drift, nearby stars creep, and some brighten and fade.</p>
+  <div class="hero-actions">
+    <a class="btn hero-start" id="start-btn" href="viewer.html"><span>Start exploring</span><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 5l7 7-7 7"/></svg></a>
+    <button type="button" class="tour-chip tour-open"><span class="selene-slot selene-avatar selene-avatar-sm" data-variant="head"></span>New here? Take the tour with Selene</button>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- The first win: one small game that is the whole idea of the site, playable in seconds. -->
+  <section class="card try" id="try" aria-labelledby="try-h">
+    <!-- Left: what to do, and the controls to do it with. Right: the picture. -->
+    <div class="try-text">
+      <p class="view-step">Try it in 20 seconds</p>
+      <h2 id="try-h" class="panel-h">Spot the mover</h2>
+      <p class="try-lede">This is how Pluto was found: two pictures of the same sky, flicked back and forth. Stars stay put. Anything that jumps has moved. Press <strong>Blink</strong> a few times, then pick the spot that jumps.</p>
+      <div class="try-controls">
+        <button type="button" class="btn" id="try-blink">Blink</button>
+        <button type="button" class="btn btn-quiet" id="try-auto" aria-pressed="false">Blink for me</button>
+      </div>
+      <fieldset class="try-pick">
+        <legend>Which spot moved?</legend>
+        <div class="try-picks" id="try-picks"></div>
+      </fieldset>
+      <div class="try-result" id="try-result" role="status" aria-live="polite"></div>
+      <p class="sr-only" id="try-live" role="status" aria-live="polite"></p>
+    </div>
+    <div class="try-play">
+      <figure class="try-fig">
+        <canvas class="try-canvas" id="try-canvas" width="560" height="340" role="img" aria-labelledby="try-cap"></canvas>
+        <figcaption class="try-cap"><span id="try-cap">Picture 1 of 2 (earlier)</span><span class="placeholder-flag">Practice pictures, drawn by our code, not SPHEREx data</span></figcaption>
+      </figure>
+      <details class="try-describe">
+        <summary>Describe the two pictures in words</summary>
+        <p id="try-words"></p>
+      </details>
+    </div>
+  </section>
+
+  <!-- Where to go next, each part with its own guide. -->
+  <section class="panel adventures" id="adventures" aria-labelledby="adv-h">
+    <h2 id="adv-h" class="panel-h">Where to next?</h2>
+    <p class="fine adv-lede">Each part of the site has its own guide, ready to show you around. Press <strong>Say hello</strong> to meet them.</p>
+    <ul class="adv-list" id="adv-list"></ul>
+    <h3 class="adv-soon-h">Being built this weekend</h3>
+    <ul class="adv-soon" id="adv-soon"></ul>
+  </section>
+
+  <!-- Honest progress: a star for each place visited. No streaks, no timers. -->
+  <section class="card skymap" id="skymap" aria-labelledby="map-h">
+    <div class="map-text">
+      <h2 id="map-h" class="panel-h">Your sky map</h2>
+      <p id="map-count" class="map-count"></p>
+      <p class="fine">Every place you visit lights a star. There's no rush, and nothing expires. Your map lives in this browser and nowhere else.</p>
+      <ul class="map-list" id="map-list"></ul>
+      <button type="button" class="map-reset" id="map-reset">Start my map again</button>
+    </div>
+    <svg class="map-svg" id="map-svg" viewBox="0 0 420 230" aria-hidden="true" focusable="false"></svg>
+  </section>
+
+  <section class="panel everyone" aria-labelledby="everyone-h">
+    <h2 id="everyone-h" class="panel-h">No one left out</h2>
+    <ul class="everyone-list">
+      <li><strong>Keyboard</strong><span>Every control works without a mouse, with a visible focus ring.</span></li>
+      <li><strong>Screen readers</strong><span>Every picture has words, and every chart has a table.</span></li>
+      <li><strong>Colour-blind friendly</strong><span>A theme of its own, and a shape and a label on every status.</span></li>
+      <li><strong>Sound with words</strong><span>Every sound has a written meaning. Nothing plays until you press a button.</span></li>
+      <li><strong>Calm</strong><span>No timers and no pressure. Nothing moves on until you choose.</span></li>
+    </ul>
+  </section>
+
+  <!-- The team, as scrapbook cards: a taped polaroid of each person's constellation (drawn by
+       js/home.js from real star positions; data-sky="moon" shows a moon), their name, what they
+       made, their own line, and the links they chose to share. Full names as each person gives
+       them (confirmed by Pawana, 13 Nov 2026); no photos or other personal details (RULES
+       section 14). The words come first in the code so screen readers meet the name before the
+       picture. -->
+  <section class="panel team" id="team" aria-labelledby="team-h">
+    <h2 id="team-h" class="panel-h">Meet the Selenites</h2>
+    <p class="fine team-lede">In old stories, Selenites are the people of the Moon. Ours are the six people who made this site. Each card shows the constellation that person's star sign is named after, drawn from real star positions.</p>
+    <ul class="team-list">
+      <li class="team-card team-lead">
+        <div class="team-id"><h3 class="team-name">Pawana Shettigar</h3><p class="team-role"><span class="team-tag">Team lead</span> <span class="team-what">Design and sky viewer</span></p></div>
+        <p class="team-line">Leading six Selenites, styling every pixel, and teaching a comet to play on repeat.</p>
+        <div class="team-links"><a class="team-link" href="https://www.linkedin.com/in/pawana-shettigar-182087374" target="_blank" rel="noopener">LinkedIn<span class="sr-only"> (Pawana, opens in a new tab)</span><svg class="team-out" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 16 16 8M9.5 8H16v6.5"/></svg></a><a class="team-link" href="https://pawanashettigar.github.io" target="_blank" rel="noopener">Website<span class="sr-only"> (Pawana, opens in a new tab)</span><svg class="team-out" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 16 16 8M9.5 8H16v6.5"/></svg></a></div>
+        <div class="team-photo"><div class="team-sky" data-sky="leo"></div><span class="team-sign"><span class="sr-only">Constellation: </span>Leo</span></div>
+      </li>
+      <li class="team-card">
+        <div class="team-id"><h3 class="team-name">Elisabetta Pavone</h3><p class="team-role">Data and puzzles</p></div>
+        <p class="team-line">Fueling the SPHEREx pipeline with Python, patience, and zero sleep.</p>
+        <div class="team-links"><a class="team-link" href="https://www.linkedin.com/in/elisabetta-pavone-803817313" target="_blank" rel="noopener">LinkedIn<span class="sr-only"> (Elisabetta, opens in a new tab)</span><svg class="team-out" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 16 16 8M9.5 8H16v6.5"/></svg></a></div>
+        <div class="team-photo"><div class="team-sky" data-sky="aries"></div><span class="team-sign"><span class="sr-only">Constellation: </span>Aries</span></div>
+      </li>
+      <li class="team-card">
+        <div class="team-id"><h3 class="team-name">Shrashti Mittal</h3><p class="team-role">Mark a candidate</p></div>
+        <p class="team-line">An aerospace engineer by training, an explorer by nature, and a creative soul at heart.</p>
+        <div class="team-links"><details class="team-more"><summary><span class="more-open">Read more</span><span class="more-close">Read less</span><span class="sr-only"> about Shrashti</span></summary><p>Drawn to everything from space and technology to music and the arts, I love connecting ideas, experimenting, and building things that matter.</p></details><a class="team-link" href="https://www.linkedin.com/in/shrashti-mittal/" target="_blank" rel="noopener">LinkedIn<span class="sr-only"> (Shrashti, opens in a new tab)</span><svg class="team-out" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 16 16 8M9.5 8H16v6.5"/></svg></a></div>
+        <div class="team-photo"><div class="team-sky" data-sky="libra"></div><span class="team-sign"><span class="sr-only">Constellation: </span>Libra</span></div>
+      </li>
+      <li class="team-card">
+        <div class="team-id"><h3 class="team-name">Priyanshi Patel</h3><p class="team-role">Sound and access</p></div>
+        <p class="team-line">Somewhere between the next destination and the next galaxy.</p>
+        <div class="team-links"><details class="team-more"><summary><span class="more-open">Read more</span><span class="more-close">Read less</span><span class="sr-only"> about Priyanshi</span></summary><p>Whether I’m chasing new places or new questions about the universe, I’m drawn to how things connect, from distant signals to different cultures. I love turning curiosity into something worth sharing.</p></details><a class="team-link" href="https://www.linkedin.com/in/priyanshi-patel-942bb6337" target="_blank" rel="noopener">LinkedIn<span class="sr-only"> (Priyanshi, opens in a new tab)</span><svg class="team-out" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 16 16 8M9.5 8H16v6.5"/></svg></a></div>
+        <div class="team-photo"><div class="team-sky" data-sky="taurus"></div><span class="team-sign"><span class="sr-only">Constellation: </span>Taurus</span></div>
+      </li>
+      <li class="team-card">
+        <!-- Placeholder line until Fateme sends one. -->
+        <div class="team-id"><h3 class="team-name">Fateme Sadat Mousavi Nia</h3><p class="team-role">Stories and film</p></div>
+        <p class="team-line">First-place micro-jet engine designer, science podcaster, and keeper of Selene's myths.</p>
+        <div class="team-links"><a class="team-link" href="https://www.linkedin.com/in/fateme-sadat-mousavi-nia-49a687356/" target="_blank" rel="noopener">LinkedIn<span class="sr-only"> (Fateme, opens in a new tab)</span><svg class="team-out" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 16 16 8M9.5 8H16v6.5"/></svg></a></div>
+        <div class="team-photo"><div class="team-sky" data-sky="pisces"></div><span class="team-sign"><span class="sr-only">Constellation: </span>Pisces</span></div>
+      </li>
+      <li class="team-card">
+        <!-- Placeholder line until Yeabisra sends one. -->
+        <div class="team-id"><h3 class="team-name">Yeabisra Wubishet</h3><p class="team-role">Honest rules and testing</p></div>
+        <p class="team-line">Reads Earth from orbit for a living, and reads every line here twice so nothing claims more than SPHEREx saw.</p>
+        <div class="team-links"><a class="team-link" href="https://www.linkedin.com/in/yeabisra-wubishet-08b291365/" target="_blank" rel="noopener">LinkedIn<span class="sr-only"> (Yeabisra, opens in a new tab)</span><svg class="team-out" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 16 16 8M9.5 8H16v6.5"/></svg></a></div>
+        <div class="team-photo"><div class="team-sky" data-sky="sagittarius"></div><span class="team-sign"><span class="sr-only">Constellation: </span>Sagittarius</span></div>
+      </li>
+    </ul>
+  </section>
+
+</main>
+
+<footer class="site-foot">
+  <p>Data: NASA/IPAC Infrared Science Archive (IRSA). Acknowledgement and data DOIs are listed in the project's ACKNOWLEDGEMENTS.md. This project is not endorsed by NASA or IRSA.</p>
+  <p>A candidate is a picture worth another look, not a discovery. Practice pictures and practice data are always labelled.</p>
+  <p>The portraits of Selene, Iris and Orpheus were made with Google Gemini, an AI image generator, from prompts written by the team.</p>
+  <p>Selene's and Iris's recorded voices were made with ElevenLabs, an AI text-to-speech tool, from lines written by the team.</p>
+</footer>
+
+<dialog class="tour" id="tour" aria-labelledby="tour-title" aria-describedby="tour-text">
+  <div class="tour-spot" id="tour-spot" aria-hidden="true"></div>
+  <svg class="tour-arrow" id="tour-arrow" aria-hidden="true" focusable="false" hidden>
+    <g class="arrow-nudge" filter="url(#brush-edge)">
+      <path class="arrow-paint arrow-wash" id="arrow-wash" pathLength="1"/>
+      <path class="arrow-paint arrow-body" id="arrow-body" pathLength="1"/>
+      <path class="arrow-paint arrow-core" id="arrow-core" pathLength="1"/>
+      <path class="arrow-paint arrow-wash arrow-head" id="arrow-head-wash" pathLength="1"/>
+      <path class="arrow-paint arrow-body arrow-head" id="arrow-head-body" pathLength="1"/>
+    </g>
+  </svg>
+  <div class="tour-card" id="tour-card" data-side="none">
+    <div class="tour-figure" aria-hidden="true">
+      <div class="tour-selene selene-slot" id="tour-selene" data-variant="figure"></div>
+      <span class="tour-moon"></span>
+    </div>
+    <div class="tour-thought">
+      <div class="moon-bubble" id="tour-bubble">
+        <svg class="cloud" id="tour-cloud" aria-hidden="true" focusable="false">
+          <defs>
+            <clipPath id="cloud-clip"><path id="cloud-clip-path"/></clipPath>
+            <linearGradient id="cloud-shine" x1="0" y1="0" x2="0" y2="1"><stop offset="0" class="cloud-shine-a"/><stop offset="1" class="cloud-shine-b"/></linearGradient>
+            <pattern id="cloud-dots" width="22" height="22" patternUnits="userSpaceOnUse"><circle class="cloud-dot" cx="4" cy="4" r="1.3"/><path class="cloud-dot" d="M15 11.5l1 2.5 2.5 1-2.5 1-1 2.5-1-2.5-2.5-1 2.5-1z"/></pattern>
+            <filter id="cloud-blur" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="10"/></filter>
+            <filter id="cloud-soft" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="5"/></filter>
+          </defs>
+          <path id="cloud-glow" class="cloud-glow" filter="url(#cloud-blur)"/>
+          <path id="cloud-fill" class="cloud-fill" fill="url(#cloud-shine)"/>
+          <g clip-path="url(#cloud-clip)">
+            <rect id="cloud-pattern" fill="url(#cloud-dots)"/>
+            <ellipse id="cloud-gloss" class="cloud-gloss" filter="url(#cloud-soft)"/>
+          </g>
+          <path id="cloud-edge" class="cloud-edge"/>
+          <g id="cloud-stickers"></g>
+        </svg>
+        <div class="tour-body" aria-live="polite" aria-atomic="true">
+          <p class="tour-step" id="tour-step"></p>
+          <h2 class="tour-title" id="tour-title"></h2>
+          <p class="sr-only" id="tour-text"></p>
+          <p class="tour-typed" aria-hidden="true"><span class="tour-ghost" id="tour-ghost"></span><span class="tour-ink" id="tour-ink"></span></p>
+        </div>
+      </div>
+      <span class="tour-trail" aria-hidden="true"><i></i><i></i><i></i></span>
+    </div>
+    <div class="tour-actions">
+      <button type="button" class="ctl" id="tour-back">Back</button>
+      <button type="button" class="ctl ctl-main" id="tour-next" autofocus>Next</button>
+      <button type="button" class="voice-btn" id="tour-voice" aria-pressed="false" aria-describedby="tour-voice-note">
+        <svg class="i-voice-off" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 9.5h3.6L12 6v12l-4.4-3.5H4z"/><path class="stroke" d="M16 9.5l5 5M21 9.5l-5 5"/></svg>
+        <svg class="i-voice-on" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 9.5h3.6L12 6v12l-4.4-3.5H4z"/><path class="stroke" d="M15.6 9a4.2 4.2 0 0 1 0 6M18.2 6.6a7.6 7.6 0 0 1 0 10.8"/></svg>
+        <span class="voice-bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+        <span class="sr-only">Selene's voice</span>
+      </button>
+      <button type="button" class="ctl tour-skip-part" id="tour-skip-part" hidden>Skip this part</button>
+      <button type="button" class="tour-skip" id="tour-skip">Skip the tour</button>
+      <p class="sr-only" id="tour-voice-note">Reads each step aloud in a calm voice. Turn it off if you use a screen reader.</p>
+    </div>
+  </div>
+</dialog>
+
+<script>
+// Selene's tour of the whole site: what it is, how it works, the menu, the places to go and
+// their guides, the sky map, the team, and how to make it yours. Each place then has its own tour, led by
+// its own guide (Selene in the sky viewer, Iris in Cryostella). The last part hands over: the
+// visitor opens a place, and that place's guide carries on (js/tour.js, data-tour-continue).
+(function () {
+  var PAGES = ["Welcome", "Try the idea", "Places to go", "Make it yours"];
+  window.SELENITES_TOUR = {
+    page: "home",
+    guide: "selene", guideName: "Selene",
+    label: function (step, k, n) { return PAGES[step.page] + " · Part " + k + " of " + n; },
+    steps: [
+      { id: "welcome", page: 0, welcome: true, title: "Hi, I'm Selene",
+        text: "I'm named after the Greek goddess of the Moon, and I look after this whole site. It lets you watch pictures from NASA's SPHEREx space telescope change over time, spot things that move, and explore the colours of light. Let me show you around. You'll do the clicking.",
+        next: "Start the tour" },
+      { id: "idea", page: 0, target: "#top", title: "How it works",
+        text: "SPHEREx photographs the whole sky every six months, in 102 colours of infrared light. Put its pictures of one patch of sky in date order, and anything that moves or changes gives itself away. That idea is behind everything here." },
+      { id: "menu", page: 0, target: "#site-nav", title: "The menu",
+        text: "This menu sits at the top of every page: Home, the Sky viewer, Cryostella and My candidates. The soft pill shows where you are. On a phone the menu folds away behind the Menu button." },
+      { id: "tours", page: 0, target: ".sn-tour", title: "A tour in every part",
+        text: "This is my tour of the whole site. Each part also has its own tour, led by its own guide: press Take the tour on any page to meet them." },
+
+      { id: "try", page: 1, target: "#try", title: "Spot the mover",
+        text: "This little game is the idea in twenty seconds: two pictures of the same patch of sky, and one spot that moves. The pictures are practice ones, drawn by our code." },
+      { id: "do-blink", page: 1, target: "#try-blink", title: "Your turn: blink",
+        text: "Press [Blink] and watch the picture flick. Which spot jumps? You can pick it after the tour.",
+        doneTitle: "Watch it flick",
+        action: { on: "click", settle: true } },
+
+      { id: "places", page: 2, target: "#adv-list", title: "Places to go",
+        text: "These are the parts of the site, each with its guide. I look after the sky viewer, where you watch real pictures change. Iris, goddess of the rainbow, looks after Cryostella, where you read, hear and play with the colours of light." },
+      { id: "do-hello", page: 2, target: ".adv-iris .adv-hello", title: "Your turn: meet Iris",
+        text: "Press [Say hello] on Iris's card. She'll introduce herself, and I'll carry on when she's done.",
+        action: { event: "selenites:hello-done" } },
+      { id: "soon", page: 2, target: "#adv-soon", title: "Being built",
+        text: "More parts are on their way this weekend: the Cosmic Orchestra with Orpheus, and puzzles made from SPHEREx pictures. They join the menu when they're ready." },
+      { id: "candidates", page: 2, target: '.sn-link[data-section="candidates"]', title: "My candidates",
+        text: "In the sky viewer you can mark a picture as a candidate: something worth another look, never a discovery. They're kept here, in this browser only." },
+      { id: "skymap", page: 2, target: "#skymap", title: "Your sky map",
+        text: "Each place you visit lights a star. It's kept in this browser only, and nothing expires, so take your time." },
+
+      { id: "everyone", page: 3, target: ".everyone", title: "No one left out",
+        text: "Everything works with a keyboard and a screen reader. Every sound has words, every chart has a table, and nothing moves on until you choose." },
+      { id: "team", page: 3, target: "#team", title: "Meet the Selenites",
+        text: "These are the six people who made this site, and me with it. Pawana leads the team. The little sky on each card is a real constellation, drawn from real star positions." },
+      { id: "themes", page: 3, target: "#themes", title: "Make it yours",
+        text: "Switch between Light, Dark and Colour-blind friendly here. Your choice is kept for every page." },
+      { id: "go", page: 3, target: "#adv-list", title: "Your turn: pick a place",
+        text: "Open the [Sky viewer] or [Cryostella]. Its guide will take over from me with a tour of its own.",
+        action: { on: "click", continueTo: "auto" } }
+    ]
+  };
+})();
+</script>
+<script src="js/selene.js?v=1"></script>
+<script src="js/nav.js?v=1"></script>
+<script src="js/theme.js?v=1"></script>
+<script src="js/cloud.js?v=1"></script>
+<script src="js/home.js?v=1"></script>
+<script src="js/tour.js?v=1"></script>
+</body>
+</html>

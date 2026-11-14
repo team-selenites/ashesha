@@ -1,0 +1,535 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="assets/ashesha-mark.svg" type="image/svg+xml">
+<meta name="theme-color" content="#F4EEFA">
+<title>Your Beginnings · Ashesha</title>
+<meta name="description" content="Your Beginnings: The First Light. Tell Selene your birthday and see the ring of sky NASA's SPHEREx telescope photographed on that date, the famous objects it caught, and a card to keep.">
+<script>
+// Apply a saved colour choice before the page paints, to avoid a flash (same key as every page).
+try { var t = localStorage.getItem("selenites-theme"); if (t === "light" || t === "dark" || t === "colour-blind-friendly") { document.documentElement.setAttribute("data-theme", t); document.querySelector('meta[name="theme-color"]').setAttribute("content", { "light": "#F4EEFA", "dark": "#0B0A0E", "colour-blind-friendly": "#1E1238" }[t]); } } catch (e) {}</script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<link rel="stylesheet" href="css/tokens.css?v=1">
+<link rel="stylesheet" href="css/app.css?v=1">
+<link rel="stylesheet" href="css/nav.css?v=1">
+<link rel="stylesheet" href="css/cryostella.css?v=1">
+<link rel="stylesheet" href="css/beginnings.css?v=1">
+</head>
+<body class="beginnings">
+<div class="sky" aria-hidden="true">
+  <svg width="100%" height="100%" focusable="false">
+    <defs>
+      <g id="cloud">
+        <circle cx="30" cy="42" r="18"/><circle cx="55" cy="30" r="24"/><circle cx="82" cy="40" r="20"/><circle cx="100" cy="48" r="14"/>
+        <rect x="18" y="44" width="92" height="18" rx="9"/>
+      </g>
+      <g id="cloud-face" class="cloud-face">
+        <circle cx="48" cy="44" r="2" class="dot"/><circle cx="66" cy="44" r="2" class="dot"/>
+        <path d="M53 50q4 3.4 8 0" fill="none" stroke-width="1.6" stroke-linecap="round" class="line"/>
+        <circle cx="41" cy="50" r="3.6" class="blush"/><circle cx="73" cy="50" r="3.6" class="blush"/>
+      </g>
+      <pattern id="sky-pattern" width="760" height="600" patternUnits="userSpaceOnUse">
+        <g class="cloud-shape" transform="translate(40 60) scale(1.6)"><use href="#cloud"/><use href="#cloud-face"/></g>
+        <g class="cloud-shape" transform="translate(440 24) scale(0.9)"><use href="#cloud"/></g>
+        <g class="cloud-shape" transform="translate(300 310) scale(1.3)"><use href="#cloud"/><use href="#cloud-face"/></g>
+        <g class="cloud-shape" transform="translate(620 380) scale(0.8)"><use href="#cloud"/></g>
+        <g class="cloud-shape" transform="translate(50 440) scale(0.7)"><use href="#cloud"/></g>
+      </pattern>
+    </defs>
+    <rect width="100%" height="100%" fill="url(#sky-pattern)"/>
+  </svg>
+</div>
+<svg class="svg-defs" width="0" height="0" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="guide-shine" x1="0" y1="0" x2="0" y2="1"><stop offset="0" class="cloud-shine-a"/><stop offset="1" class="cloud-shine-b"/></linearGradient>
+    <filter id="guide-blur" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="8"/></filter>
+    <filter id="brush-edge" x="-15%" y="-15%" width="130%" height="130%"><feTurbulence type="fractalNoise" baseFrequency="0.09 0.5" numOctaves="2" seed="7" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="5" xChannelSelector="R" yChannelSelector="G"/></filter>
+    <!-- Soft glow for the Sun and for SPHEREx's newest picture on the sky maps. -->
+    <filter id="bg-glow" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="6"/></filter>
+    <!-- The sparkle used for famous objects on the maps (the site's four-point star). -->
+    <symbol id="bg-spark" viewBox="-10 -10 20 20"><path d="M0-10 2.2-2.2 10 0 2.2 2.2 0 10-2.2 2.2-10 0-2.2-2.2z"/></symbol>
+  </defs>
+</svg>
+<div class="twinkle" aria-hidden="true"><i></i><i></i><i></i></div>
+<a class="skip" href="#main">Skip to the main content</a>
+<div class="sn" data-page="beginnings"></div>
+
+<header class="site-head cr-head bg-head">
+  <div class="ts-slot" data-theme-switch></div>
+  <p class="kicker">Your Beginnings · with Selene</p>
+  <h1 id="top" tabindex="-1">The first light on your day</h1>
+  <p class="lede">Four short steps with Selene: tell her your birthday, watch the ring of sky SPHEREx photographed on that date, meet the famous objects it caught, and keep a card of it.</p>
+  <p class="cr-name bg-name"><strong>Why The First Light?</strong> When a new telescope takes its very first picture, astronomers call it <i>first light</i>. Here, the first light is yours: the sky SPHEREx saw on your birthday.</p>
+  <button type="button" class="tour-chip tour-open"><span class="selene-slot selene-avatar selene-avatar-sm" data-variant="head" data-character="selene"></span>New here? Take the tour with Selene</button>
+  <p class="placeholder-flag cr-practice-note bg-honest">SPHEREx began its survey in 2025, so this is the sky on your birthday in 2025 or 2026, not the year you were born</p>
+</header>
+
+<nav class="steps cr-steps" id="steps" aria-label="Your Beginnings steps">
+  <ol>
+    <li><a href="#day" data-view="day"><span class="step-n" aria-hidden="true">1</span><span class="step-t">Your day</span></a></li>
+    <li><a href="#ring" data-view="ring"><span class="step-n" aria-hidden="true">2</span><span class="step-t">SPHEREx's ring</span></a></li>
+    <li><a href="#meet" data-view="meet"><span class="step-n" aria-hidden="true">3</span><span class="step-t">Who it met</span></a></li>
+    <li><a href="#card" data-view="card"><span class="step-n" aria-hidden="true">4</span><span class="step-t">Your card</span></a></li>
+  </ol>
+</nav>
+
+<main id="main">
+
+  <!-- Step 1: the birthday (day and month only). -->
+  <section class="view" data-view="day" aria-labelledby="day-h">
+    <div class="view-top">
+      <div class="view-head">
+        <p class="view-step">Step 1 of 4</p>
+        <h2 id="day-h" class="view-title" tabindex="-1">Your day</h2>
+        <p class="view-lede">Just the day and month. SPHEREx has been photographing the sky every day since April 2025.</p>
+      </div>
+    <aside class="guide" data-guide="day" aria-label="Selene's tip">
+      <button type="button" class="guide-open" aria-expanded="true"><span class="selene-slot selene-avatar selene-avatar-sm" data-variant="head" data-character="selene"></span>Show Selene's tip</button>
+      <div class="guide-body">
+        <div class="guide-figure" aria-hidden="true"><div class="selene-slot guide-selene" data-variant="figure" data-character="selene"></div></div>
+        <div class="guide-thought">
+          <div class="guide-bubble">
+            <svg class="guide-cloud" aria-hidden="true" focusable="false"></svg>
+            <div class="guide-say" data-when="d-pick">
+              <p class="guide-part">Step 1 · Part 1 of 2</p>
+              <p class="guide-text">Hello, I'm Selene, goddess of the Moon. Every night I watch the sky, and so does SPHEREx. Tell me your birthday: choose the month, then the day.</p>
+            </div>
+            <div class="guide-say" data-when="d-year" hidden>
+              <p class="guide-part">Step 1 · Part 2 of 2</p>
+              <p class="guide-text">SPHEREx photographed the sky on <span class="g-md"></span> twice, in 2025 and in 2026, and the pictures are different each time. Choose a year, then press Next.</p>
+            </div>
+            <div class="guide-say" data-when="d-ready" hidden>
+              <p class="guide-part">Step 1 · Part 2 of 2</p>
+              <p class="guide-text">On <span class="g-date"></span>, SPHEREx took <span class="g-count"></span> pictures of the sky. Press Next to watch them, one by one.</p>
+            </div>
+            <div class="guide-say" data-when="d-leap" hidden>
+              <p class="guide-part">Step 1 · Part 2 of 2</p>
+              <p class="guide-text">A leap-day birthday! SPHEREx hasn't had a 29 February yet: 2025 and 2026 weren't leap years. Choose 28 February or 1 March below, and the first 29 February with data will come in 2028.</p>
+            </div>
+            <div class="guide-actions">
+              <a class="guide-next" data-when="d-ready" href="#ring" data-view="ring" hidden><span>Next: SPHEREx's ring</span><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 5l7 7-7 7"/></svg></a>
+              <button type="button" class="guide-voice" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 9.5h3.6L12 6v12l-4.4-3.5H4z"/><path class="gv-on" d="M15.6 9a4.2 4.2 0 0 1 0 6M18.2 6.6a7.6 7.6 0 0 1 0 10.8"/><path class="gv-off" d="M16 9.5l5 5M21 9.5l-5 5"/></svg><span>Selene's voice</span></button>
+              <button type="button" class="guide-hide">Hide tips</button>
+            </div>
+          </div>
+        </div>
+        <span class="guide-trail" aria-hidden="true"><i></i><i></i><i></i></span>
+      </div>
+    </aside>
+    </div>
+
+    <div class="panel bg-panel bg-day">
+      <div class="bd-ticket">
+        <div class="bd-ask">
+          <h3 class="bd-h" id="bd-h">When is your birthday?</h3>
+          <div class="bd-fields" role="group" aria-labelledby="bd-h">
+            <div class="bd-field">
+              <label for="bd-month">Month</label>
+              <select id="bd-month"><option value="">Choose a month</option></select>
+            </div>
+            <div class="bd-field">
+              <label for="bd-day">Day</label>
+              <select id="bd-day" disabled><option value="">Choose a day</option></select>
+            </div>
+          </div>
+          <button type="button" class="bd-surprise" id="bd-surprise"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 3.5 14 10l6.5 2-6.5 2-2 6.5-2-6.5-6.5-2L10 10z"/></svg><span>No birthday handy? Pick a date for me</span></button>
+          <p class="fine bd-privacy">Nothing is saved or sent anywhere. The page only opens that day's file from this site.</p>
+        </div>
+        <div class="bd-moon" aria-hidden="true">
+          <svg viewBox="0 0 120 120" focusable="false"><circle class="bd-moon-disc" cx="60" cy="60" r="44"/><circle class="bd-moon-sea" cx="46" cy="50" r="10"/><circle class="bd-moon-sea" cx="70" cy="72" r="7"/><circle class="bd-moon-sea" cx="74" cy="44" r="4.5"/></svg>
+          <p class="bd-moon-date" id="bd-moon-date"></p>
+        </div>
+      </div>
+
+      <fieldset class="bd-years" id="bd-years" hidden>
+        <legend id="bd-years-legend">Which year?</legend>
+        <div class="bd-stubs" id="bd-stubs"></div>
+      </fieldset>
+      <p class="bd-status" id="bd-status" role="status" aria-live="polite"></p>
+    </div>
+    <div class="cr-pager"><a class="btn cr-pager-next" href="#ring" data-view="ring"><span>Next: SPHEREx's ring</span><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 5l7 7-7 7"/></svg></a></div>
+  </section>
+
+  <!-- Step 2: replay the day; the pictures build a ring 90 degrees from the Sun. -->
+  <section class="view" data-view="ring" aria-labelledby="ring-h" hidden>
+    <div class="view-top">
+      <div class="view-head">
+        <a class="back-link" href="#day" data-view="day"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 5l-7 7 7 7"/></svg>Your day</a>
+        <p class="view-step">Step 2 of 4</p>
+        <h2 id="ring-h" class="view-title" tabindex="-1">SPHEREx's ring</h2>
+        <p class="view-lede">Each dot is one picture SPHEREx took that day. Replay the day and see where it looked.</p>
+      </div>
+    <aside class="guide" data-guide="ring" aria-label="Selene's tip">
+      <button type="button" class="guide-open" aria-expanded="true"><span class="selene-slot selene-avatar selene-avatar-sm" data-variant="head" data-character="selene"></span>Show Selene's tip</button>
+      <div class="guide-body">
+        <div class="guide-figure" aria-hidden="true"><div class="selene-slot guide-selene" data-variant="figure" data-character="selene"></div></div>
+        <div class="guide-thought">
+          <div class="guide-bubble">
+            <svg class="guide-cloud" aria-hidden="true" focusable="false"></svg>
+            <div class="guide-say" data-when="r-none">
+              <p class="guide-part">Step 2 · Part 1 of 2</p>
+              <p class="guide-text">First tell me your birthday, and I'll show you where SPHEREx was looking that day.</p>
+            </div>
+            <div class="guide-say" data-when="r-play" hidden>
+              <p class="guide-part">Step 2 · Part 1 of 2</p>
+              <p class="guide-text">This is the whole sky on <span class="g-date"></span>. Press Play the day, or drag the slider, and watch SPHEREx take its pictures, one by one.</p>
+            </div>
+            <div class="guide-say" data-when="r-done" hidden>
+              <p class="guide-part">Step 2 · Part 2 of 2</p>
+              <p class="guide-text">See the ring? SPHEREx never looks towards the Sun. It looks sideways, about 90 degrees away, so its pictures circle the sky. Press Next to meet who it caught.</p>
+            </div>
+            <div class="guide-actions">
+              <a class="guide-next" data-when="r-none" href="#day" data-view="day" hidden><span>Back: Your day</span><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 5l7 7-7 7"/></svg></a>
+              <a class="guide-next" data-when="r-done" href="#meet" data-view="meet" hidden><span>Next: Who it met</span><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 5l7 7-7 7"/></svg></a>
+              <button type="button" class="guide-voice" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 9.5h3.6L12 6v12l-4.4-3.5H4z"/><path class="gv-on" d="M15.6 9a4.2 4.2 0 0 1 0 6M18.2 6.6a7.6 7.6 0 0 1 0 10.8"/><path class="gv-off" d="M16 9.5l5 5M21 9.5l-5 5"/></svg><span>Selene's voice</span></button>
+              <button type="button" class="guide-hide">Hide tips</button>
+            </div>
+          </div>
+        </div>
+        <span class="guide-trail" aria-hidden="true"><i></i><i></i><i></i></span>
+      </div>
+    </aside>
+    </div>
+
+    <div class="panel bg-panel bg-ring">
+      <p class="bg-when" id="ring-when"></p>
+      <figure class="bg-map-fig">
+        <svg class="bg-map" id="ring-map" viewBox="0 0 1000 520" role="img" aria-labelledby="ring-map-t ring-map-d" focusable="false"><title id="ring-map-t">The whole sky</title><desc id="ring-map-d"></desc></svg>
+        <figcaption class="bg-cap">The whole sky, flattened like a map of the Earth. The middle line is the Sun's path through the year. <span class="bg-cap-key"><span class="bg-key bg-key-pic" aria-hidden="true"></span>one picture <span class="bg-key bg-key-sun" aria-hidden="true"></span>the Sun</span></figcaption>
+      </figure>
+      <div class="ring-controls">
+        <button type="button" class="btn ring-play" id="ring-play"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path class="i-play" d="M8 5.5v13l10.5-6.5z"/><path class="i-pause" d="M7.5 5.5h3v13h-3zM13.5 5.5h3v13h-3z"/></svg><span>Play the day</span></button>
+        <div class="ring-scrub">
+          <label for="ring-scrub">Move through the day</label>
+          <input type="range" id="ring-scrub" min="0" max="0" step="1" value="0">
+        </div>
+      </div>
+      <p class="ring-readout" id="ring-readout" aria-hidden="true"></p>
+      <details class="cr-more bg-more">
+        <summary>Why a ring?</summary>
+        <div class="cr-more-body bg-why">
+          <svg class="bg-why-fig" viewBox="0 0 520 200" role="img" aria-labelledby="why-t" focusable="false">
+            <title id="why-t">SPHEREx circles the Earth and looks sideways, about 90 degrees from the Sun, so over a day its pictures make a ring around the sky.</title>
+            <circle class="why-sun" cx="60" cy="100" r="30"/><text class="why-label" x="60" y="155" text-anchor="middle">Sun</text>
+            <path class="why-ray" d="M100 100H215"/>
+            <circle class="why-earth" cx="300" cy="100" r="22"/><text class="why-label" x="300" y="155" text-anchor="middle">Earth</text>
+            <ellipse class="why-orbit" cx="300" cy="100" rx="44" ry="70"/>
+            <circle class="why-craft" cx="300" cy="30" r="6"/>
+            <path class="why-look" d="M306 30H470M306 30l0 0"/>
+            <path class="why-head" d="M462 22l10 8-10 8"/>
+            <text class="why-label" x="390" y="18" text-anchor="middle">looks this way</text>
+            <path class="why-angle" d="M300 52a22 22 0 0 1 22 -22"/>
+            <text class="why-label why-small" x="332" y="62">90°</text>
+          </svg>
+          <p>SPHEREx circles the Earth from pole to pole, about 14 times a day, always with its back to the Sun so its cold telescope stays cold. It can only look sideways, roughly 90 degrees from the Sun. As it circles, that sideways view sweeps a ring across the sky.</p>
+          <p>As the Earth goes round the Sun, the ring turns a little each day. After six months it has swept the whole sky. Our Track D check found that the same date a year later shows the same part of the sky, but not the same pictures.</p>
+          <p class="fine" id="ring-data-note"></p>
+        </div>
+      </details>
+    </div>
+    <div class="cr-pager"><a class="btn cr-pager-next" href="#meet" data-view="meet"><span>Next: Who it met</span><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 5l7 7-7 7"/></svg></a></div>
+  </section>
+
+  <!-- Step 3: the famous (Messier) objects that fell inside that day's pictures. -->
+  <section class="view" data-view="meet" aria-labelledby="meet-h" hidden>
+    <div class="view-top">
+      <div class="view-head">
+        <a class="back-link" href="#ring" data-view="ring"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 5l-7 7 7 7"/></svg>SPHEREx's ring</a>
+        <p class="view-step">Step 3 of 4</p>
+        <h2 id="meet-h" class="view-title" tabindex="-1">Who it met</h2>
+        <p class="view-lede">Famous objects from Charles Messier's list of 110 that sat inside that day's pictures.</p>
+      </div>
+    <aside class="guide" data-guide="meet" aria-label="Selene's tip">
+      <button type="button" class="guide-open" aria-expanded="true"><span class="selene-slot selene-avatar selene-avatar-sm" data-variant="head" data-character="selene"></span>Show Selene's tip</button>
+      <div class="guide-body">
+        <div class="guide-figure" aria-hidden="true"><div class="selene-slot guide-selene" data-variant="figure" data-character="selene"></div></div>
+        <div class="guide-thought">
+          <div class="guide-bubble">
+            <svg class="guide-cloud" aria-hidden="true" focusable="false"></svg>
+            <div class="guide-say" data-when="m-none">
+              <p class="guide-part">Step 3 · Part 1 of 2</p>
+              <p class="guide-text">First tell me your birthday, and I'll introduce you to the famous objects SPHEREx met that day.</p>
+            </div>
+            <div class="guide-say" data-when="m-meet" hidden>
+              <p class="guide-part">Step 3 · Part 1 of 2</p>
+              <p class="guide-text">On your day, SPHEREx's pictures held <span class="g-mcount"></span>. Meet <span class="g-head"></span>! Now click another sparkle, on the map or in the list, to meet it too.</p>
+            </div>
+            <div class="guide-say" data-when="m-one" hidden>
+              <p class="guide-part">Step 3 · Part 1 of 1</p>
+              <p class="guide-text">On your day, SPHEREx's pictures held one famous object: <span class="g-head"></span>. It's now in your collection. Press Next to make your card.</p>
+            </div>
+            <div class="guide-say" data-when="m-more" hidden>
+              <p class="guide-part">Step 3 · Part 2 of 2</p>
+              <p class="guide-text">Lovely, that's <span class="g-met"></span> in your collection. Meet as many as you like, then press Next to make your card.</p>
+            </div>
+            <div class="guide-say" data-when="m-empty" hidden>
+              <p class="guide-part">Step 3 · Part 1 of 1</p>
+              <p class="guide-text">On this day, none of the 110 Messier objects sat inside SPHEREx's pictures. It happens on a few days a year. Try the nearest day that has some, below, or press Next for your card.</p>
+            </div>
+            <div class="guide-actions">
+              <a class="guide-next" data-when="m-none" href="#day" data-view="day" hidden><span>Back: Your day</span><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 5l7 7-7 7"/></svg></a>
+              <a class="guide-next" data-when="m-one m-more m-empty" href="#card" data-view="card" hidden><span>Next: Your card</span><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 5l7 7-7 7"/></svg></a>
+              <button type="button" class="guide-voice" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 9.5h3.6L12 6v12l-4.4-3.5H4z"/><path class="gv-on" d="M15.6 9a4.2 4.2 0 0 1 0 6M18.2 6.6a7.6 7.6 0 0 1 0 10.8"/><path class="gv-off" d="M16 9.5l5 5M21 9.5l-5 5"/></svg><span>Selene's voice</span></button>
+              <button type="button" class="guide-hide">Hide tips</button>
+            </div>
+          </div>
+        </div>
+        <span class="guide-trail" aria-hidden="true"><i></i><i></i><i></i></span>
+      </div>
+    </aside>
+    </div>
+
+    <div class="panel bg-panel bg-meet">
+      <div class="meet-grid">
+        <figure class="bg-map-fig meet-map-fig">
+          <svg class="bg-map" id="meet-map" viewBox="0 0 1000 520" role="img" aria-labelledby="meet-map-t meet-map-d" focusable="false"><title id="meet-map-t">Famous objects on the ring</title><desc id="meet-map-d"></desc></svg>
+          <figcaption class="bg-cap"><span class="bg-cap-key"><span class="bg-key bg-key-spark" aria-hidden="true"></span>caught that day <span class="bg-key bg-key-far" aria-hidden="true"></span>the rest of the 110</span></figcaption>
+        </figure>
+        <div class="meet-sheet" id="meet-sheet" aria-live="polite">
+          <p class="meet-kicker" id="meet-kicker"></p>
+          <h3 class="meet-name" id="meet-name"></h3>
+          <p class="meet-what" id="meet-what"></p>
+          <p class="meet-seen" id="meet-seen"></p>
+          <p class="fine meet-honest" id="meet-honest"></p>
+        </div>
+      </div>
+      <div class="meet-others" id="meet-others-box">
+        <h3 class="bg-h3" id="meet-others-h">Also in that day's pictures</h3>
+        <ul class="meet-list" id="meet-others" aria-labelledby="meet-others-h"></ul>
+      </div>
+      <div class="meet-empty" id="meet-empty" hidden>
+        <p id="meet-empty-text"></p>
+        <div class="meet-near" id="meet-near"></div>
+      </div>
+      <div class="meet-collect" id="meet-collect">
+        <div class="collect-dots" id="collect-dots" aria-hidden="true"></div>
+        <p class="collect-say"><strong id="collect-count"></strong> <span id="collect-hint"></span></p>
+        <button type="button" class="collect-reset" id="collect-reset">Start my collection again</button>
+      </div>
+    </div>
+    <div class="cr-pager"><a class="btn cr-pager-next" href="#card" data-view="card"><span>Next: Your card</span><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 5l7 7-7 7"/></svg></a></div>
+  </section>
+
+  <!-- Step 4: a keepsake card, drawn on a canvas so what you see is what you save. -->
+  <section class="view" data-view="card" aria-labelledby="card-h" hidden>
+    <div class="view-top">
+      <div class="view-head">
+        <a class="back-link" href="#meet" data-view="meet"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 5l-7 7 7 7"/></svg>Who it met</a>
+        <p class="view-step">Step 4 of 4</p>
+        <h2 id="card-h" class="view-title" tabindex="-1">Your card</h2>
+        <p class="view-lede">A keepsake of your day's sky. Save it, or make one for someone else.</p>
+      </div>
+    <aside class="guide" data-guide="card" aria-label="Selene's tip">
+      <button type="button" class="guide-open" aria-expanded="true"><span class="selene-slot selene-avatar selene-avatar-sm" data-variant="head" data-character="selene"></span>Show Selene's tip</button>
+      <div class="guide-body">
+        <div class="guide-figure" aria-hidden="true"><div class="selene-slot guide-selene" data-variant="figure" data-character="selene"></div></div>
+        <div class="guide-thought">
+          <div class="guide-bubble">
+            <svg class="guide-cloud" aria-hidden="true" focusable="false"></svg>
+            <div class="guide-say" data-when="c-none">
+              <p class="guide-part">Step 4 · Part 1 of 1</p>
+              <p class="guide-text">First tell me your birthday, and I'll make you a card of your day's sky.</p>
+            </div>
+            <div class="guide-say" data-when="c-card" hidden>
+              <p class="guide-part">Step 4 · Part 1 of 2</p>
+              <p class="guide-text">Here is your first light: the whole sky around the Sun on <span class="g-date"></span>, with SPHEREx's pictures circling it like a halo. Choose its colours, add a name if you like, then share or save it.</p>
+            </div>
+            <div class="guide-say" data-when="c-saved" hidden>
+              <p class="guide-part">Step 4 · Part 2 of 2</p>
+              <p class="guide-text">It's yours to keep. Want to meet more of the 110? Try a friend's birthday, or watch a patch of sky change in the sky viewer.</p>
+            </div>
+            <div class="guide-actions">
+              <a class="guide-next" data-when="c-none c-saved" href="#day" data-view="day" hidden><span>Try another birthday</span><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 5l7 7-7 7"/></svg></a>
+              <button type="button" class="guide-voice" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 9.5h3.6L12 6v12l-4.4-3.5H4z"/><path class="gv-on" d="M15.6 9a4.2 4.2 0 0 1 0 6M18.2 6.6a7.6 7.6 0 0 1 0 10.8"/><path class="gv-off" d="M16 9.5l5 5M21 9.5l-5 5"/></svg><span>Selene's voice</span></button>
+              <button type="button" class="guide-hide">Hide tips</button>
+            </div>
+          </div>
+        </div>
+        <span class="guide-trail" aria-hidden="true"><i></i><i></i><i></i></span>
+      </div>
+    </aside>
+    </div>
+
+    <div class="panel bg-panel bg-card">
+      <div class="card-wrap">
+        <div class="card-frame"><canvas class="card-canvas" id="card-canvas" width="1080" height="1920" role="img" aria-labelledby="card-alt"></canvas></div>
+        <div class="card-side">
+          <p class="card-alt" id="card-alt"></p>
+          <fieldset class="card-looks">
+            <legend>Card colours</legend>
+            <div class="card-look-list">
+              <label class="card-look"><input type="radio" name="card-look" value="dawn"><span class="look-swatch look-dawn" aria-hidden="true"></span><span>Dawn</span></label>
+              <label class="card-look"><input type="radio" name="card-look" value="night"><span class="look-swatch look-night" aria-hidden="true"></span><span>Night</span></label>
+              <label class="card-look"><input type="radio" name="card-look" value="cbf"><span class="look-swatch look-cbf" aria-hidden="true"></span><span>Colour-blind friendly</span></label>
+            </div>
+          </fieldset>
+          <div class="card-name-field">
+            <label for="card-name">Add a name <span class="fine">(optional)</span></label>
+            <input type="text" id="card-name" maxlength="24" autocomplete="off" spellcheck="false" aria-describedby="card-name-note">
+            <p class="fine" id="card-name-note">It goes on the card only. It isn't saved or sent anywhere.</p>
+          </div>
+          <div class="card-actions">
+            <button type="button" class="btn" id="card-share" hidden><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 15V4M7.5 8.5 12 4l4.5 4.5M6 12.5v6h12v-6"/></svg><span>Share the card</span></button>
+            <button type="button" class="btn" id="card-save"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 4v11M7.5 10.5 12 15l4.5-4.5M5 19.5h14"/></svg><span>Save the card</span></button>
+            <button type="button" class="btn btn-quiet" id="card-copy"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9.5 14.5l5-5M8 11l-2 2a3.5 3.5 0 0 0 5 5l2-2M16 13l2-2a3.5 3.5 0 0 0-5-5l-2 2"/></svg><span>Copy a link</span></button>
+          </div>
+          <p class="fine card-note" id="card-note">The card is sized for phone stories and chats. A link holds the date, so share it only with people you'd tell your birthday.</p>
+          <p class="card-status" id="card-status" role="status" aria-live="polite"></p>
+          <p class="fine card-credit" id="card-credit"></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <p class="sr-only" id="bg-live" aria-live="polite"></p>
+</main>
+
+<footer class="site-foot">
+  <p>Data: NASA/IPAC Infrared Science Archive (IRSA). Messier positions, types and names: SIMBAD, CDS, Strasbourg. Acknowledgement and data DOIs are listed in the project's ACKNOWLEDGEMENTS.md. This project is not endorsed by NASA or IRSA.</p>
+  <p>Selene's portrait was made with Google Gemini, an AI image generator, from a prompt written by the team.</p>
+</footer>
+
+<dialog class="tour" id="tour" aria-labelledby="tour-title" aria-describedby="tour-text">
+  <div class="tour-spot" id="tour-spot" aria-hidden="true"></div>
+  <svg class="tour-arrow" id="tour-arrow" aria-hidden="true" focusable="false" hidden>
+    <g class="arrow-nudge" filter="url(#brush-edge)">
+      <path class="arrow-paint arrow-wash" id="arrow-wash" pathLength="1"/>
+      <path class="arrow-paint arrow-body" id="arrow-body" pathLength="1"/>
+      <path class="arrow-paint arrow-core" id="arrow-core" pathLength="1"/>
+      <path class="arrow-paint arrow-wash arrow-head" id="arrow-head-wash" pathLength="1"/>
+      <path class="arrow-paint arrow-body arrow-head" id="arrow-head-body" pathLength="1"/>
+    </g>
+  </svg>
+  <div class="tour-card" id="tour-card" data-side="none">
+    <div class="tour-figure" aria-hidden="true">
+      <div class="tour-selene selene-slot" id="tour-selene" data-variant="figure" data-character="selene"></div>
+      <span class="tour-moon"></span>
+    </div>
+    <div class="tour-thought">
+      <div class="moon-bubble" id="tour-bubble">
+        <svg class="cloud" id="tour-cloud" aria-hidden="true" focusable="false">
+          <defs>
+            <clipPath id="cloud-clip"><path id="cloud-clip-path"/></clipPath>
+            <linearGradient id="cloud-shine" x1="0" y1="0" x2="0" y2="1"><stop offset="0" class="cloud-shine-a"/><stop offset="1" class="cloud-shine-b"/></linearGradient>
+            <pattern id="cloud-dots" width="22" height="22" patternUnits="userSpaceOnUse"><circle class="cloud-dot" cx="4" cy="4" r="1.3"/><path class="cloud-dot" d="M15 11.5l1 2.5 2.5 1-2.5 1-1 2.5-1-2.5-2.5-1 2.5-1z"/></pattern>
+            <filter id="cloud-blur" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="10"/></filter>
+            <filter id="cloud-soft" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="5"/></filter>
+          </defs>
+          <path id="cloud-glow" class="cloud-glow" filter="url(#cloud-blur)"/>
+          <path id="cloud-fill" class="cloud-fill" fill="url(#cloud-shine)"/>
+          <g clip-path="url(#cloud-clip)">
+            <rect id="cloud-pattern" fill="url(#cloud-dots)"/>
+            <ellipse id="cloud-gloss" class="cloud-gloss" filter="url(#cloud-soft)"/>
+          </g>
+          <path id="cloud-edge" class="cloud-edge"/>
+          <g id="cloud-stickers"></g>
+        </svg>
+        <div class="tour-body" aria-live="polite" aria-atomic="true">
+          <p class="tour-step" id="tour-step"></p>
+          <h2 class="tour-title" id="tour-title"></h2>
+          <p class="sr-only" id="tour-text"></p>
+          <p class="tour-typed" aria-hidden="true"><span class="tour-ghost" id="tour-ghost"></span><span class="tour-ink" id="tour-ink"></span></p>
+        </div>
+      </div>
+      <span class="tour-trail" aria-hidden="true"><i></i><i></i><i></i></span>
+    </div>
+    <div class="tour-actions">
+      <button type="button" class="ctl" id="tour-back">Back</button>
+      <button type="button" class="ctl ctl-main" id="tour-next" autofocus>Next</button>
+      <button type="button" class="voice-btn" id="tour-voice" aria-pressed="false" aria-describedby="tour-voice-note">
+        <svg class="i-voice-off" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 9.5h3.6L12 6v12l-4.4-3.5H4z"/><path class="stroke" d="M16 9.5l5 5M21 9.5l-5 5"/></svg>
+        <svg class="i-voice-on" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 9.5h3.6L12 6v12l-4.4-3.5H4z"/><path class="stroke" d="M15.6 9a4.2 4.2 0 0 1 0 6M18.2 6.6a7.6 7.6 0 0 1 0 10.8"/></svg>
+        <span class="voice-bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+        <span class="sr-only">Selene's voice</span>
+      </button>
+      <button type="button" class="ctl tour-skip-part" id="tour-skip-part" hidden>Skip this part</button>
+      <button type="button" class="tour-skip" id="tour-skip">Skip the tour</button>
+      <p class="sr-only" id="tour-voice-note">Reads each step aloud in a calm voice. Turn it off if you use a screen reader.</p>
+    </div>
+  </div>
+</dialog>
+
+<script src="js/selene.js?v=1"></script>
+<script src="js/nav.js?v=1"></script>
+<script src="js/theme.js?v=1"></script>
+<script src="js/cloud.js?v=1"></script>
+<script src="js/beginnings.js?v=1"></script>
+<script src="js/guide.js?v=1"></script>
+<script>
+// Selene's tour of Your Beginnings: every step, hands-on. On a "your turn" part she waits for the
+// visitor to do it (beginnings:progress events from js/beginnings.js), with "Skip this part" for
+// anyone who would rather not. Her words read the day from the data, never from memory.
+(function () {
+  function app() { return window.BeginningsApp || {}; }
+  function date() { return app().dateText ? app().dateText() : "your day"; }
+  window.SELENITES_TOUR = {
+    page: "beginnings",
+    guide: "selene", guideName: "Selene", voiceKey: "selenites-selene-voice",
+    continueAt: "welcome",
+    showView: function (v) { if (app().showView) app().showView(v); },
+    heading: function () { return app().heading ? app().heading() : null; },
+    label: function (step, k, n) {
+      return step.page === 0 ? "Welcome · Part " + k + " of " + n : "Step " + step.page + " of 4 · Part " + k + " of " + n;
+    },
+    steps: [
+      { id: "welcome", page: 0, view: "day", welcome: true, title: "Hi, I'm Selene",
+        text: "I'm the goddess of the Moon, and I watch the sky every night. Here I'll show you the sky SPHEREx photographed on your birthday, and who it met there. You'll do the clicking.",
+        next: "Start the tour" },
+      { id: "name", page: 0, view: "day", target: ".bg-name", title: "Why The First Light",
+        text: "A telescope's very first picture is called its first light. Here, the first light is yours: the sky on your birthday." },
+      { id: "honest", page: 0, view: "day", target: ".bg-honest", title: "An honest note",
+        text: "SPHEREx started its survey in April 2025, so I can show your birthday in 2025 or 2026, never the year you were born. Every picture here is real SPHEREx data." },
+      { id: "steps", page: 0, view: "day", target: "#steps", title: "Four steps",
+        text: "This bar shows which step you are on. You can jump to any of them, and the Back button works too." },
+
+      { id: "do-pick", page: 1, view: "day", target: ".bg-day", skipTo: "do-ring", title: "Your turn: your birthday",
+        text: "Choose your [month], then your [day]. If SPHEREx saw that date twice, pick a year too. Nothing is saved or sent anywhere.",
+        doneTitle: "Got it",
+        action: { event: "beginnings:progress", id: "picked", settle: true } },
+      { id: "do-ring", page: 1, view: "day", target: '#steps a[data-view="ring"]', title: "Your turn: step 2",
+        text: "Click [SPHEREx's ring] in the step bar.",
+        action: { event: "selenites:view", view: "ring" } },
+
+      { id: "map", page: 2, view: "ring", target: ".bg-ring .bg-map-fig", title: "The whole sky",
+        text: function () { return "This is the whole sky, flattened like a map of the Earth. The glowing disc is the Sun on " + date() + ", and the middle line is the path it takes through the year."; } },
+      { id: "do-play", page: 2, view: "ring", target: ".ring-controls", skipTo: "why", title: "Your turn: replay the day",
+        text: "Press [Play the day], or drag the slider to the end. Each dot is one picture, in the order SPHEREx took it.",
+        doneTitle: "There's the ring",
+        action: { event: "beginnings:progress", id: "ring-full", settle: true } },
+      { id: "why", page: 2, view: "ring", target: ".bg-ring .bg-more > summary", title: "Why a ring?",
+        text: "SPHEREx keeps its back to the Sun and looks sideways, about 90 degrees away, so a day of pictures circles the sky. This opens a small drawing of it." },
+      { id: "do-meet", page: 2, view: "ring", target: '#steps a[data-view="meet"]', title: "Your turn: step 3",
+        text: "Click [Who it met] in the step bar.",
+        action: { event: "selenites:view", view: "meet" } },
+
+      { id: "sheet", page: 3, view: "meet", target: "#meet-sheet", title: "Meet the first one",
+        text: "These are famous objects from Charles Messier's list of 110, whose spot in the sky sat inside your day's pictures. Being in a picture doesn't mean it shines brightly there; it means SPHEREx looked right at it." },
+      { id: "do-other", page: 3, view: "meet", target: "#meet-others-box", skipTo: "collect", title: "Your turn: meet another",
+        when: function () { return app().others ? app().others() > 0 : false; },
+        text: "Click another name in this [list], or a sparkle on the map, to meet it.",
+        action: { event: "beginnings:progress", id: "met" } },
+      { id: "collect", page: 3, view: "meet", target: "#meet-collect", title: "Your collection",
+        text: "Every object you meet lights a dot here, kept in this browser only. Try other birthdays to meet more of the 110. No rush: nothing expires." },
+      { id: "do-card", page: 3, view: "meet", target: '#steps a[data-view="card"]', title: "Your turn: step 4",
+        text: "Click [Your card] in the step bar.",
+        action: { event: "selenites:view", view: "card" } },
+
+      { id: "card", page: 4, view: "card", target: ".card-frame", title: "Your first light",
+        text: "Your card draws the whole sky around the Sun. SPHEREx's pictures from that day circle it like a halo, about 90 degrees away, with the Moon and the famous objects it met." },
+      { id: "make", page: 4, view: "card", target: ".card-looks", title: "Make it yours",
+        text: "Choose its colours, and add a name if the card is for someone. The name goes on the card only." },
+      { id: "save", page: 4, view: "card", target: ".card-actions", title: "Keep it",
+        text: "Share sends the picture straight to another app, where your phone allows it. Save keeps it as a picture. A link holds the date, so share it only with people you'd tell your birthday." },
+      { id: "end", page: 4, view: "card", target: "#steps", title: "That's Your Beginnings",
+        text: "Come back to any step from this bar, and press Take the tour whenever you'd like me again. Happy first light!",
+        next: "Finish" }
+    ]
+  };
+})();
+</script>
+<script src="js/tour.js?v=1"></script>
+</body>
+</html>

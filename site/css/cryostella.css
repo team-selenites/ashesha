@@ -1,0 +1,187 @@
+/* Cryostella (cryostella.html, js/cryostella.js). Every colour comes from tokens.css, except the
+   rainbow in step 1, which is a picture of real colours. Layout, steps and Iris's tips reuse the
+   sky viewer's styles in app.css. */
+
+/* ---------- Header ---------- */
+.cr-head h1 { font-size: var(--step-2); margin-bottom: 4px; }
+.cr-head .lede { font-size: 17px; margin-bottom: 8px; }
+.cr-practice-note { margin: 4px 0 0; }
+@media (min-width: 860px) { .site-head.cr-head > .cr-practice-note { grid-column: 1; justify-self: start; } .site-head.cr-head > .ts { grid-row: 1 / span 4; } }
+/* The tip and the lede are written for every step, so they stay (app.css hides them past step 1 of the viewer). */
+html.has-views:not([data-view="choose"]) .site-head.cr-head > .lede { display: block; }
+
+/* Four steps in the bar. On phones: the current step written out, the others as numbers. */
+.cr-steps ol { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+@media (max-width: 639px) {
+  .cr-steps ol { grid-template-columns: auto auto auto auto; }
+  .cr-steps ol:has(li:nth-child(1) a[aria-current]) { grid-template-columns: minmax(0, 1fr) auto auto auto; }
+  .cr-steps ol:has(li:nth-child(2) a[aria-current]) { grid-template-columns: auto minmax(0, 1fr) auto auto; }
+  .cr-steps ol:has(li:nth-child(3) a[aria-current]) { grid-template-columns: auto auto minmax(0, 1fr) auto; }
+  .cr-steps ol:has(li:nth-child(4) a[aria-current]) { grid-template-columns: auto auto auto minmax(0, 1fr); }
+}
+
+
+/* "Do this now": while Iris asks for something, that control has a still ring. */
+html[data-nudge="rb-range"] #rb-range,
+html[data-nudge="read-cursor"] #read-cursor,
+html[data-nudge="hear-play"] #hear-play,
+html[data-nudge="game-play"] #game-play,
+html[data-nudge="guide-next"] .guide:not([hidden]) .guide-next:not([hidden]) {
+  box-shadow: 0 0 0 3px var(--bg), 0 0 0 6px var(--nudge);
+}
+input[type="range"] { border-radius: 999px; }
+@media (forced-colors: active) {
+  html[data-nudge="rb-range"] #rb-range, html[data-nudge="read-cursor"] #read-cursor, html[data-nudge="hear-play"] #hear-play, html[data-nudge="game-play"] #game-play { outline: 3px dashed Highlight; outline-offset: 4px; }
+}
+
+/* Every step ends with a plain Next, for anyone who has hidden Iris's tips. */
+.cr-pager { display: flex; justify-content: flex-end; margin-top: 24px; }
+.cr-pager-next { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; }
+.cr-pager-next svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+html:not(.guide-folded) .cr-pager-next { background: transparent; color: var(--ink); }
+
+/* ---------- Step 1: the rainbow ---------- */
+.rb { display: grid; gap: 8px; }
+.rb-band { width: 100%; height: auto; display: block; overflow: visible; }
+.rb-ir-text { fill: #ECE9F1; font-family: var(--font); font-size: 15px; font-weight: 700; }
+.rb-bracket { fill: none; stroke-width: 2.5; }
+.rb-bracket.is-eyes { stroke: var(--muted); }
+.rb-bracket.is-spherex { stroke: var(--mark); }
+.rb-bracket-text { font-family: var(--font); font-size: 15px; font-weight: 700; }
+.rb-bracket-text.is-eyes { fill: var(--muted); }
+.rb-bracket-text.is-spherex { fill: var(--mark); }
+.rb-tick { stroke: var(--rule); stroke-width: 2; }
+.rb-tick-text { fill: var(--muted); font-family: var(--font); font-size: 14px; }
+.rb-band.is-narrow .rb-ir-text, .rb-band.is-narrow .rb-bracket-text { font-size: 13.5px; }
+.rb-band.is-narrow .rb-tick-text { font-size: 13px; }
+.rb-marker line { stroke: var(--ink); stroke-width: 3; }
+.rb-marker path { fill: var(--ink); }
+.rb-label { margin-top: 4px; }
+.rb input[type="range"] { width: 100%; min-height: 44px; margin: 0; }
+.rb-readout { display: flex; align-items: center; gap: 12px; font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.rb-swatch { width: 40px; height: 40px; border-radius: 50%; flex: none; border: 2px solid var(--rule); }
+.rb-swatch.is-ir { background: repeating-linear-gradient(45deg, #3A0610 0 6px, #0D0A1A 6px 12px); }
+.rb-name { font-weight: 400; color: var(--muted); }
+.rb-say { font-size: 17px; margin: 0; min-height: 3em; }
+
+/* ---------- Choosing a spectrum ---------- */
+.cr-pick { margin-bottom: 12px; }
+.cr-pick-btns { display: flex; flex-wrap: wrap; gap: 8px; }
+.cr-pick-btn {
+  display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 8px 16px;
+  font: inherit; font-weight: 700; color: var(--ink); background: transparent;
+  border: 2px solid var(--rule); border-radius: 999px; cursor: pointer;
+}
+.cr-pick-btn[aria-pressed="true"] { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 14%, var(--bg)); }
+.cr-pick-btn[aria-pressed="true"]::after { content: "\2713"; color: var(--pop); }
+@media (hover: hover) { .cr-pick-btn:hover { border-color: var(--accent); } }
+.cr-pick-ic { width: 14px; height: 14px; flex: none; }
+.cr-pick-btn[data-kind="ice-source"] .cr-pick-ic { border: 2px solid var(--mark); clip-path: polygon(0 0, 100% 0, 50% 100%); background: transparent; box-shadow: inset 0 0 0 2px var(--mark); }
+.cr-pick-btn[data-kind="comet"] .cr-pick-ic { background: var(--mark); clip-path: polygon(50% 0, 100% 100%, 0 100%); }
+.cr-summary { color: var(--muted); }
+
+/* ---------- Charts ---------- */
+.cr-panel { border-top: 0; padding-top: 4px; margin-top: 12px; }
+.cr-figure { margin: 0; }
+.cr-chart { display: block; width: 100%; height: auto; overflow: visible; color: var(--ink); }
+.cr-chart text { fill: var(--muted); font-family: var(--font); font-size: 14px; }
+.cr-chart .cr-axis-title { fill: var(--ink); font-weight: 700; }
+.cr-chart .cr-axis { stroke: var(--rule); stroke-width: 1.5; }
+.cr-chart .cr-grid { stroke: var(--rule); stroke-width: 1; stroke-dasharray: 2 5; opacity: 0.7; }
+.cr-chart .cr-line { fill: none; stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; }
+.cr-chart .cr-err { stroke: var(--muted); stroke-width: 1.5; }
+.cr-chart .cr-dot { fill: var(--ink); }
+.cr-chart .cr-feature-line { stroke: var(--mark); stroke-width: 1.5; stroke-dasharray: 4 4; }
+.cr-chart .cr-feature-text { fill: var(--ink); font-weight: 700; }
+.cr-chart .cr-cursor { stroke: var(--cursor); stroke-width: 2.5; }
+.cr-chart .cr-cursor-dot { fill: var(--bg); stroke: var(--cursor); stroke-width: 3.5; }
+.cr-chart .cr-playhead { stroke: var(--playhead); stroke-width: 4; }
+.cr-chart .cr-hit { fill: transparent; cursor: crosshair; }
+.cr-mark-bump { fill: var(--mark); }
+.cr-mark-dip { fill: none; stroke: var(--mark); stroke-width: 2; }
+.cr-spark { fill: var(--mark); }
+.cr-spark.is-b { fill: var(--cursor); }
+@media (prefers-reduced-motion: no-preference) {
+  .cr-spark { animation: cr-spark 800ms var(--ease-out-expo) both; }
+  @keyframes cr-spark { from { transform: translate(var(--x0), var(--y0)) scale(0.4); opacity: 1; } to { transform: translate(var(--x), var(--y)) scale(1); opacity: 0; } }
+}
+
+.cr-explore { margin-top: 12px; display: grid; gap: 6px; }
+.cr-explore label { font-weight: 700; }
+.cr-explore input[type="range"], .cr-sliders input[type="range"] { width: 100%; min-height: 44px; margin: 0; }
+.cr-readout { margin: 0; font-variant-numeric: tabular-nums; min-height: 3.2em; }
+.cr-found { font-weight: 700; min-height: 1.6em; margin: 8px 0 0; }
+.cr-found:not(:empty)::before { content: "\2726  "; color: var(--pop); }
+
+.cr-more { margin-top: 16px; }
+.cr-more summary { cursor: pointer; font-weight: 700; min-height: 44px; display: flex; align-items: center; color: var(--link); }
+.cr-more-body { padding-top: 4px; }
+.cr-h3 { font-size: var(--step-0); margin: 16px 0 6px; }
+.cr-features { padding-left: 20px; }
+.cr-features li { margin-bottom: 6px; }
+.cr-table-scroll { max-height: 360px; overflow: auto; margin-top: 8px; }
+.cr-table { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; }
+.cr-table caption { text-align: left; font-weight: 700; padding-bottom: 8px; }
+.cr-table th, .cr-table td { padding: 6px 12px; text-align: right; border-bottom: 1px solid var(--rule); }
+.cr-table th { position: sticky; top: 0; background: var(--bg); }
+.cr-table th:first-child, .cr-table td:first-child { text-align: left; }
+.cr-table tr.is-current td { font-weight: 700; background: color-mix(in srgb, var(--accent) 14%, transparent); }
+
+/* ---------- Step 3: the player ---------- */
+.cr-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; margin: 14px 0; }
+.cr-play { min-width: 190px; }
+.cr-now { margin: 0; font-weight: 700; font-variant-numeric: tabular-nums; min-height: 1.6em; }
+.cr-sound-key { margin: 0; padding-left: 20px; }
+.cr-sound-key li { margin-bottom: 4px; }
+.cr-sliders { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); padding-top: 8px; }
+.cr-sliders output { font-size: 14px; color: var(--muted); }
+
+/* ---------- Step 4: the game ---------- */
+.game-round { font-weight: 700; font-size: 18px; margin: 0; }
+.game-answer { border: 0; padding: 0; margin: 8px 0 0; }
+.game-answer legend { font-weight: 700; padding: 0; margin-bottom: 8px; }
+.game-btns { display: flex; flex-wrap: wrap; gap: 10px; }
+.game-choice {
+  display: grid; justify-items: start; gap: 0; min-width: 180px; min-height: 56px; padding: 8px 18px;
+  font: inherit; font-weight: 700; font-size: 18px; color: var(--ink); background: transparent; text-align: left;
+  border: 2px solid var(--accent); border-radius: 14px; cursor: pointer;
+}
+.game-choice small { font-weight: 400; font-size: 14px; color: var(--muted); }
+@media (hover: hover) { .game-choice:not(:disabled):hover { background: color-mix(in srgb, var(--accent) 14%, transparent); } }
+.game-choice:disabled { cursor: default; }
+.game-choice.is-right { background: var(--accent); color: var(--accent-ink); }
+.game-choice.is-right small { color: inherit; }
+.game-choice.is-right::after { content: "\2713  The answer"; font-size: 14px; }
+.game-choice.is-wrong { border-style: dashed; }
+.game-choice.is-wrong::after { content: "\2715  Your choice"; font-size: 14px; color: var(--muted); }
+.game-result { min-height: 1.6em; margin: 12px 0 0; font-weight: 700; }
+
+@media (forced-colors: active) {
+  .cr-chart .cr-line, .cr-chart .cr-cursor, .cr-chart .cr-playhead { stroke: CanvasText; }
+  .cr-chart .cr-dot, .cr-mark-bump { fill: CanvasText; }
+  .game-choice.is-right, .cr-pick-btn[aria-pressed="true"] { forced-color-adjust: none; background: Highlight; color: HighlightText; }
+}
+
+/* The working area of each step sits on a soft card, so the Light theme's clouds never sit
+   behind a graph. */
+.rb, .cr-panel {
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  border: 1px solid color-mix(in srgb, var(--rule) 45%, transparent);
+  border-radius: 18px; padding: 20px;
+}
+@media (max-width: 520px) { .rb, .cr-panel { padding: 14px 12px; } }
+
+/* Why the name: one short line under the introduction. */
+.cr-name { font-size: 15.5px; margin: 0 0 8px; max-width: 70ch; color: var(--ink); }
+.cr-name strong { color: var(--pop); }
+@media (min-width: 860px) { .site-head.cr-head > .cr-name { grid-column: 1; } }
+/* Colour names on the rainbow: white letters with a dark outline, readable on every colour. */
+.rb-cname { fill: #FFFFFF; stroke: #120A1E; stroke-width: 3px; paint-order: stroke; stroke-linejoin: round; font-family: var(--font); font-size: 12px; font-weight: 700; }
+/* Iris's tour invitation stays on every step (app.css hides it past the viewer's first step). */
+html.has-views:not([data-view="choose"]) .site-head.cr-head > .tour-chip { display: inline-flex; }
+@media (min-width: 860px) { .site-head.cr-head > .tour-chip { grid-column: 1; justify-self: start; } .site-head.cr-head > .ts { grid-row: 1 / span 5; } }
+
+/* During the tour, the tour's own ring marks the control, so Iris's still ring steps aside
+   (two rings of different sizes round one slider looked like a misfit). */
+html.is-touring[data-nudge] #rb-range, html.is-touring[data-nudge] #read-cursor,
+html.is-touring[data-nudge] #hear-play, html.is-touring[data-nudge] #game-play { box-shadow: none; }

@@ -1,0 +1,115 @@
+/* Colour and type tokens. Dark is the default for everyone, whatever their device setting.
+   Light and colour-blind-friendly override below when the visitor picks them.
+   Values come from the 9 November theme decisions; all three themes approved 10 November;
+   light changed to pink-lavender on 10 November. */
+
+:root {
+  --bg: #0B0A0E;
+  --ink: #ECE9F1;
+  --muted: #B4AFC0;
+  --link: #C2B0F0;
+  --accent: #C2B0F0;
+  --accent-ink: #0B0A0E;
+  --rule: #6B6478;
+  --focus: #C2B0F0;
+  --pop: #F2A7D3; /* pink: small accents only, never the only carrier of meaning */
+  /* Roles that point at something: "do this now" rings, marks on graphs, the explore cursor
+     and the playhead. Each also has a shape or a label; the colour-blind friendly theme gives
+     them Okabe-Ito colours that stay apart for common types of colour blindness. */
+  --nudge: #F2A7D3;
+  --mark: #F2A7D3;
+  --cursor: #C2B0F0;
+  --playhead: #F2A7D3;
+
+  --status-clear: #ECE9F1;
+  --status-faint: #C2B0F0;
+  --status-nd: #ECE9F1;
+  --status-noobs: #B4AFC0;
+
+  /* Background stars. Each theme sets its own neutral colour; all are kept dim so text stays easy to read. */
+  --star-bright: rgba(236, 233, 241, 0.42);
+  --star-twinkle: rgba(246, 243, 255, 0.8); /* the twinkling stars (Dark only), kept soft */
+  --star: rgba(236, 233, 241, 0.36);
+  --star-dim: rgba(236, 233, 241, 0.22);
+  --scroll-thumb: #7C6FA0;
+  --scroll-track: #14111C;
+  --sel-bg: #C2B0F0;
+  --sel-ink: #0B0A0E;
+
+  --font: "Atkinson Hyperlegible", system-ui, sans-serif;
+  --step-0: 16px;
+  --step-1: 20px;
+  --step-2: 28px;
+  --step-3: clamp(40px, 1.4vw + 24px, 56px); /* the title grows a little on big screens */
+
+  color-scheme: dark;
+}
+
+/* Light: pale lavender with deep purple text. */
+:root[data-theme="light"] {
+  --bg: #F4EEFA;
+  --ink: #2A1247;
+  --muted: #5B3F86;
+  --link: #6A3FB5;
+  --accent: #2A1247;
+  --accent-ink: #F4EEFA;
+  --rule: #8A78A6;
+  --focus: #2A1247;
+  --pop: #A8327A;
+  --nudge: #A8327A;
+  --mark: #A8327A;
+  --cursor: #2A1247;
+  --playhead: #A8327A;
+  --status-clear: #2A1247;
+  --status-faint: #5B3F86;
+  --status-nd: #2A1247;
+  --status-noobs: #5B3F86;
+  /* Daytime: soft clouds instead of stars (the sky layer in index.html). Kept faint so reading stays easy. */
+  --star-bright: transparent;
+  --star: transparent;
+  --star-dim: transparent;
+  --cloud: #FFFFFF;
+  --cloud-opacity: 0.6; /* applied to the whole cloud at once, so overlapping puffs never show through each other */
+  --cloud-shadow: rgba(168, 50, 122, 0.16);
+  --cloud-face: rgba(106, 63, 181, 0.4);
+  --cloud-blush: rgba(212, 82, 158, 0.34);
+  --scroll-thumb: #8A78A6;
+  --scroll-track: #E9DFF3;
+  --sel-bg: #2A1247;
+  --sel-ink: #F4EEFA;
+  color-scheme: light;
+}
+
+/* Colour-blind friendly: Okabe-Ito status colours on deep violet.
+   Shape and a written label carry every status; colour is a backup. */
+:root[data-theme="colour-blind-friendly"] {
+  --bg: #1E1238;
+  --ink: #FFFFFF;
+  --muted: #DCCFF2;
+  --link: #9ED4F7;
+  --accent: #C2B0F0;
+  --accent-ink: #1E1238;
+  --rule: #8F7FB0;
+  --focus: #F0E442;
+  --pop: #F2A7D3;
+  /* Okabe-Ito: sky blue for "do this now" (apart from the yellow focus ring), the explore
+     cursor and the playhead (never on the same graph), orange for marks on graphs. Checked
+     under simulated protanopia, deuteranopia and tritanopia (12 November 2026). */
+  --nudge: #56B4E9;
+  --mark: #E69F00;
+  --cursor: #56B4E9;
+  --playhead: #56B4E9;
+  --status-clear: #F0E442;
+  --status-faint: #56B4E9;
+  --status-nd: #FFFFFF;
+  --status-noobs: #CC79A7;
+  /* Pale lavender specks, neutral on purpose (never the status colours). */
+  --star-bright: rgba(220, 207, 242, 0.42);
+  --star: rgba(220, 207, 242, 0.30);
+  --star-dim: rgba(220, 207, 242, 0.18);
+  --scroll-thumb: #8F7FB0;
+  --scroll-track: #170C2E;
+  --sel-bg: #C2B0F0;
+  --sel-ink: #1E1238;
+  color-scheme: dark;
+}
