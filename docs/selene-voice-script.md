@@ -1,6 +1,8 @@
 # Selene's and Iris's voices
 
-Recorded voices make the guides sound the same, calm and human on every computer. Every line a guide can say has a recording: the tours, the tip clouds, Say hello on the home page, and the lines that change with what the visitor picks (the example's name in the sky viewer, the spectrum in Cryostella). 113 lines in all.
+Recorded voices make the guides sound the same, calm and human on every computer. Every line a guide can say has a recording: the tours, the tip clouds, Say hello on the home page, and the lines that change with what the visitor picks (the example's name in the sky viewer, the spectrum in Cryostella). 149 lines in all: 113 recorded first, then 36 more on 14 November for Spot a candidate, Your Beginnings and two home tour lines whose words had changed.
+
+Eight lines in Your Beginnings stay silent on purpose: they carry the visitor's own date, picture count or the names of the objects SPHEREx met, so no single recording can match them. They are the tips for d-year, d-ready, r-play, m-meet, m-one, m-more and c-card, and the tour step that names the visitor's day.
 
 ## How it works
 
@@ -180,3 +182,59 @@ These were recorded while their wording still describes something temporary. Whe
 | selene-hello-a01a98.mp3 | Hi, I'm Selene, goddess of the Moon. Come and watch the sky change, and spot what moves! |
 | iris-hello-148d9a.mp3 | Hi, I'm Iris, goddess of the rainbow. Come and see the colours your eyes can't, and hear them too! |
 
+
+### Spot a candidate tips, Selene (9)
+
+| File | Words on screen |
+| --- | --- |
+| selene-spot-tip-w-ask-84efa1.mp3 | Hi, I'm Selene. In the sky viewer you can mark a picture as a candidate. Before you do, let's make sure we mean the same thing. Pick the sentence that is true. |
+| selene-spot-tip-w-done-b85248.mp3 | Exactly: a candidate means "worth a second look", nothing more. Now, what makes a picture worth a second look? Press Next. |
+| selene-spot-tip-s-look-e44ffb.mp3 | Here are three signs worth marking. First, look at the real picture at the top: that's what SPHEREx pictures look like. Then open each sign with its button and compare the pictures from left to right. The dashed white box shows where to look. |
+| selene-spot-tip-s-done-c74a02.mp3 | You've seen all three: it moved, it appeared and stayed, it changed in the same colour. But some changes only look real. Press Next to meet the traps. |
+| selene-spot-tip-t-ask-d4c498.mp3 | Each of these looks like a change. For each one, decide: would you mark it now, or wait? There's no wrong click: I'll explain either way, then show you the same trap in real SPHEREx pictures. |
+| selene-spot-tip-t-done-16628c.mp3 | These three fool everyone, astronomers too. Same colour, more than one picture, no flags: then it's worth a look. Ready to practise? Press Next. |
+| selene-spot-tip-p-play-b7f979.mp3 | Your turn! No rings to help you now. Look at the pictures and their colours, then choose Mark as candidate or Not yet. Take your time. |
+| selene-spot-tip-p-done-da6507.mp3 | All five done. Whatever your score, you now know what to look for, and what to be careful about. Press Next to see how it works in the sky viewer. |
+| selene-spot-tip-v-read-78a679.mp3 | Real pictures are noisier than these. Tick off the four checks as you go, then try it on the comet 3I/ATLAS. I'll be there too. |
+
+### Your Beginnings tips, Selene (8)
+
+| File | Words on screen |
+| --- | --- |
+| selene-beginnings-tip-d-pick-05ed04.mp3 | Hello, I'm Selene, goddess of the Moon. Every night I watch the sky, and so does SPHEREx. Tell me your birthday: choose the month, then the day. |
+| selene-beginnings-tip-d-leap-f0aa71.mp3 | A leap-day birthday! SPHEREx hasn't had a 29 February yet: 2025 and 2026 weren't leap years. Choose 28 February or 1 March below, and the first 29 February with data will come in 2028. |
+| selene-beginnings-tip-r-none-4123a2.mp3 | First tell me your birthday, and I'll show you where SPHEREx was looking that day. |
+| selene-beginnings-tip-r-done-9509e4.mp3 | See the ring? SPHEREx never looks towards the Sun. It looks sideways, about 90 degrees away, so its pictures circle the sky. Press Next to meet who it caught. |
+| selene-beginnings-tip-m-none-83a33f.mp3 | First tell me your birthday, and I'll introduce you to the famous objects SPHEREx met that day. |
+| selene-beginnings-tip-m-empty-e6a105.mp3 | On this day, none of the 110 Messier objects sat inside SPHEREx's pictures. It happens on a few days a year. Try the nearest day that has some, below, or press Next for your card. |
+| selene-beginnings-tip-c-none-e76cf5.mp3 | First tell me your birthday, and I'll make you a card of your day's sky. |
+| selene-beginnings-tip-c-saved-8b45ec.mp3 | It's yours to keep. Want to meet more of the 110? Try a friend's birthday, or watch a patch of sky change in the sky viewer. |
+
+### Your Beginnings tour, Selene (17)
+
+| File | Words on screen |
+| --- | --- |
+| selene-beginnings-tour-welcome-34db17.mp3 | I'm the goddess of the Moon, and I watch the sky every night. Here I'll show you the sky SPHEREx photographed on your birthday, and who it met there. You'll do the clicking. |
+| selene-beginnings-tour-name-95ec78.mp3 | A telescope's very first picture is called its first light. Here, the first light is yours: the sky on your birthday. |
+| selene-beginnings-tour-honest-70ce61.mp3 | SPHEREx started its survey in April 2025, so I can show your birthday in 2025 or 2026, never the year you were born. Every picture here is real SPHEREx data. |
+| selene-beginnings-tour-steps-698a19.mp3 | This bar shows which step you are on. You can jump to any of them, and the Back button works too. |
+| selene-beginnings-tour-do-pick-0f82c5.mp3 | Choose your month, then your day. If SPHEREx saw that date twice, pick a year too. Nothing is saved or sent anywhere. |
+| selene-beginnings-tour-do-ring-64adb1.mp3 | Click SPHEREx's ring in the step bar. |
+| selene-beginnings-tour-do-play-f02441.mp3 | Press Play the day, or drag the slider to the end. Each dot is one picture, in the order SPHEREx took it. |
+| selene-beginnings-tour-why-4c4c53.mp3 | SPHEREx keeps its back to the Sun and looks sideways, about 90 degrees away, so a day of pictures circles the sky. This opens a small drawing of it. |
+| selene-beginnings-tour-do-meet-054b15.mp3 | Click Who it met in the step bar. |
+| selene-beginnings-tour-sheet-7b60f5.mp3 | These are famous objects from Charles Messier's list of 110, whose spot in the sky sat inside your day's pictures. Being in a picture doesn't mean it shines brightly there; it means SPHEREx looked right at it. |
+| selene-beginnings-tour-do-other-6e3e12.mp3 | Click another name in this list, or a sparkle on the map, to meet it. |
+| selene-beginnings-tour-collect-19e876.mp3 | Every object you meet lights a dot here, kept in this browser only. Try other birthdays to meet more of the 110. No rush: nothing expires. |
+| selene-beginnings-tour-do-card-7746a1.mp3 | Click Your card in the step bar. |
+| selene-beginnings-tour-card-b5663e.mp3 | Your card draws the whole sky around the Sun. SPHEREx's pictures from that day circle it like a halo, about 90 degrees away, with the Moon and the famous objects it met. |
+| selene-beginnings-tour-make-906fd5.mp3 | Choose its colours, and add a name if the card is for someone. The name goes on the card only. |
+| selene-beginnings-tour-save-4d9b1d.mp3 | Share sends the picture straight to another app, where your phone allows it. Save keeps it as a picture. A link holds the date, so share it only with people you'd tell your birthday. |
+| selene-beginnings-tour-end-afcf25.mp3 | Come back to any step from this bar, and press Take the tour whenever you'd like me again. Happy first light! |
+
+### Home tour, re-recorded after a wording change, Selene (2)
+
+| File | Words on screen |
+| --- | --- |
+| selene-home-tour-soon-9315a2.mp3 | More parts are on their way this weekend: the Cosmic Orchestra with Orpheus, and puzzles made from SPHEREx pictures. They join the menu when they're ready. |
+| selene-home-tour-team-fb5111.mp3 | These are the six people who made this site, and me with it. Pawana leads the team. The little sky on each card is a real constellation, drawn from real star positions. |

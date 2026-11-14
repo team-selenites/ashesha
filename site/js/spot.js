@@ -18,40 +18,19 @@
   function seeded(seed) { var s = seed >>> 0; return function () { s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967296; }; }
 
   // ---------- Selene's tips: which part of each step she is on ----------
+  // Her voice switch (in each cloud) is run by js/guide.js, the same one as on every page.
   var guideState = { what: "w-ask", signs: "s-look", traps: "t-ask", practice: "p-play", viewer: "v-read" };
-  var VOICE_KEY = "selenites-selene-voice", voiceOn = false;
-  try { voiceOn = localStorage.getItem(VOICE_KEY) === "on"; } catch (e) {}
   window.SELENITES_GUIDE = {
     state: function (view) { return guideState[view] || ""; },
     // While Selene asks for something, that part of the page has a still ring (css/spot.css).
     nudge: { "w-ask": "what-choices", "w-done": "guide-next", "s-look": "signs-pick", "s-done": "guide-next",
-      "t-ask": "traps-choices", "t-done": "guide-next", "p-play": "practice-choices", "p-done": "guide-next" },
-    voice: function () { return voiceOn; }
+      "t-ask": "traps-choices", "t-done": "guide-next", "p-play": "practice-choices", "p-done": "guide-next" }
   };
   function setGuide(view, state) {
     if (guideState[view] === state) return;
     guideState[view] = state;
     document.dispatchEvent(new CustomEvent("selenites:guide"));
   }
-  function showVoice() {
-    document.querySelectorAll(".guide-voice").forEach(function (b) {
-      b.setAttribute("aria-pressed", voiceOn ? "true" : "false");
-      b.title = voiceOn ? "Selene's voice is on" : "Selene's voice is off";
-    });
-  }
-  showVoice();
-  if (!("speechSynthesis" in window)) document.querySelectorAll(".guide-voice").forEach(function (b) { b.hidden = true; });
-  document.addEventListener("click", function (e) {
-    var b = e.target.closest ? e.target.closest(".guide-voice") : null;
-    if (!b) return;
-    voiceOn = !voiceOn;
-    try { localStorage.setItem(VOICE_KEY, voiceOn ? "on" : "off"); } catch (err) {}
-    showVoice();
-    document.querySelectorAll(".guide-selene").forEach(function (s) { if (s._selene) s._selene.stop(); });
-    // Turned on: she says the current tip again, aloud.
-    if (voiceOn) document.dispatchEvent(new CustomEvent("selenites:guide"));
-  });
-
   // ---------- Steps: one screen at a time ----------
   var VIEWS = ["what", "signs", "traps", "practice", "viewer"];
   var TITLES = { what: "What a candidate is", signs: "Signs to look for", traps: "Traps", practice: "Practice", viewer: "In the sky viewer" };
