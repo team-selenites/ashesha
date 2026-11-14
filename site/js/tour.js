@@ -206,8 +206,14 @@
   try { voiceOn = localStorage.getItem(VOICE_KEY) === "on"; } catch (e) {}
   // Only recorded lines are ever played (never the device's built-in voice), so the voice
   // button only appears once this guide's recordings are found. Lines without one stay silent.
+  // A step without a recording (such as one that names the visitor's own date) has no voice
+  // button at all, rather than a switch that does nothing.
+  var voiceAvail = false, voiceText = "";
+  function fitVoice() {
+    voiceBtn.hidden = !(voiceAvail && (!voiceText || window.Selene.recording(GUIDE, voiceText)));
+  }
   voiceBtn.hidden = true;
-  if (window.Selene && window.Selene.voiceReady) window.Selene.voiceReady.then(function () { if (window.Selene.hasVoice(GUIDE)) voiceBtn.hidden = false; });
+  if (window.Selene && window.Selene.voiceReady) window.Selene.voiceReady.then(function () { voiceAvail = window.Selene.hasVoice(GUIDE) && window.Selene.canSpeak; fitVoice(); });
   if (!window.Selene || !window.Selene.canSpeak) { voiceBtn.hidden = true; voiceOn = false; }
   function showVoice() {
     voiceBtn.setAttribute("aria-pressed", voiceOn ? "true" : "false");
@@ -218,6 +224,8 @@
   function speak(i) {
     var raw = val(STEPS[i].text), text = plain(raw);
     textEl.textContent = text;
+    voiceText = text;
+    if (window.Selene) fitVoice();
     layWords(raw);
     if (!selene) { typer.all(); return; }
     card.classList.add("is-talking");

@@ -117,11 +117,19 @@
   }
   voiceBtns.forEach(function (b) { b.hidden = true; });
   showVoice();
+  // A tip without a recording (such as one that names the visitor's own date) shows no voice
+  // button at all, rather than a switch that does nothing.
+  var voiceLoaded = false;
+  function fitVoice(g) {
+    var b = g.querySelector(".guide-voice");
+    if (!b) return;
+    var slot = g.querySelector(".guide-selene"), who = (slot && slot.getAttribute("data-character")) || "selene";
+    var p = Array.prototype.filter.call(g.querySelectorAll(".guide-text"), function (el) { return !el.closest("[hidden]"); })[0];
+    b.hidden = !(voiceLoaded && window.Selene.hasVoice(who) && (!p || window.Selene.recording(who, p.textContent)));
+  }
   if (window.Selene && window.Selene.voiceReady) window.Selene.voiceReady.then(function () {
-    voiceBtns.forEach(function (b) {
-      var g = b.closest(".guide"), slot = g && g.querySelector(".guide-selene");
-      b.hidden = !window.Selene.hasVoice((slot && slot.getAttribute("data-character")) || "selene");
-    });
+    voiceLoaded = true;
+    guides.forEach(fitVoice);
   });
   voiceBtns.forEach(function (b) {
     b.addEventListener("click", function () {
@@ -191,6 +199,7 @@
       if (el.hidden === on) changed = true;
       el.hidden = !on;
     });
+    fitVoice(g);
     draw(g);
     if ((talk || changed) && !folded && g._selene && !reduced() && !root.classList.contains("is-touring")) {
       // The tip types in letter by letter while her lips move (laid out first, so nothing jumps).
