@@ -48,6 +48,7 @@
       root.classList.add("theme-fade");
       clearTimeout(fadeTimer);
       fadeTimer = setTimeout(function () { root.classList.remove("theme-fade"); }, 400);
+      root.classList.remove("sky-still");   // picking Light lets the clouds drift in again
       root.setAttribute("data-theme", value);
       // Only announce changes the visitor makes, not the starting setting.
       themeDesc.setAttribute("aria-live", "polite");

@@ -15,7 +15,7 @@ try { var t = localStorage.getItem("selenites-theme"); if (t === "light" || t ==
 <link rel="stylesheet" href="css/tokens.css?v=1">
 <link rel="stylesheet" href="css/app.css?v=1">
 <link rel="stylesheet" href="css/nav.css?v=1">
-<link rel="expect" href="#site-nav" blocking="render">
+<link rel="expect" href="#page-ready" blocking="render">
 <link rel="stylesheet" href="css/cryostella.css?v=1">
 </head>
 <body class="cryostella">
@@ -605,5 +605,7 @@ try { var t = localStorage.getItem("selenites-theme"); if (t === "light" || t ==
 })();
 </script>
 <script src="js/tour.js?v=1"></script>
+<!-- The page first paints here, once every script above has built its part (the expect link in the head). -->
+<i id="page-ready" hidden></i>
 </body>
 </html>

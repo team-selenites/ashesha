@@ -406,6 +406,8 @@ html[data-theme="light"] .sky { opacity: 1; visibility: visible; transition-dela
    motion of 5 seconds or less). Switched off for reduced motion by the global rule above. */
 .sky svg { width: calc(100% + 80px); height: 100%; }
 html[data-theme="light"] .sky svg { animation: sky-float 4.5s cubic-bezier(0.25, 1, 0.5, 1) both; }
+/* Arriving from another page of the site: the clouds have already settled, so they stay put. */
+html.sky-still .sky svg { animation: none; }
 @keyframes sky-float { from { transform: translateX(-80px); } to { transform: translateX(0); } }
 
 

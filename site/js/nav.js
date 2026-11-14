@@ -364,6 +364,9 @@
   window.addEventListener("pagereveal", function (e) {
     if (!e.viewTransition) { nameNav(false); return; }   // also a page brought back with Back
     nameNav(true);
+    // The clouds already settled on the last page: keep them still, so the sky does not slide
+    // under the fade (css/app.css, .sky). Picking a theme lets them drift in again (js/theme.js).
+    document.documentElement.classList.add("sky-still");
     e.viewTransition.finished.then(function () { nameNav(false); }, function () { nameNav(false); });
   });
 
