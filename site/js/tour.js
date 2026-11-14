@@ -438,12 +438,19 @@
   }
   // The lit margin around a part: PAD, but never more than half the gap to a neighbouring
   // element, so the spotlight hugs the part instead of cutting into the controls next to it.
+  // The neighbours are the part's own siblings and those of the boxes it sits in: a step link
+  // alone in its list item has no siblings, but the next step's item is right beside it, so
+  // looking only one level up let the light spill over the steps either side.
   function margins(el, r) {
     var m = { t: PAD, b: PAD, l: PAD, r: PAD };
-    var sibs = el.parentElement ? el.parentElement.children : [];
+    var sibs = [];
+    for (var node = el, depth = 0; node && node.parentElement && node !== document.body && depth < 4; node = node.parentElement, depth++) {
+      var kids = node.parentElement.children;
+      for (var k = 0; k < kids.length; k++) if (kids[k] !== node) sibs.push(kids[k]);
+    }
     for (var i = 0; i < sibs.length; i++) {
       var o = sibs[i];
-      if (o === el || !o.offsetWidth || !o.offsetHeight) continue;
+      if (o === el || o.contains(el) || !o.offsetWidth || !o.offsetHeight) continue;
       var q = o.getBoundingClientRect();
       var across = Math.min(q.right, r.right) - Math.max(q.left, r.left) > 0;
       var along = Math.min(q.bottom, r.bottom) - Math.max(q.top, r.top) > 0;

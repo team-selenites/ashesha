@@ -1422,14 +1422,16 @@ html[data-nudge="guide-next"] .guide[data-guide="watch"] .guide-next:not([hidden
 /* The light theme's background clouds would show through the lit part as white blobs. */
 html.is-touring .sky { visibility: hidden; }
 
-/* Words appearing in a cloud: laid out first, then each drifts in (fades in and rises a touch
-   into place) as Selene reaches it. No caret. */
+/* Words appearing in a cloud: laid out first, then each settles in as Selene reaches it, fading
+   up and rising a few pixels on a long, soft ease-out, so the words overlap and read as one
+   flowing line rather than ticking on one by one. No blur (a blur on every word made the text
+   look smudged and is heavy to draw) and no caret. */
 .is-typing .w {
-  display: inline-block; opacity: 0; transform: translateY(0.35em); filter: blur(3px);
-  transition: opacity 380ms ease-out, transform 480ms cubic-bezier(0.22, 0.8, 0.3, 1), filter 380ms ease-out;
+  display: inline-block; opacity: 0; transform: translateY(0.22em);
+  transition: opacity 560ms cubic-bezier(0.25, 1, 0.5, 1), transform 640ms cubic-bezier(0.25, 1, 0.5, 1);
 }
-.is-typing .w.on { opacity: 1; transform: none; filter: none; }
-@media (prefers-reduced-motion: reduce) { .is-typing .w { transition: none; transform: none; filter: none; } }
+.is-typing .w.on { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) { .is-typing .w { transition: none; transform: none; } }
 /* The tour's words are typed in place now (no overlay copy). */
 .tour-ghost { visibility: visible; }
 

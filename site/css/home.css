@@ -214,17 +214,19 @@
    the page with a scalloped edge and a faint grain, a sewn stitch, a taped polaroid of the
    person's constellation with a holographic rim, and a sparkle sticker. No boxes round the words:
    the role is plain text after a small sparkle (the lead's has a marker swash), and links are
-   stitched underlines. The cards stack in columns, so each is only as tall as what it holds. */
+   stitched underlines. The cards sit in a grid, so every card in a row is the same height and
+   their bottom edges line up, however long anyone's line is. */
 .team-lede { margin: 0 0 14px; max-width: 70ch; }
-.team-list { list-style: none; margin: 0; padding: 14px 4px 0; columns: 1; column-gap: 22px; }
-@media (min-width: 700px) { .team-list { columns: 2; } }
-@media (min-width: 1020px) { .team-list { columns: 3; } }
+.team-list { list-style: none; margin: 0; padding: 14px 4px 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: 28px 22px; }
+@media (min-width: 700px) { .team-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1020px) { .team-list { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 
 .team-card {
   --tape: var(--tape-1);
-  /* inline-grid keeps each card in one piece inside the columns, sparkle and all. */
-  position: relative; isolation: isolate; break-inside: avoid; margin: 0 0 28px;
-  display: inline-grid; width: 100%; vertical-align: top;
+  /* Each card stretches to the tallest card in its row; the spare room goes to the empty last
+     grid row, under the links. */
+  position: relative; isolation: isolate; margin: 0;
+  display: grid;
   grid-template-columns: 88px minmax(0, 1fr); column-gap: 14px; align-items: start;
   grid-template-areas: "photo id" "photo line" "photo links" "photo .";
   grid-template-rows: auto auto auto 1fr;
@@ -337,7 +339,8 @@
 }
 
 @media (max-width: 699px) {
-  .team-card { grid-template-columns: 80px minmax(0, 1fr); column-gap: 12px; padding: 14px 14px 10px; margin-bottom: 24px; }
+  .team-card { grid-template-columns: 80px minmax(0, 1fr); column-gap: 12px; padding: 14px 14px 10px; }
+  .team-list { row-gap: 24px; }
   .team-name { font-size: 19px; }
 }
 
