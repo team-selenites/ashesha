@@ -189,6 +189,8 @@
     // under the fade (css/app.css, .sky). Picking a theme lets them drift in again (js/theme.js).
     document.documentElement.classList.add("sky-still");
     e.viewTransition.finished.then(function () { nameNav(false); }, function () { nameNav(false); });
+    // A change cut short (a quick second click, a reload) rejects this; nothing to do then.
+    e.viewTransition.ready.catch(function () {});
   });
 
   // Elsewhere, a click moves the pill to the section, then the next page opens once it has arrived.

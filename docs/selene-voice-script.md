@@ -190,7 +190,7 @@ These were recorded while their wording still describes something temporary. Whe
 | --- | --- |
 | selene-spot-tip-w-ask-84efa1.mp3 | Hi, I'm Selene. In the sky viewer you can mark a picture as a candidate. Before you do, let's make sure we mean the same thing. Pick the sentence that is true. |
 | selene-spot-tip-w-done-b85248.mp3 | Exactly: a candidate means "worth a second look", nothing more. Now, what makes a picture worth a second look? Press Next. |
-| selene-spot-tip-s-look-e44ffb.mp3 | Here are three signs worth marking. First, look at the real picture at the top: that's what SPHEREx pictures look like. Then open each sign with its button and compare the pictures from left to right. The dashed white box shows where to look. |
+| selene-spot-tip-s-look-e30b72.mp3 | Here are three signs worth marking. Flip through each sign's pictures with the arrows, or press Blink, the way astronomers spot changes. Watch the dashed white box. Once you've seen every picture, I'll tell you what it means. |
 | selene-spot-tip-s-done-c74a02.mp3 | You've seen all three: it moved, it appeared and stayed, it changed in the same colour. But some changes only look real. Press Next to meet the traps. |
 | selene-spot-tip-t-ask-d4c498.mp3 | Each of these looks like a change. For each one, decide: would you mark it now, or wait? There's no wrong click: I'll explain either way, then show you the same trap in real SPHEREx pictures. |
 | selene-spot-tip-t-done-16628c.mp3 | These three fool everyone, astronomers too. Same colour, more than one picture, no flags: then it's worth a look. Ready to practise? Press Next. |

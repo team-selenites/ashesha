@@ -23,13 +23,14 @@
   window.SELENITES_GUIDE = {
     state: function (view) { return guideState[view] || ""; },
     // While Selene asks for something, that part of the page has a still ring (css/spot.css).
-    nudge: { "w-ask": "what-choices", "w-done": "guide-next", "s-look": "signs-pick", "s-done": "guide-next",
+    nudge: { "w-ask": "what-choices", "w-done": "guide-next", "s-look": "signs-flip", "s-more": "signs-pick", "s-done": "guide-next",
       "t-ask": "traps-choices", "t-done": "guide-next", "p-play": "practice-choices", "p-done": "guide-next" }
   };
-  function setGuide(view, state) {
+  // quiet: only the ring moves (the tip on screen stays the same, so she does not say it again).
+  function setGuide(view, state, quiet) {
     if (guideState[view] === state) return;
     guideState[view] = state;
-    document.dispatchEvent(new CustomEvent("selenites:guide"));
+    document.dispatchEvent(new CustomEvent("selenites:guide", { detail: { quiet: !!quiet } }));
   }
   // ---------- Steps: one screen at a time ----------
   var VIEWS = ["what", "signs", "traps", "practice", "viewer"];
@@ -216,7 +217,7 @@
     if (box.offsetParent) redraw(box);
   }
   function redraw(box) { box.querySelectorAll("canvas").forEach(function (c) { if (c._draw) c._draw(); }); }
-  function redrawVisible() { document.querySelectorAll("main > .view:not([hidden]) .sp-frames").forEach(redraw); }
+  function redrawVisible() { document.querySelectorAll("main > .view:not([hidden]) .sp-frames, main > .view:not([hidden]) .sp-stage-pics").forEach(redraw); }
   // Theme changes recolour the marks.
   if (window.MutationObserver) new MutationObserver(redrawVisible).observe(root, { attributes: true, attributeFilter: ["data-theme"] });
 
@@ -254,9 +255,12 @@
     function open(i) {
       current = opts.cases[i];
       buttons.forEach(function (b, k) { b.setAttribute("aria-pressed", k === i ? "true" : "false"); });
-      $(opts.prefix + "-title").textContent = current.title;
-      renderFrames($(opts.prefix + "-frames"), current, true);
-      $(opts.prefix + "-words").textContent = current.words;
+      if (opts.render) opts.render(current, i);
+      else {
+        $(opts.prefix + "-title").textContent = current.title;
+        renderFrames($(opts.prefix + "-frames"), current, true);
+        $(opts.prefix + "-words").textContent = current.words;
+      }
       if (opts.onOpen) opts.onOpen(current, i);
     }
     function done(i) {
@@ -269,16 +273,117 @@
     return { done: done, open: open, current: function () { return current; }, count: function () { return Object.keys(seen).length; } };
   }
 
+  // ---------- Step 2: signs, in a blink comparator ----------
+  // One picture at a time on a dark stage, like the sky viewer. The visitor flips through a
+  // sign's pictures (arrows, the little pictures, or the arrow keys) or presses Blink, which
+  // flips them a few times over and then stops by itself. Once every picture of a sign has been
+  // seen, "What it means" opens and the sign gets its tick. The pictures are all drawn up front
+  // and only shown or hidden, so flipping is a hard cut, as on a real blink comparator.
   function stepSigns(signs) {
-    var picker = casePicker({
-      prefix: "signs", cases: signs,
-      onOpen: function (c, i) {
-        $("signs-lesson").textContent = c.lesson;
-        // Opening a sign counts as seeing it.
-        if (picker && picker.done(i)) setGuide("signs", "s-done");
-      }
+    var stage = $("signs-stage"), pics = $("signs-pics"), thumbs = $("signs-thumbs"), hud = $("signs-hud");
+    var seenEl = $("signs-seen"), meaning = $("signs-meaning"), blinkBtn = $("signs-blink"), flip = $("signs-flip");
+    var cur = null, ci = 0, n = 0, f = 0, seen = [], canvases = [], tbtns = [], meant = {}, blinkTimer = 0, blinkLeft = 0;
+    var BLINK_MS = 650, BLINK_ROUNDS = 3;
+    var picker = null;
+
+    function shortDate(d) { var w = String(d).split(" "); return w.length > 1 ? w[0] + " " + w[1].slice(0, 3) : d; }
+    function stopBlink() {
+      clearTimeout(blinkTimer); blinkTimer = 0;
+      blinkBtn.setAttribute("aria-pressed", "false");
+      stage.classList.remove("is-blinking");
+    }
+    function show(k, byBlink) {
+      if (!byBlink) stopBlink();
+      f = (k + n) % n;
+      canvases.forEach(function (c, j) { c.hidden = j !== f; });
+      tbtns.forEach(function (b, j) { b.setAttribute("aria-pressed", j === f ? "true" : "false"); });
+      var p = cur.pictures[f];
+      hud.innerHTML = "<b>Picture " + (f + 1) + "</b> of " + n + " · " + p.date + " · " + micronsText(p.microns);
+      stage.setAttribute("aria-label", "Picture " + (f + 1) + " of " + n + ", " + p.date + ", colour " + p.microns + " microns");
+      seen[f] = true;
+      progress();
+    }
+    // One dot per picture, filled once seen (screen readers hear each picture's name instead).
+    function progress() {
+      var k = seen.filter(Boolean).length, dots = "";
+      for (var j = 0; j < n; j++) dots += '<i class="' + (seen[j] ? "is-seen" : "") + '"></i>';
+      seenEl.innerHTML = '<span class="sp-dots">' + dots + "</span>" + (meant[ci] ? "All seen" : "Seen " + k + " of " + n);
+      if (k >= n && !meant[ci]) reveal();
+    }
+    // Locked, "What it means" says what opens it; once every picture is seen, it opens.
+    function lock(on) {
+      meaning.classList.toggle("is-locked", on);
+      $("signs-lesson").textContent = on ? "Flip through all " + n + " pictures to open this." : cur.lesson;
+    }
+    function reveal() {
+      meant[ci] = true;
+      lock(false);
+      progress();
+      announce("All " + n + " pictures seen. What it means is open.");
+      // All signs seen: her next line. Otherwise the ring moves to the sign buttons (same tip).
+      if (picker.done(ci)) setGuide("signs", "s-done");
+      else setGuide("signs", "s-more", true);
+    }
+    function render(c, i) {
+      stopBlink();
+      cur = c; ci = i; n = c.pictures.length; seen = [];
+      $("signs-title").textContent = c.title;
+      $("signs-short").textContent = c.short;
+      $("signs-words").textContent = c.words;
+      $("signs-words-sr").textContent = c.words;
+      pics.replaceChildren(); thumbs.replaceChildren(); canvases = []; tbtns = [];
+      c.pictures.forEach(function (p, j) {
+        var cv = document.createElement("canvas");
+        cv.setAttribute("aria-hidden", "true");
+        var b = document.createElement("button");
+        b.type = "button"; b.className = "sp-thumb";
+        b.setAttribute("aria-label", "Picture " + (j + 1) + ", " + p.date);
+        b.innerHTML = '<canvas aria-hidden="true"></canvas><span class="sp-thumb-t" aria-hidden="true"><b>' + (j + 1) + "</b> " + shortDate(p.date) + "</span>";
+        var tc = b.querySelector("canvas");
+        cv._draw = function () {
+          drawFrame(cv, c, j, true);
+          tc.width = tc.height = 96;
+          var t = tc.getContext("2d"); t.imageSmoothingEnabled = false; t.drawImage(cv, 0, 0, 96, 96);
+        };
+        b.addEventListener("click", function () { show(j); });
+        pics.appendChild(cv); thumbs.appendChild(b);
+        canvases.push(cv); tbtns.push(b);
+      });
+      // A sign seen before opens with its meaning already showing.
+      if (meant[i]) seen = c.pictures.map(function () { return true; });
+      lock(!meant[i]);
+      // A sign not yet seen: the ring goes back to the flip controls (same tip, so quietly).
+      if (!meant[i] && guideState.signs === "s-more") setGuide("signs", "s-look", true);
+      if (pics.offsetParent) redraw(pics);
+      show(0, true);
+    }
+    function blinkStep() {
+      blinkTimer = setTimeout(function () {
+        show(f + 1, true);
+        if (--blinkLeft > 0) blinkStep(); else stopBlink();
+      }, BLINK_MS);
+    }
+    blinkBtn.addEventListener("click", function () {
+      if (blinkTimer) { stopBlink(); return; }
+      blinkLeft = n * BLINK_ROUNDS;
+      blinkBtn.setAttribute("aria-pressed", "true");
+      stage.classList.add("is-blinking");
+      blinkStep();
     });
-    if (picker.done(0) && signs.length === 1) setGuide("signs", "s-done");
+    flip.querySelectorAll(".sp-flip-step").forEach(function (b) {
+      b.addEventListener("click", function () { show(f + Number(b.dataset.step)); });
+    });
+    // Arrow keys flip too; on the little pictures, focus follows the picture on show.
+    flip.addEventListener("keydown", function (e) {
+      if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+      e.preventDefault();
+      show(f + (e.key === "ArrowRight" ? 1 : -1));
+      if (e.target.classList.contains("sp-thumb")) tbtns[f].focus();
+    });
+    document.addEventListener("selenites:view", stopBlink);
+    document.addEventListener("visibilitychange", function () { if (document.hidden) stopBlink(); });
+
+    picker = casePicker({ prefix: "signs", cases: signs, render: render });
   }
 
   function stepTraps(traps) {
