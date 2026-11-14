@@ -1,0 +1,11 @@
+{
+ "correct_order": [
+  "level2_2025W32_2D_0189_4D5_spx_l2b-v20-2025-265",
+  "level2_2025W32_2D_0213_4D5_spx_l2b-v20-2025-265",
+  "level2_2025W33_1B_0599_1D5_spx_l2b-v20-2025-265",
+  "level2_2025W50_1A_0348_1D5_spx_l2b-v20-2025-343",
+  "level2_2025W50_2A_0712_2D5_spx_l2b-v20-2025-349",
+  "level2_2025W50_2A_0712_4D5_spx_l2b-v20-2025-349"
+ ],
+ "note": "obs_ids from oldest to newest."
+}
