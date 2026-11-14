@@ -1,0 +1,605 @@
+{
+ "id": "3i-atlas-dec",
+ "name": "Comet 3I/ATLAS, December 2025",
+ "kind": "comet",
+ "placeholder": false,
+ "release": "QR2",
+ "ra": null,
+ "dec": null,
+ "unit": "MJy/sr",
+ "summary": "SPHEREx observed comet 3I/ATLAS in 98 images in December 2025. Each point is one image, measured at the comet's predicted position from orbit calculations. The comet is seen clearly or faintly in 62 of them.",
+ "explain": "Each point is the brightness in one picture, at that picture's colour (wavelength). The brightness is the mean surface brightness above the local background inside a small circle on the comet, not the comet's total brightness. Every picture is a different colour and was taken on a different day, so a change from one point to the next is not automatically a real change.",
+ "story": null,
+ "game": true,
+ "features": [],
+ "points": [
+  {
+   "wavelength_um": 0.7469,
+   "value": 4.0806,
+   "error": 0.196,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 0.747,
+   "value": 3.9686,
+   "error": 1.258,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 0.7645,
+   "value": 3.9738,
+   "error": 3.0644,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 0.7826,
+   "value": 4.009,
+   "error": 3.4257,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 0.8009,
+   "value": 3.8963,
+   "error": 0.1444,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 0.8198,
+   "value": 4.0902,
+   "error": 0.1392,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 0.8397,
+   "value": 3.9609,
+   "error": 0.1472,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 0.8599,
+   "value": 3.9683,
+   "error": 0.1425,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 0.8806,
+   "value": 4.1342,
+   "error": 0.1692,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 0.9013,
+   "value": 4.1773,
+   "error": 0.1798,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 0.9231,
+   "value": 4.4655,
+   "error": 0.1955,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 0.9451,
+   "value": 4.304,
+   "error": 0.1867,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 0.9674,
+   "value": 4.213,
+   "error": 0.1544,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 1.0141,
+   "value": 4.2188,
+   "error": 1.1946,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 1.0387,
+   "value": 4.3693,
+   "error": 1.1745,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 1.0633,
+   "value": 4.1055,
+   "error": 1.2236,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 1.0888,
+   "value": 4.504,
+   "error": 1.2138,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 1.1036,
+   "value": 4.1762,
+   "error": 0.1854,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 1.1295,
+   "value": 3.8084,
+   "error": 1.4953,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 1.1569,
+   "value": 3.9847,
+   "error": 0.149,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 1.1849,
+   "value": 3.723,
+   "error": 0.1444,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 1.2134,
+   "value": 3.1926,
+   "error": 0.2074,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 1.243,
+   "value": 3.1432,
+   "error": 0.2142,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 1.2725,
+   "value": 2.9537,
+   "error": 0.1969,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 1.3034,
+   "value": 3.1303,
+   "error": 0.2052,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 1.3766,
+   "value": 3.1044,
+   "error": 0.2376,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 1.3766,
+   "value": 3.0082,
+   "error": 0.2366,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 1.3766,
+   "value": 3.0637,
+   "error": 0.2402,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 1.4326,
+   "value": 2.8896,
+   "error": 0.233,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 1.4669,
+   "value": 3.008,
+   "error": 0.1273,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 1.5025,
+   "value": 2.7816,
+   "error": 0.1191,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 1.5393,
+   "value": 2.852,
+   "error": 0.1282,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 1.5767,
+   "value": 2.667,
+   "error": 0.6713,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 1.6148,
+   "value": 2.5225,
+   "error": 0.1555,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 1.6652,
+   "value": 2.551,
+   "error": 0.1108,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 1.7033,
+   "value": 2.4981,
+   "error": 0.1163,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 1.7431,
+   "value": 2.3879,
+   "error": 0.1009,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 1.7845,
+   "value": 2.197,
+   "error": 0.103,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 1.8272,
+   "value": 2.1103,
+   "error": 3.2695,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 1.8698,
+   "value": 2.1484,
+   "error": 0.1071,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 1.9143,
+   "value": 1.9914,
+   "error": 0.1174,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 1.9587,
+   "value": 1.7562,
+   "error": 0.1046,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 2.0043,
+   "value": 1.7502,
+   "error": 0.4638,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 2.0498,
+   "value": 1.7836,
+   "error": 0.0938,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 2.0991,
+   "value": 1.667,
+   "error": 0.0861,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 2.1475,
+   "value": 1.5011,
+   "error": 0.0821,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 2.1982,
+   "value": 1.4565,
+   "error": 0.073,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 2.249,
+   "value": 1.4727,
+   "error": 0.0726,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 2.3014,
+   "value": 1.3598,
+   "error": 0.4225,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 2.3541,
+   "value": 1.2851,
+   "error": 0.0615,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 2.4059,
+   "value": 1.2972,
+   "error": 0.059,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 2.4341,
+   "value": 1.4906,
+   "error": 0.9602,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 2.4347,
+   "value": 1.3865,
+   "error": 1.0852,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 2.4874,
+   "value": 1.4681,
+   "error": 0.8944,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 2.5567,
+   "value": 1.338,
+   "error": 1.3683,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 2.6248,
+   "value": 3.2667,
+   "error": 0.4102,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 2.7001,
+   "value": 5.1423,
+   "error": 1.6355,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 2.7699,
+   "value": 1.6017,
+   "error": 0.0717,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 2.8456,
+   "value": 1.0856,
+   "error": 0.666,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 2.9253,
+   "value": 0.6892,
+   "error": 0.5943,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 3.0064,
+   "value": 0.5345,
+   "error": 0.0395,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 3.0893,
+   "value": 0.4691,
+   "error": 0.616,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 3.1752,
+   "value": 0.4412,
+   "error": 0.576,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 3.2626,
+   "value": 0.7109,
+   "error": 0.0361,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 3.3213,
+   "value": 1.4521,
+   "error": 4.7878,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 3.4402,
+   "value": 1.1325,
+   "error": 0.6717,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 3.5347,
+   "value": 0.8265,
+   "error": 0.5384,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 3.6302,
+   "value": 0.5877,
+   "error": 0.4106,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 3.7278,
+   "value": 0.6142,
+   "error": 1.0887,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 3.8187,
+   "value": 0.5903,
+   "error": 0.0283,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 3.8514,
+   "value": 0.5708,
+   "error": 1.739,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 3.8867,
+   "value": 0.561,
+   "error": 1.8368,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 3.9208,
+   "value": 0.5623,
+   "error": 0.3196,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 3.9541,
+   "value": 0.4502,
+   "error": 1.4878,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 3.9897,
+   "value": 0.4192,
+   "error": 3.9851,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 4.0238,
+   "value": 0.4006,
+   "error": 0.1194,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 4.0946,
+   "value": 0.4452,
+   "error": 0.1535,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 4.1207,
+   "value": 0.422,
+   "error": 1.1557,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 4.1207,
+   "value": 0.5031,
+   "error": 1.5261,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 4.1305,
+   "value": 0.4517,
+   "error": 2.6863,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 4.203,
+   "value": 2.7744,
+   "error": 2.8482,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 4.2386,
+   "value": 29.1506,
+   "error": 2.4097,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 4.2756,
+   "value": 20.2384,
+   "error": 0.9211,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 4.3124,
+   "value": 2.1148,
+   "error": 0.2156,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 4.3492,
+   "value": 0.7103,
+   "error": 0.0504,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 4.3873,
+   "value": 0.799,
+   "error": 3.3857,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 4.4669,
+   "value": 0.645,
+   "error": 7.6876,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 4.5001,
+   "value": 0.7167,
+   "error": 0.1396,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 4.533,
+   "value": 0.7666,
+   "error": 0.0737,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 4.6013,
+   "value": 2.3027,
+   "error": 0.1578,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 4.6357,
+   "value": 3.1521,
+   "error": 4.0212,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 4.6694,
+   "value": 3.8269,
+   "error": 2.9422,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 4.7028,
+   "value": 3.3288,
+   "error": 4.0519,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 4.741,
+   "value": 1.4983,
+   "error": 2.737,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 4.8079,
+   "value": 1.2002,
+   "error": 6.1166,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 4.8428,
+   "value": 1.3089,
+   "error": 5.3489,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 4.8824,
+   "value": 1.2201,
+   "error": 5.891,
+   "n_images": 1
+  },
+  {
+   "wavelength_um": 4.9512,
+   "value": 1.4847,
+   "error": 0.0848,
+   "n_images": 1
+  }
+ ]
+}

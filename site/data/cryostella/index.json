@@ -1,0 +1,17 @@
+{
+ "note": "The list of spectra the Cryostella page offers, in the order shown. Add a real target by adding its file here; no code change is needed. Format: docs/cryostella-data.md.",
+ "targets": [
+  {
+   "id": "elias-16",
+   "file": "elias-16.json"
+  },
+  {
+   "id": "3i-atlas-dec",
+   "file": "3i-atlas-dec.json"
+  },
+  {
+   "id": "3i-atlas-aug",
+   "file": "3i-atlas-aug.json"
+  }
+ ]
+}
