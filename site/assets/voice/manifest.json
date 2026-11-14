@@ -487,8 +487,13 @@
   },
   {
    "guide": "selene",
-   "text": "I'm named after the Greek goddess of the Moon, and I look after this whole site. It lets you watch pictures from NASA's SPHEREx space telescope change over time, spot things that move, and explore the colours of light. Let me show you around. You'll do the clicking.",
-   "file": "selene-home-tour-welcome.mp3"
+   "text": "Hiii! I'm Selene! I'm named after the Greek goddess of the Moon, and I look after this whole site. It lets you watch pictures from NASA's SPHEREx space telescope change over time, spot things that move, and explore the colours of light. But first, let me tell you about our name.",
+   "file": "selene-home-tour-welcome-hiii.mp3"
+  },
+  {
+   "guide": "selene",
+   "text": "See our logo? The A is upside down. In mathematics, that means “for all”. In Sanskrit, Ashesha means “without remainder”. So: no one left out, and that includes you. The comet in our A symbolises 3I/ATLAS, a visitor from another star. Now let me show you around. You'll do the clicking.",
+   "file": "selene-home-tour-name.mp3"
   },
   {
    "guide": "selene",

@@ -43,6 +43,10 @@
   var card = $("tour-card"), bubble = $("tour-bubble"), spot = $("tour-spot");
   var stepEl = $("tour-step"), titleEl = $("tour-title"), textEl = $("tour-text");
   var ghostEl = $("tour-ghost");
+  // A step can show a picture in the cloud above its words (media: an HTML string, or a function
+  // returning one). The home tour shows the Ashesha logo there. It plays its animation once the
+  // card has appeared (the class is-play), not while the card is still out of sight.
+  var mediaEl = $("tour-media");
   // The words type in letter by letter, laid out first so nothing jumps (js/cloud.js).
   var typer = window.SeleneType(ghostEl);
   // In a step's words, [name] marks the control to click: it is highlighted in the cloud, and
@@ -854,6 +858,12 @@
       // New words while the card is out of sight, so its new size is known before it moves.
       stepEl.textContent = label(index);
       titleEl.textContent = val(step.title);
+      if (mediaEl) {
+        var media = step.media ? val(step.media) : "";
+        mediaEl.classList.remove("is-play");
+        mediaEl.innerHTML = media;
+        mediaEl.hidden = !media;
+      }
       back.hidden = nearest(index - 1, -1) < 0;
       next.hidden = !!step.action && !step.nextToo;
       // The control to click pulses gently where there is no arrow.
@@ -873,6 +883,7 @@
       setTimeout(function () {
         if (!dialog.open || my !== token) return;
         card.classList.remove("is-hidden");
+        if (mediaEl && !mediaEl.hidden) { void mediaEl.offsetWidth; mediaEl.classList.add("is-play"); }
         keepInView(my);
         popTrail();
         speak(index);

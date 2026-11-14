@@ -1047,6 +1047,52 @@ html[data-tour-seen] .btn-stage { background: transparent; color: var(--stage-in
 .tour-card.is-welcome .tour-figure { width: 300px; height: 228px; animation: selene-rise 760ms var(--ease-out-expo) both; }
 @keyframes selene-rise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
 
+/* A picture in the cloud above a step's words (js/tour.js, media). The home tour's "Why Ashesha?"
+   step shows the logo large: it arrives as an ordinary A, turns over into ∀ ("for all"), the
+   comet streaks through it, and a glint runs along the comet now and then while she talks. */
+.tour-media { margin: 2px 0 10px; }
+.tour-media[hidden] { display: none; }
+.tn { display: grid; grid-template-columns: 76px minmax(0, 1fr); column-gap: 14px; row-gap: 6px; align-items: center; }
+.tn-mark { grid-row: span 2; width: 76px; height: 76px; overflow: visible; --ash-cut: var(--bubble-bg); }
+.tn-mark .ash-legs { fill: var(--bubble-ink); transform-box: view-box; transform-origin: 32px 32px; }
+.tn-mark .ash-head { fill: var(--bubble-pop); }
+.tn-mark .ash-tail-a, .tn-mark .ash-tail-b { stop-color: var(--bubble-pop); }
+.tn-name { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; margin: 0; }
+.tn-word { font-size: 24px; font-weight: 700; letter-spacing: -0.015em; color: var(--bubble-ink); }
+.tn-say { font-size: 13.5px; color: var(--bubble-muted); letter-spacing: 0.02em; }
+.tn-means { display: grid; gap: 4px; margin: 0; padding: 0; list-style: none; font-size: 14px; line-height: 1.35; color: var(--bubble-muted); }
+.tn-means li { display: flex; align-items: center; gap: 8px; }
+.tn-means b { color: var(--bubble-ink); }
+.tn-glyph {
+  display: inline-grid; place-items: center; flex: none; min-width: 26px; height: 26px; padding: 0 5px; box-sizing: border-box;
+  border-radius: 999px; font-size: 15px; font-weight: 700; line-height: 1; color: var(--bubble-pop);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--bubble-pop) 45%, transparent);
+}
+.tn-flip { display: inline-block; transform: rotate(180deg); }
+.tn-deva { font-size: 12.5px; font-weight: 400; font-family: "Nirmala UI", "Noto Sans Devanagari", "Kohinoor Devanagari", var(--font); }
+@media (prefers-reduced-motion: no-preference) {
+  .tour-media.is-play .tn-mark .ash-legs { animation: tn-turn 900ms cubic-bezier(0.65, 0, 0.35, 1) 150ms both; }
+  .tour-media.is-play .tn-mark .ash-comet { animation: ash-streak 650ms cubic-bezier(0.22, 1, 0.36, 1) 1050ms both; }
+  .tour-media.is-play .tn-mark .ash-glint { animation: tn-glint 5s ease-in-out 1700ms infinite; }
+  .tour-media.is-play .tn-name { animation: tn-in 500ms var(--ease-out-quart) 250ms both; }
+  .tour-media.is-play .tn-means li { animation: tn-in 500ms var(--ease-out-quart) 1300ms both; }
+  .tour-media.is-play .tn-means li + li { animation-delay: 1500ms; }
+  .tour-media.is-play .tn-flip { animation: tn-flip 700ms cubic-bezier(0.65, 0, 0.35, 1) 1500ms both; }
+}
+/* Upright A first (the ∀ turned over), held a moment, then turned. */
+@keyframes tn-turn { 0% { opacity: 0; rotate: 180deg; scale: 0.85; } 25% { opacity: 1; rotate: 180deg; scale: 1; } 100% { opacity: 1; rotate: 360deg; scale: 1; } }
+@keyframes tn-flip { from { transform: rotate(0deg); } to { transform: rotate(180deg); } }
+@keyframes tn-in { from { opacity: 0; translate: 0 6px; } to { opacity: 1; translate: 0 0; } }
+/* One sweep along the comet, then a rest, every five seconds. */
+@keyframes tn-glint { 0% { translate: 0 0; opacity: 1; } 15% { opacity: 1; } 18% { translate: 76px 0; opacity: 0; } 100% { translate: 76px 0; opacity: 0; } }
+@media (forced-colors: active) { .tn-glyph { border: 1px solid CanvasText; } }
+/* Phones (the card is a sheet): a smaller logo beside the name; the meanings are left to her words. */
+.tour-card.is-sheet .tn { grid-template-columns: 52px minmax(0, 1fr); column-gap: 10px; }
+.tour-card.is-sheet .tn-mark { grid-row: auto; width: 52px; height: 52px; }
+.tour-card.is-sheet .tn-say { flex-basis: 100%; }
+.tour-card.is-sheet .tn-word { font-size: 20px; }
+.tour-card.is-sheet .tn-means { display: none; }
+
 /* Phones: a sheet across the free side of the screen. Selene is shown from the chest up with her
    raised hand, close enough to see her lips and hand move. */
 .tour-card.is-sheet, .tour-card.is-sheet.is-welcome { width: calc(100vw - 24px); grid-template-columns: 104px minmax(0, 1fr); column-gap: 14px; }

@@ -18,7 +18,7 @@ Eight lines in Your Beginnings stay silent on purpose: they carry the visitor's 
 2. Add or update its entry in `manifest.json`: `guide` ("selene" or "iris"), `text` (the words exactly as on screen, with the normal spelling, such as SPHEREx), and `file`.
 3. Reload the page. Only the step's words are recorded, not its title, because the words appear in step with the recording.
 
-Spelling for speech: say "Sphere-ex" for SPHEREx, "three-eye Atlas" for 3I/ATLAS, "Wise oh-eight-five-five" for WISE 0855 and "R W Aurigae" for RW Aurigae. The manifest keeps the screen spelling.
+Spelling for speech: say "Sphere-ex" for SPHEREx, "Ahshaysha" for Ashesha (a soft A, not U, with the stress on "shay"), the Devanagari संस्कृत for Sanskrit, "three-eye Atlas" for 3I/ATLAS, "Wise oh-eight-five-five" for WISE 0855 and "R W Aurigae" for RW Aurigae. The manifest keeps the screen spelling.
 
 ## The voices
 
@@ -75,7 +75,8 @@ These were recorded while their wording still describes something temporary. Whe
 
 | File | Words on screen |
 | --- | --- |
-| selene-home-tour-welcome.mp3 | I'm named after the Greek goddess of the Moon, and I look after this whole site. It lets you watch pictures from NASA's SPHEREx space telescope change over time, spot things that move, and explore the colours of light. Let me show you around. You'll do the clicking. |
+| selene-home-tour-welcome-hiii.mp3 | Hiii! I'm Selene! I'm named after the Greek goddess of the Moon, and I look after this whole site. It lets you watch pictures from NASA's SPHEREx space telescope change over time, spot things that move, and explore the colours of light. But first, let me tell you about our name. |
+| selene-home-tour-name.mp3 | See our logo? The A is upside down. In mathematics, that means “for all”. In Sanskrit, Ashesha means “without remainder”. So: no one left out, and that includes you. The comet in our A symbolises 3I/ATLAS, a visitor from another star. Now let me show you around. You'll do the clicking. |
 | selene-home-tour-idea.mp3 | SPHEREx photographs the whole sky every six months, in 102 colours of infrared light. Put its pictures of one patch of sky in date order, and anything that moves or changes gives itself away. That idea is behind everything here. |
 | selene-home-tour-menu-8974dd.mp3 | This menu sits at the top of every page: Home, the Sky viewer, Cryostella and My candidates. The soft pill shows where you are. On a phone the menu folds away behind the Menu button. |
 | selene-home-tour-tours.mp3 | This is my tour of the whole site. Each part also has its own tour, led by its own guide: press Take the tour on any page to meet them. |
