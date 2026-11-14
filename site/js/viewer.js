@@ -102,8 +102,9 @@
   var targetId = null; // the ?target= id of the loaded set, used to build view_link
 
   // The observation contract (RULES section 3). Only these fields travel in
-  // selenites:mark-candidate, so viewer-only extras (brightness, flags, note...) never leak
-  // into saved candidates. See docs/candidate-event-contract.md.
+  // the observation object of selenites:mark-candidate, so viewer-only extras (brightness,
+  // flags...) never leak into saved candidates. The image's description (note) travels beside
+  // it as detail.note. See docs/candidate-event-contract.md.
   var CONTRACT_FIELDS = ["target", "obs_id", "ra", "dec", "date", "mjd", "detector",
     "wavelength_um", "thumbnail", "image_url", "view_link", "status"];
 
@@ -852,7 +853,8 @@
     CONTRACT_FIELDS.forEach(function (f) { observation[f] = o[f] === undefined ? null : o[f]; });
     var ev = new CustomEvent("selenites:mark-candidate", {
       cancelable: true,
-      detail: { observation: observation, image_number: index + 1, image_count: obs.length }
+      detail: { observation: observation, image_number: index + 1, image_count: obs.length,
+        note: o.note ? String(o.note) : null }
     });
     document.dispatchEvent(ev);
     // The candidates module calls preventDefault() when it has handled the event, and
