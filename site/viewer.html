@@ -1,0 +1,492 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="assets/ashesha-mark.svg" type="image/svg+xml">
+<meta name="theme-color" content="#F4EEFA">
+<title>Sky viewer · Ashesha</title>
+<meta name="description" content="Type a patch of sky and watch SPHEREx images of it in date order. Built to be used by everyone.">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<link rel="stylesheet" href="css/tokens.css?v=1">
+<link rel="stylesheet" href="css/app.css?v=1">
+<link rel="stylesheet" href="css/nav.css?v=1">
+<script>
+// Apply a saved colour choice before the page paints, to avoid a flash.
+try { var t = localStorage.getItem("selenites-theme"); if (t === "light" || t === "dark" || t === "colour-blind-friendly") { document.documentElement.setAttribute("data-theme", t); document.querySelector('meta[name="theme-color"]').setAttribute("content", { "light": "#F4EEFA", "dark": "#0B0A0E", "colour-blind-friendly": "#1E1238" }[t]); } } catch (e) {}</script>
+</head>
+<body>
+<div class="sky" aria-hidden="true">
+  <svg width="100%" height="100%" focusable="false">
+    <defs>
+      <g id="cloud">
+        <circle cx="30" cy="42" r="18"/><circle cx="55" cy="30" r="24"/><circle cx="82" cy="40" r="20"/><circle cx="100" cy="48" r="14"/>
+        <rect x="18" y="44" width="92" height="18" rx="9"/>
+      </g>
+      <g id="cloud-face" class="cloud-face">
+        <circle cx="48" cy="44" r="2" class="dot"/><circle cx="66" cy="44" r="2" class="dot"/>
+        <path d="M53 50q4 3.4 8 0" fill="none" stroke-width="1.6" stroke-linecap="round" class="line"/>
+        <circle cx="41" cy="50" r="3.6" class="blush"/><circle cx="73" cy="50" r="3.6" class="blush"/>
+      </g>
+      <pattern id="sky-pattern" width="760" height="600" patternUnits="userSpaceOnUse">
+        <g class="cloud-shape" transform="translate(40 60) scale(1.6)"><use href="#cloud"/><use href="#cloud-face"/></g>
+        <g class="cloud-shape" transform="translate(440 24) scale(0.9)"><use href="#cloud"/></g>
+        <g class="cloud-shape" transform="translate(300 310) scale(1.3)"><use href="#cloud"/><use href="#cloud-face"/></g>
+        <g class="cloud-shape" transform="translate(620 380) scale(0.8)"><use href="#cloud"/></g>
+        <g class="cloud-shape" transform="translate(50 440) scale(0.7)"><use href="#cloud"/></g>
+      </pattern>
+    </defs>
+    <rect width="100%" height="100%" fill="url(#sky-pattern)"/>
+  </svg>
+</div>
+<svg class="svg-defs" width="0" height="0" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="guide-shine" x1="0" y1="0" x2="0" y2="1"><stop offset="0" class="cloud-shine-a"/><stop offset="1" class="cloud-shine-b"/></linearGradient>
+    <filter id="guide-blur" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="8"/></filter>
+    <!-- Ragged, painted edges for the tour's arrow (drawn in code, no picture used). -->
+    <filter id="brush-edge" x="-15%" y="-15%" width="130%" height="130%"><feTurbulence type="fractalNoise" baseFrequency="0.09 0.5" numOctaves="2" seed="7" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="5" xChannelSelector="R" yChannelSelector="G"/></filter>
+  </defs>
+</svg>
+<div class="twinkle" aria-hidden="true"><i></i><i></i><i></i></div>
+<a class="skip" href="#main">Skip to the main content</a>
+<a class="skip" href="#my-candidates">Skip to My Candidates</a>
+<div class="sn" data-page="viewer"></div>
+
+<header class="site-head">
+  <div class="ts-slot" data-theme-switch></div>
+  <p class="kicker">Sky viewer</p>
+  <h1 id="top" tabindex="-1">Follow a comet through SPHEREx</h1>
+  <p class="lede">Pick a patch of sky, and every picture SPHEREx has taken of it plays in date order, like a flipbook of the sky.</p>
+  <button type="button" class="tour-chip tour-open"><span class="selene-slot selene-avatar selene-avatar-sm" data-variant="head"></span>New here? Take the tour with Selene</button>
+</header>
+
+<!-- Three steps, one screen each (js/app.js shows one at a time). Without JavaScript all three
+     stay on one page, in this order. -->
+<nav class="steps" id="steps" aria-label="Steps">
+  <ol>
+    <li><a href="#choose" data-view="choose"><span class="step-n" aria-hidden="true">1</span><span class="step-t">Choose a patch of sky</span></a></li>
+    <li><a href="#watch" data-view="watch" aria-disabled="true"><span class="step-n" aria-hidden="true">2</span><span class="step-t">Watch it change</span><span class="sr-only" id="step-lock"> (pick an example on step 1 first)</span></a></li>
+    <li><a href="#my-candidates" data-view="my-candidates"><span class="step-n" aria-hidden="true">3</span><span class="step-t">My candidates</span></a></li>
+  </ol>
+</nav>
+
+<main id="main">
+
+  <section class="view view-choose" id="step-choose" data-view="choose" aria-labelledby="choose-h">
+  <div class="view-top">
+  <div class="view-head">
+    <p class="view-step">Step 1 of 3</p>
+    <h2 id="choose-h" class="view-title" tabindex="-1">Choose a patch of sky</h2>
+  </div>
+    <aside class="guide" data-guide="choose" aria-label="Selene's tip">
+      <button type="button" class="guide-open" aria-expanded="true"><span class="selene-slot selene-avatar selene-avatar-sm" data-variant="head"></span>Show Selene's tip</button>
+      <div class="guide-body">
+        <div class="guide-figure" aria-hidden="true"><div class="selene-slot guide-selene" data-variant="figure"></div></div>
+        <div class="guide-thought">
+          <div class="guide-bubble">
+            <svg class="guide-cloud" aria-hidden="true" focusable="false"></svg>
+            <div class="guide-say" data-when="pick">
+              <p class="guide-part">Step 1 · Part 1 of 2</p>
+              <p class="guide-text">Pick one of the examples below. Comet 3I/ATLAS is a good first one. Nothing opens yet, so you can change your mind.</p>
+            </div>
+            <div class="guide-say" data-when="picked" hidden>
+              <p class="guide-part">Step 1 · Part 2 of 2</p>
+              <p class="guide-text">You picked <strong class="guide-picked">an example</strong>. Press Next to open it in the sky viewer.<span class="guide-picked-note"></span></p>
+            </div>
+            <div class="guide-actions">
+              <a class="guide-next" data-when="picked" href="#watch" data-view="watch" hidden><span>Next: Watch it change</span><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 5l7 7-7 7"/></svg></a>
+              <button type="button" class="guide-voice" aria-pressed="false" hidden><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 9.5h3.6L12 6v12l-4.4-3.5H4z"/><path class="gv-on" d="M15.6 9a4.2 4.2 0 0 1 0 6M18.2 6.6a7.6 7.6 0 0 1 0 10.8"/><path class="gv-off" d="M16 9.5l5 5M21 9.5l-5 5"/></svg><span>Selene's voice</span></button>
+              <button type="button" class="guide-hide">Hide tips</button>
+            </div>
+          </div>
+        </div>
+        <span class="guide-trail" aria-hidden="true"><i></i><i></i><i></i></span>
+      </div>
+    </aside>
+  </div>
+
+  <section class="panel p-examples" aria-labelledby="examples-h">
+    <h3 id="examples-h" class="panel-h">Examples</h3>
+    <ul class="examples" id="examples"></ul>
+    <div class="choose-next" id="choose-next">
+      <p class="choose-next-msg" id="choose-next-msg" role="status" aria-live="polite">Pick an example above. Nothing opens until you press Next.</p>
+      <a class="btn choose-next-btn" id="choose-next-btn" href="#watch" data-view="watch" aria-disabled="true" aria-describedby="choose-next-msg"><span>Next: Watch it change</span><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 5l7 7-7 7"/></svg></a>
+    </div>
+  </section>
+
+  <section class="panel p-search" aria-labelledby="search-h">
+    <h3 id="search-h" class="panel-h">Or type a position</h3>
+    <p class="note">Live search is not available yet. The examples above are prepared in advance.</p>
+    <form id="search-form" class="search" novalidate>
+      <div class="field">
+        <label for="ra">Right ascension (RA)</label>
+        <input id="ra" name="ra" type="text" inputmode="decimal" placeholder="for example 08:55:10.8 or 133.79">
+      </div>
+      <div class="field">
+        <label for="dec">Declination (Dec)</label>
+        <input id="dec" name="dec" type="text" inputmode="decimal" placeholder="for example -07:14:42.5 or -7.24">
+      </div>
+      <button type="submit" class="btn btn-quiet">Show images</button>
+    </form>
+    <p id="form-message" class="message" role="status" aria-live="polite"></p>
+  </section>
+  </section>
+
+  <section class="view view-watch panel p-viewer" id="viewer-section" data-view="watch" aria-labelledby="viewer-h">
+    <div class="view-top">
+    <div class="view-head viewer-head">
+      <a class="back-link" href="#choose" data-view="choose"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 5l-7 7 7 7"/></svg>Choose another patch of sky</a>
+      <p class="view-step">Step 2 of 3</p>
+      <h2 id="viewer-h" class="view-title" tabindex="-1">Watch it change</h2>
+      <p id="viewer-caption" class="caption"></p>
+      <p id="v-placeholder" class="placeholder-flag" hidden>Practice pictures, not SPHEREx data</p>
+    </div>
+    <aside class="guide" data-guide="watch" aria-label="Selene's tip">
+      <button type="button" class="guide-open" aria-expanded="true"><span class="selene-slot selene-avatar selene-avatar-sm" data-variant="head"></span>Show Selene's tip</button>
+      <div class="guide-body">
+        <div class="guide-figure" aria-hidden="true"><div class="selene-slot guide-selene" data-variant="figure"></div></div>
+        <div class="guide-thought">
+          <div class="guide-bubble">
+            <svg class="guide-cloud" aria-hidden="true" focusable="false"></svg>
+            <div class="guide-say" data-when="empty">
+              <p class="guide-part">Step 2</p>
+              <p class="guide-text">There are no pictures to show for this one yet. Go back and pick another example, or try the practice pictures below.</p>
+            </div>
+            <div class="guide-say" data-when="play" hidden>
+              <p class="guide-part">Step 2 · Part 1 of 3</p>
+              <p class="guide-text">Press Play under the picture to watch every picture in date order. You can also drag along the timeline, or use the arrow buttons.</p>
+            </div>
+            <div class="guide-say" data-when="mark" hidden>
+              <p class="guide-part">Step 2 · Part 2 of 3</p>
+              <p class="guide-text">When a picture catches your eye, press Pause to stop on it. Then press Mark as candidate, just under the picture.</p>
+            </div>
+            <div class="guide-say" data-when="next-saved" hidden>
+              <p class="guide-part">Step 2 · Part 3 of 3</p>
+              <p class="guide-text">You marked a picture as a candidate. Mark more if you like. When you are ready, press Next to see your list.</p>
+            </div>
+            <div class="guide-say" data-when="next-unsaved" hidden>
+              <p class="guide-part">Step 2 · Part 3 of 3</p>
+              <p class="guide-text">You pressed Mark as candidate. Saving is not switched on in this version yet, so the picture was not kept. When you are ready, press Next.</p>
+            </div>
+            <div class="guide-say" data-when="next-skip" hidden>
+              <p class="guide-part">Step 2 · Part 3 of 3</p>
+              <p class="guide-text">No need to mark anything. When you are ready, press Next to see the My candidates page.</p>
+            </div>
+            <div class="guide-actions">
+              <a class="guide-next" data-when="empty" href="#choose" data-view="choose"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 5l-7 7 7 7"/></svg><span>Choose a patch of sky</span></a>
+              <a class="guide-next" data-when="next-saved next-unsaved next-skip" href="#my-candidates" data-view="my-candidates" hidden><span>Next: My candidates</span><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 5l7 7-7 7"/></svg></a>
+              <button type="button" class="guide-skip" data-when="mark" hidden>Skip marking</button>
+              <button type="button" class="guide-voice" aria-pressed="false" hidden><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 9.5h3.6L12 6v12l-4.4-3.5H4z"/><path class="gv-on" d="M15.6 9a4.2 4.2 0 0 1 0 6M18.2 6.6a7.6 7.6 0 0 1 0 10.8"/><path class="gv-off" d="M16 9.5l5 5M21 9.5l-5 5"/></svg><span>Selene's voice</span></button>
+              <button type="button" class="guide-hide">Hide tips</button>
+            </div>
+          </div>
+        </div>
+        <span class="guide-trail" aria-hidden="true"><i></i><i></i><i></i></span>
+      </div>
+    </aside>
+    </div>
+
+    <div class="viewer-body">
+      <div class="viewer-main">
+        <figure class="v-figure">
+          <div class="stage" id="stage" data-state="empty">
+            <div class="stage-layer stage-now" id="v-now"></div>
+            <div class="stage-layer stage-then" id="v-then" hidden></div>
+            <div class="stage-shade" aria-hidden="true"></div>
+            <div class="stage-marks" aria-hidden="true">
+              <span class="corner c-tl"></span><span class="corner c-tr"></span><span class="corner c-bl"></span><span class="corner c-br"></span>
+              <span class="reticle"><i></i><i></i><i></i><i></i></span>
+            </div>
+            <div class="stage-hud" aria-hidden="true">
+              <span class="hud hud-tl" id="hud-tl"></span>
+              <span class="hud hud-tr" id="hud-tr"></span>
+              <span class="hud hud-bl" id="hud-bl"></span>
+              <span class="hud hud-br" id="hud-br"></span>
+            </div>
+            <div class="split" id="v-split-pos" hidden>
+              <div class="split-handle" id="v-split" role="slider" tabindex="0" aria-label="Then and Now divider" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50">
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 6l-5 6 5 6M15 6l5 6-5 6"/></svg>
+              </div>
+            </div>
+            <div class="stage-empty" id="stage-empty">
+              <span class="selene-slot selene-avatar selene-avatar-lg" data-variant="head"></span>
+              <p id="viewer-empty-text">Pick an example to point the viewer at a patch of sky.</p>
+              <div class="stage-empty-actions">
+                <a class="btn btn-stage-choose" href="#choose" data-view="choose">Choose a patch of sky</a>
+                <button type="button" class="btn btn-stage tour-open">Take the one-minute tour</button>
+                <button type="button" class="btn btn-quiet" id="load-practice">Try practice pictures</button>
+              </div>
+            </div>
+          </div>
+          <figcaption class="v-desc" id="v-desc"></figcaption>
+        </figure>
+
+        <!-- Mark as candidate: always about the image on screen. The viewer only sends the
+             selenites:mark-candidate event; saving and the result message belong to
+             Shrashti's module (js/mark-candidate.js). Contract: docs/candidate-event-contract.md -->
+        <div class="v-mark" id="v-mark" hidden>
+          <button type="button" class="ctl ctl-mark" id="v-mark-btn" aria-describedby="v-mark-info v-mark-why"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 4h10v16l-5-4-5 4z"/></svg><span>Mark as candidate</span></button>
+          <p class="v-mark-info" id="v-mark-info"></p>
+          <p class="fine v-mark-why" id="v-mark-why" hidden></p>
+          <p class="fine v-mark-learn"><a href="spot-a-candidate.html">Not sure what to mark? Learn with Selene in five short steps</a></p>
+        </div>
+
+        <div id="viewer" class="viewer" hidden>
+          <div class="timeline">
+            <span class="tl-label" id="tl-label">Timeline</span>
+            <div class="track" id="tl-track">
+              <div class="rail" aria-hidden="true"><div class="rail-fill" id="tl-fill"></div></div>
+              <div class="ticks" id="tl-ticks" aria-hidden="true"></div>
+              <div class="thumb-pos" id="tl-pos">
+                <div class="thumb" id="v-pos" role="slider" tabindex="0" aria-labelledby="tl-label" aria-describedby="tl-help" aria-valuemin="1" aria-valuemax="1" aria-valuenow="1"></div>
+              </div>
+            </div>
+            <div class="scale" id="tl-scale" aria-hidden="true"></div>
+            <p class="sr-only" id="tl-help">Arrow keys step one image. Home and End jump to the first and last. Playback runs once and stops at the last image.</p>
+          </div>
+
+          <div class="transport" role="group" aria-label="Playback">
+            <div class="t-buttons">
+              <button type="button" class="ctl" id="v-first"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 5v14M18 5l-9 7 9 7z"/></svg><span class="ctl-text">First</span></button>
+              <button type="button" class="ctl" id="v-prev"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M16 5l-9 7 9 7z"/></svg><span class="ctl-text">Previous</span></button>
+              <button type="button" class="ctl ctl-main" id="v-play"><svg class="i-play" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 5l12 7-12 7z"/></svg><svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></svg><span id="v-play-text">Play</span></button>
+              <button type="button" class="ctl" id="v-next"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 5l9 7-9 7z"/></svg><span class="ctl-text">Next</span></button>
+              <button type="button" class="ctl" id="v-last"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M18 5v14M6 5l9 7-9 7z"/></svg><span class="ctl-text">Last</span></button>
+            </div>
+            <output class="t-readout" id="v-pos-out" for="v-pos"></output>
+            <details class="t-more" id="v-more">
+            <summary class="ctl"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg><span>More controls</span></summary>
+            <div class="t-more-body">
+            <form class="t-goto" id="v-goto" novalidate>
+              <label for="v-goto-n">Go to image</label>
+              <input type="number" id="v-goto-n" inputmode="numeric" min="1" step="1" aria-describedby="v-goto-help">
+              <button type="submit" class="ctl">Go</button>
+              <span class="sr-only" id="v-goto-help"></span>
+            </form>
+            <div class="t-options">
+              <label class="t-speed"><span>Speed</span>
+                <select id="v-speed">
+                  <option value="1600">Slow</option>
+                  <option value="900" selected>Normal</option>
+                  <option value="450">Fast</option>
+                </select>
+              </label>
+              <button type="button" class="chip" id="v-compare" aria-pressed="false">Compare two</button>
+              <button type="button" class="chip" id="v-overlay" aria-pressed="true">Labels</button>
+            </div>
+            </div>
+            </details>
+          </div>
+
+          <div class="compare" id="v-compare-panel" hidden>
+            <div class="compare-pick">
+              <label for="v-then-select">Then (left of the divider)</label>
+              <select id="v-then-select"></select>
+            </div>
+            <div class="compare-pick">
+              <label for="v-now-select">Now (right of the divider)</label>
+              <select id="v-now-select"></select>
+            </div>
+            <p class="fine compare-note" id="v-compare-text"></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="inspector" id="inspector" hidden>
+        <div class="tabs" role="tablist" aria-label="About this target" id="v-tabs">
+          <button type="button" role="tab" id="tab-about" aria-controls="panel-about" aria-selected="true">About</button>
+          <button type="button" role="tab" id="tab-colour" aria-controls="panel-colour" aria-selected="false" tabindex="-1">Colour</button>
+          <button type="button" role="tab" id="tab-details" aria-controls="panel-details" aria-selected="false" tabindex="-1">Details</button>
+          <button type="button" role="tab" id="tab-table" aria-controls="panel-table" aria-selected="false" tabindex="-1">Table</button>
+          <span class="tab-ink" aria-hidden="true"></span>
+        </div>
+
+        <div class="tab-panel" role="tabpanel" id="panel-about" aria-labelledby="tab-about" tabindex="0">
+          <p id="v-summary" class="summary"></p>
+          <p id="v-chapters" class="chapters"></p>
+          <div id="v-motion-wrap" hidden>
+            <h3 class="key-h" id="motion-h">How it moves</h3>
+            <p id="v-motion" class="chapters"></p>
+          </div>
+          <h3 class="key-h" id="key-h">What the shapes mean</h3>
+          <ul class="states states-key" aria-labelledby="key-h">
+            <li><span class="glyph clear" aria-hidden="true"></span><div><strong>Clear detection</strong><span>The signal is clear in this image.</span></div></li>
+            <li><span class="glyph faint" aria-hidden="true"></span><div><strong>Faint</strong><span>A signal is present but weak.</span></div></li>
+            <li><span class="glyph nd" aria-hidden="true"></span><div><strong>Not detected</strong><span>The image exists but shows no signal.</span></div></li>
+            <li><span class="glyph noobs" aria-hidden="true"></span><div><strong>No observation</strong><span>No image covers this place and time.</span></div></li>
+            <li><span class="glyph unmeasured" aria-hidden="true"></span><div><strong>Flagged</strong><span>The image exists, but its measurement is flagged as failed, for example because some pixels are masked.</span></div></li>
+          </ul>
+          <p class="fine">SPHEREx photographs each part of the sky in a different colour. A change in brightness between two pictures is not always a real change in the object.</p>
+        </div>
+
+        <div class="tab-panel" role="tabpanel" id="panel-colour" aria-labelledby="tab-colour" tabindex="0" hidden>
+          <p class="fine">SPHEREx sees infrared light that our eyes cannot. Each picture is taken in one colour, measured in microns (millionths of a metre). Each mark is one picture; its shape is its status.</p>
+          <div class="track track-colour" id="wl-track">
+            <div class="rail" aria-hidden="true"></div>
+            <div class="ticks" id="wl-ticks" aria-hidden="true"></div>
+            <div class="thumb-pos" id="wl-pos">
+              <div class="thumb" id="v-wl" role="slider" tabindex="0" aria-label="Colour in microns" aria-valuemin="0.75" aria-valuemax="5" aria-valuenow="0.75"></div>
+            </div>
+          </div>
+          <div class="scale" id="wl-scale" aria-hidden="true"></div>
+          <p id="v-wl-text" class="v-wl-text"></p>
+        </div>
+
+        <div class="tab-panel" role="tabpanel" id="panel-details" aria-labelledby="tab-details" tabindex="0" hidden>
+          <p class="status-line"><span class="glyph" id="v-status-glyph" aria-hidden="true"></span><strong id="v-status-label"></strong></p>
+          <dl class="v-dl" id="v-dl"></dl>
+        </div>
+
+        <div class="tab-panel" role="tabpanel" id="panel-table" aria-labelledby="tab-table" tabindex="0" hidden>
+          <!-- A long table (up to 536 images) is easier to move through when it can be narrowed
+               by status, and when the visitor can jump back to the image on screen. -->
+          <div class="v-table-tools">
+            <fieldset class="v-filter">
+              <legend>Show</legend>
+              <div class="v-filter-opts" id="v-filter-opts"></div>
+            </fieldset>
+            <button type="button" class="link-btn" id="v-table-current">Go to the image on screen</button>
+          </div>
+          <p class="v-filter-out" id="v-filter-out" aria-live="polite"></p>
+          <div class="v-table-scroll" id="v-table-scroll" role="region" aria-labelledby="v-table-cap" tabindex="0">
+            <table class="v-table">
+              <caption id="v-table-cap"></caption>
+              <thead><tr><th scope="col">Image</th><th scope="col">Date</th><th scope="col">Microns</th><th scope="col">Status</th><th scope="col">Brightness</th><th scope="col">Movement since last position</th><th scope="col">Note</th></tr></thead>
+              <tbody id="v-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <section class="strip" id="strip-section" aria-labelledby="strip-h" hidden>
+        <h3 id="strip-h">Then and Now strip</h3>
+        <div class="strip-scroll" id="v-strip-scroll">
+          <ol class="v-strip" id="v-strip" aria-labelledby="strip-h"></ol>
+        </div>
+      </section>
+    </div>
+
+    <p id="v-live" class="sr-only" role="status" aria-live="polite"></p>
+
+    <nav class="pager" aria-label="Next step">
+      <a class="pager-link pager-next" href="#my-candidates" data-view="my-candidates"><span class="pager-k">Next</span><span class="pager-t">My candidates</span><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 5l7 7-7 7"/></svg></a>
+    </nav>
+  </section>
+
+  <!-- My Candidates: Shrashti's module draws the list inside #mc-root. -->
+  <section class="view view-candidates panel p-candidates" id="my-candidates" data-view="my-candidates" aria-labelledby="mc-h" tabindex="-1">
+    <div class="view-top">
+    <div class="view-head">
+      <a class="back-link" href="#watch" data-view="watch"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 5l-7 7 7 7"/></svg>Back to the sky viewer</a>
+      <p class="view-step">Step 3 of 3</p>
+      <h2 id="mc-h" class="view-title" tabindex="-1">My candidates</h2>
+    </div>
+    <aside class="guide" data-guide="my-candidates" aria-label="Selene's tip">
+      <button type="button" class="guide-open" aria-expanded="true"><span class="selene-slot selene-avatar selene-avatar-sm" data-variant="head"></span>Show Selene's tip</button>
+      <div class="guide-body">
+        <div class="guide-figure" aria-hidden="true"><div class="selene-slot guide-selene" data-variant="figure"></div></div>
+        <div class="guide-thought">
+          <div class="guide-bubble">
+            <svg class="guide-cloud" aria-hidden="true" focusable="false"></svg>
+            <p class="guide-part">Step 3 · Last step</p>
+            <p class="guide-text">Pictures you mark as candidates are listed here. A candidate is a picture worth another look, not a discovery. Ready for more sky?</p>
+            <div class="guide-actions">
+              <a class="guide-next" href="#choose" data-view="choose"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 5l-7 7 7 7"/></svg><span>Choose another patch of sky</span></a>
+              <button type="button" class="guide-voice" aria-pressed="false" hidden><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 9.5h3.6L12 6v12l-4.4-3.5H4z"/><path class="gv-on" d="M15.6 9a4.2 4.2 0 0 1 0 6M18.2 6.6a7.6 7.6 0 0 1 0 10.8"/><path class="gv-off" d="M16 9.5l5 5M21 9.5l-5 5"/></svg><span>Selene's voice</span></button>
+              <button type="button" class="guide-hide">Hide tips</button>
+            </div>
+          </div>
+        </div>
+        <span class="guide-trail" aria-hidden="true"><i></i><i></i><i></i></span>
+      </div>
+    </aside>
+    </div>
+    <p class="fine">Images you mark as candidates are saved in this browser only. A candidate is an image you want to look at again, not a confirmed discovery.</p>
+    <div id="mc-root">
+      <p id="mc-empty">No saved candidates yet. Open an image in the sky viewer and choose Mark as candidate.</p>
+    </div>
+  </section>
+
+
+</main>
+
+<footer class="site-foot">
+  <p>Data: NASA/IPAC Infrared Science Archive (IRSA). Acknowledgement and data DOIs are listed in the project's ACKNOWLEDGEMENTS.md.</p>
+  <p>Selene's portrait was made with Google Gemini, an AI image generator, from a prompt written by the team.</p>
+  <p>Selene's recorded voice was made with ElevenLabs, an AI text-to-speech tool, from lines written by the team.</p>
+</footer>
+
+<dialog class="tour" id="tour" aria-labelledby="tour-title" aria-describedby="tour-text">
+  <div class="tour-spot" id="tour-spot" aria-hidden="true"></div>
+  <svg class="tour-arrow" id="tour-arrow" aria-hidden="true" focusable="false" hidden>
+    <g class="arrow-nudge" filter="url(#brush-edge)">
+      <path class="arrow-paint arrow-wash" id="arrow-wash" pathLength="1"/>
+      <path class="arrow-paint arrow-body" id="arrow-body" pathLength="1"/>
+      <path class="arrow-paint arrow-core" id="arrow-core" pathLength="1"/>
+      <path class="arrow-paint arrow-wash arrow-head" id="arrow-head-wash" pathLength="1"/>
+      <path class="arrow-paint arrow-body arrow-head" id="arrow-head-body" pathLength="1"/>
+    </g>
+  </svg>
+  <div class="tour-card" id="tour-card" data-side="none">
+    <div class="tour-figure" aria-hidden="true">
+      <div class="tour-selene selene-slot" id="tour-selene" data-variant="figure"></div>
+      <span class="tour-moon"></span>
+    </div>
+    <div class="tour-thought">
+      <div class="moon-bubble" id="tour-bubble">
+        <svg class="cloud" id="tour-cloud" aria-hidden="true" focusable="false">
+          <defs>
+            <clipPath id="cloud-clip"><path id="cloud-clip-path"/></clipPath>
+            <linearGradient id="cloud-shine" x1="0" y1="0" x2="0" y2="1"><stop offset="0" class="cloud-shine-a"/><stop offset="1" class="cloud-shine-b"/></linearGradient>
+            <pattern id="cloud-dots" width="22" height="22" patternUnits="userSpaceOnUse"><circle class="cloud-dot" cx="4" cy="4" r="1.3"/><path class="cloud-dot" d="M15 11.5l1 2.5 2.5 1-2.5 1-1 2.5-1-2.5-2.5-1 2.5-1z"/></pattern>
+            <filter id="cloud-blur" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="10"/></filter>
+            <filter id="cloud-soft" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="5"/></filter>
+          </defs>
+          <path id="cloud-glow" class="cloud-glow" filter="url(#cloud-blur)"/>
+          <path id="cloud-fill" class="cloud-fill" fill="url(#cloud-shine)"/>
+          <g clip-path="url(#cloud-clip)">
+            <rect id="cloud-pattern" fill="url(#cloud-dots)"/>
+            <ellipse id="cloud-gloss" class="cloud-gloss" filter="url(#cloud-soft)"/>
+          </g>
+          <path id="cloud-edge" class="cloud-edge"/>
+          <g id="cloud-stickers"></g>
+        </svg>
+        <div class="tour-body" aria-live="polite" aria-atomic="true">
+          <p class="tour-step" id="tour-step"></p>
+          <h2 class="tour-title" id="tour-title"></h2>
+          <p class="sr-only" id="tour-text"></p>
+          <p class="tour-typed" aria-hidden="true"><span class="tour-ghost" id="tour-ghost"></span><span class="tour-ink" id="tour-ink"></span></p>
+        </div>
+      </div>
+      <span class="tour-trail" aria-hidden="true"><i></i><i></i><i></i></span>
+    </div>
+    <div class="tour-actions">
+      <button type="button" class="ctl" id="tour-back">Back</button>
+      <button type="button" class="ctl ctl-main" id="tour-next" autofocus>Next</button>
+      <button type="button" class="voice-btn" id="tour-voice" aria-pressed="false" aria-describedby="tour-voice-note">
+        <svg class="i-voice-off" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 9.5h3.6L12 6v12l-4.4-3.5H4z"/><path class="stroke" d="M16 9.5l5 5M21 9.5l-5 5"/></svg>
+        <svg class="i-voice-on" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 9.5h3.6L12 6v12l-4.4-3.5H4z"/><path class="stroke" d="M15.6 9a4.2 4.2 0 0 1 0 6M18.2 6.6a7.6 7.6 0 0 1 0 10.8"/></svg>
+        <span class="voice-bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+        <span class="sr-only">Selene's voice</span>
+      </button>
+      <button type="button" class="ctl tour-skip-part" id="tour-skip-part" hidden>Skip this part</button>
+      <button type="button" class="tour-skip" id="tour-skip">Skip the tour</button>
+      <p class="sr-only" id="tour-voice-note">Reads each step aloud in a calm voice. Turn it off if you use a screen reader.</p>
+    </div>
+  </div>
+</dialog>
+
+
+<script src="js/examples.js?v=1"></script>
+<script src="js/selene.js?v=1"></script>
+<script src="js/nav.js?v=1"></script>
+<script src="js/theme.js?v=1"></script>
+<script src="js/viewer.js?v=1"></script>
+<script src="js/app.js?v=1"></script>
+<!-- Shrashti's module goes here when it is ready: <script src="js/mark-candidate.js?v=1"></script> -->
+<script src="js/cloud.js?v=1"></script>
+<script src="js/tour.js?v=1"></script>
+<script src="js/guide.js?v=1"></script>
+</body>
+</html>

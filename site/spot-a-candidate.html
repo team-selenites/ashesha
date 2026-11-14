@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#F4EEFA">
+<title>Spot a candidate · Ashesha</title>
+<meta name="description" content="Learn when a SPHEREx picture is worth marking as a candidate: the signs, the traps, and practice with Selene.">
+<script>
+// Apply a saved colour choice before the page paints, to avoid a flash (same key as every page).
+try { var t = localStorage.getItem("selenites-theme"); if (t === "light" || t === "dark" || t === "colour-blind-friendly") { document.documentElement.setAttribute("data-theme", t); document.querySelector('meta[name="theme-color"]').setAttribute("content", { "light": "#F4EEFA", "dark": "#0B0A0E", "colour-blind-friendly": "#1E1238" }[t]); } } catch (e) {}</script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<link rel="stylesheet" href="css/tokens.css?v=1">
+<link rel="stylesheet" href="css/app.css?v=1">
+<link rel="stylesheet" href="css/nav.css?v=1">
+<link rel="stylesheet" href="css/spot.css?v=1">
+</head>
+<body class="spot">
+<div class="sky" aria-hidden="true">
+  <svg width="100%" height="100%" focusable="false">
+    <defs>
+      <g id="cloud">
+        <circle cx="30" cy="42" r="18"/><circle cx="55" cy="30" r="24"/><circle cx="82" cy="40" r="20"/><circle cx="100" cy="48" r="14"/>
+        <rect x="18" y="44" width="92" height="18" rx="9"/>
+      </g>
+      <g id="cloud-face" class="cloud-face">
+        <circle cx="48" cy="44" r="2" class="dot"/><circle cx="66" cy="44" r="2" class="dot"/>
+        <path d="M53 50q4 3.4 8 0" fill="none" stroke-width="1.6" stroke-linecap="round" class="line"/>
+        <circle cx="41" cy="50" r="3.6" class="blush"/><circle cx="73" cy="50" r="3.6" class="blush"/>
+      </g>
+      <pattern id="sky-pattern" width="760" height="600" patternUnits="userSpaceOnUse">
+        <g class="cloud-shape" transform="translate(40 60) scale(1.6)"><use href="#cloud"/><use href="#cloud-face"/></g>
+        <g class="cloud-shape" transform="translate(440 24) scale(0.9)"><use href="#cloud"/></g>
+        <g class="cloud-shape" transform="translate(300 310) scale(1.3)"><use href="#cloud"/><use href="#cloud-face"/></g>
+        <g class="cloud-shape" transform="translate(620 380) scale(0.8)"><use href="#cloud"/></g>
+        <g class="cloud-shape" transform="translate(50 440) scale(0.7)"><use href="#cloud"/></g>
+      </pattern>
+    </defs>
+    <rect width="100%" height="100%" fill="url(#sky-pattern)"/>
+  </svg>
+</div>
+<svg class="svg-defs" width="0" height="0" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="guide-shine" x1="0" y1="0" x2="0" y2="1"><stop offset="0" class="cloud-shine-a"/><stop offset="1" class="cloud-shine-b"/></linearGradient>
+    <filter id="guide-blur" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="8"/></filter>
+  </defs>
+</svg>
+<div class="twinkle" aria-hidden="true"><i></i><i></i><i></i></div>
+<a class="skip" href="#main">Skip to the main content</a>
+<div class="sn" data-page="spot"></div>
+
+<header class="site-head sp-head">
+  <div class="ts-slot" data-theme-switch></div>
+  <p class="kicker">Spot a candidate · with Selene</p>
+  <h1 id="top" tabindex="-1">When is a picture worth marking?</h1>
+  <p class="lede">Five short steps: what a candidate is, the signs worth marking, the traps that fool everyone, a practice round, and how to do it in the sky viewer.</p>
+  <p class="placeholder-flag sp-practice-note">The practice pictures on this page are drawn by our own code to look like SPHEREx pictures. They are not SPHEREx data.</p>
+</header>
+
+<nav class="steps sp-steps" id="steps" aria-label="Spot a candidate steps">
+  <ol>
+    <li><a href="#what" data-view="what"><span class="step-n" aria-hidden="true">1</span><span class="step-t">What a candidate is</span></a></li>
+    <li><a href="#signs" data-view="signs"><span class="step-n" aria-hidden="true">2</span><span class="step-t">Signs to look for</span></a></li>
+    <li><a href="#traps" data-view="traps"><span class="step-n" aria-hidden="true">3</span><span class="step-t">Traps</span></a></li>
+    <li><a href="#practice" data-view="practice"><span class="step-n" aria-hidden="true">4</span><span class="step-t">Practice</span></a></li>
+    <li><a href="#viewer" data-view="viewer"><span class="step-n" aria-hidden="true">5</span><span class="step-t">In the sky viewer</span></a></li>
+  </ol>
+</nav>
+
+<main id="main">
+
+  <!-- Step 1: a candidate is "worth a second look", never "a discovery". -->
+  <section class="view" data-view="what" aria-labelledby="what-h">
+    <div class="view-top">
+      <div class="view-head">
+        <p class="view-step">Step 1 of 5</p>
+        <h2 id="what-h" class="view-title" tabindex="-1">What a candidate is</h2>
+        <p class="view-lede">A candidate is a picture you think is worth checking again.</p>
+      </div>
+    <aside class="guide" data-guide="what" aria-label="Selene's tip">
+      <button type="button" class="guide-open" aria-expanded="true"><span class="selene-slot selene-avatar selene-avatar-sm" data-variant="head"></span>Show Selene's tip</button>
+      <div class="guide-body">
+        <div class="guide-figure" aria-hidden="true"><div class="selene-slot guide-selene" data-variant="figure"></div></div>
+        <div class="guide-thought">
+          <div class="guide-bubble">
+            <svg class="guide-cloud" aria-hidden="true" focusable="false"></svg>
+            <div class="guide-say" data-when="w-ask">
+              <p class="guide-part">Step 1 · Part 1 of 2</p>
+              <p class="guide-text">Hi, I'm Selene. In the sky viewer you can mark a picture as a candidate. Before you do, let's make sure we mean the same thing. Pick the sentence that is true.</p>
+            </div>
+            <div class="guide-say" data-when="w-done" hidden>
+              <p class="guide-part">Step 1 · Part 2 of 2</p>
+              <p class="guide-text">Exactly: a candidate means "worth a second look", nothing more. Now, what makes a picture worth a second look? Press Next.</p>
+            </div>
+            <div class="guide-actions">
+              <a class="guide-next" data-when="w-done" href="#signs" data-view="signs" hidden><span>Next: Signs to look for</span><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 5l7 7-7 7"/></svg></a>
+              <button type="button" class="guide-voice" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 9.5h3.6L12 6v12l-4.4-3.5H4z"/><path class="gv-on" d="M15.6 9a4.2 4.2 0 0 1 0 6M18.2 6.6a7.6 7.6 0 0 1 0 10.8"/><path class="gv-off" d="M16 9.5l5 5M21 9.5l-5 5"/></svg><span>Selene's voice</span></button>
+              <button type="button" class="guide-hide">Hide tips</button>
+            </div>
+          </div>
+        </div>
+        <span class="guide-trail" aria-hidden="true"><i></i><i></i><i></i></span>
+      </div>
+    </aside>
+    </div>
+    <div class="panel sp-panel">
+      <fieldset class="sp-quiz">
+        <legend id="what-q"></legend>
+        <div class="sp-choices" id="what-choices"></div>
+      </fieldset>
+      <p class="sp-result" id="what-result" role="status" aria-live="polite"></p>
+      <div class="sp-rules" id="what-rules" hidden>
+        <h3 class="sp-h3">Three things to keep in mind</h3>
+        <ul class="sp-list">
+          <li><strong>It is a second look, not a discovery.</strong> Most candidates turn out to be ordinary. That is still useful.</li>
+          <li><strong>Unsure is fine.</strong> If you are not sure, you can mark it and say why in your own words later.</li>
+          <li><strong>Nobody is timing you.</strong> Take as long as you like on each picture.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="sp-pager"><a class="btn sp-pager-next" href="#signs" data-view="signs"><span>Next: Signs to look for</span><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 5l7 7-7 7"/></svg></a></div>
+  </section>
+
+  <!-- Step 2: three signs worth marking, each a short row of practice pictures. -->
+  <section class="view" data-view="signs" aria-labelledby="signs-h" hidden>
+    <div class="view-top">
+      <div class="view-head">
+        <a class="back-link" href="#what" data-view="what"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 5l-7 7 7 7"/></svg>What a candidate is</a>
+        <p class="view-step">Step 2 of 5</p>
+        <h2 id="signs-h" class="view-title" tabindex="-1">Signs to look for</h2>
+        <p class="view-lede">Three kinds of change are worth a second look. Each row is the same patch of sky, oldest picture first.</p>
+      </div>
+    <aside class="guide" data-guide="signs" aria-label="Selene's tip">
+      <button type="button" class="guide-open" aria-expanded="true"><span class="selene-slot selene-avatar selene-avatar-sm" data-variant="head"></span>Show Selene's tip</button>
+      <div class="guide-body">
+        <div class="guide-figure" aria-hidden="true"><div class="selene-slot guide-selene" data-variant="figure"></div></div>
+        <div class="guide-thought">
+          <div class="guide-bubble">
+            <svg class="guide-cloud" aria-hidden="true" focusable="false"></svg>
+            <div class="guide-say" data-when="s-look">
+              <p class="guide-part">Step 2 · Part 1 of 2</p>
+              <p class="guide-text">Here are three signs worth marking. First, look at the real picture at the top: that's what SPHEREx pictures look like. Then open each sign with its button and compare the pictures from left to right. The dashed white box shows where to look.</p>
+            </div>
+            <div class="guide-say" data-when="s-done" hidden>
+              <p class="guide-part">Step 2 · Part 2 of 2</p>
+              <p class="guide-text">You've seen all three: it moved, it appeared and stayed, it changed in the same colour. But some changes only look real. Press Next to meet the traps.</p>
+            </div>
+            <div class="guide-actions">
+              <a class="guide-next" data-when="s-done" href="#traps" data-view="traps" hidden><span>Next: Traps</span><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 5l7 7-7 7"/></svg></a>
+              <button type="button" class="guide-voice" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 9.5h3.6L12 6v12l-4.4-3.5H4z"/><path class="gv-on" d="M15.6 9a4.2 4.2 0 0 1 0 6M18.2 6.6a7.6 7.6 0 0 1 0 10.8"/><path class="gv-off" d="M16 9.5l5 5M21 9.5l-5 5"/></svg><span>Selene's voice</span></button>
+              <button type="button" class="guide-hide">Hide tips</button>
+            </div>
+          </div>
+        </div>
+        <span class="guide-trail" aria-hidden="true"><i></i><i></i><i></i></span>
+      </div>
+    </aside>
+    </div>
+    <div class="panel sp-panel">
+      <figure class="sp-real">
+        <img src="data/pictures/3i_atlas/all_images/2025-12-15_000006_2.41um.png" width="400" height="404" loading="lazy"
+             alt="A real SPHEREx picture of the comet 3I/ATLAS, 15 December 2025, 2.41 microns, labelled clear. A grid of coarse purple and orange pixels with a big pale yellow glow in the middle, inside a cyan dashed circle.">
+        <figcaption>
+          <h3 class="sp-h3">How to read a real SPHEREx picture</h3>
+          <p class="sp-real-src">The comet 3I/ATLAS on 15 December 2025, at 2.41 microns. Real SPHEREx data.</p>
+          <ul class="sp-list">
+            <li><strong>Tiny:</strong> 41 by 41 pixels, so everything looks blocky.</li>
+            <li><strong>Colour scale, not real colour:</strong> dark purple is faint, pale yellow is bright.</li>
+            <li><strong>Grainy:</strong> every pixel has noise. A single speckle means little.</li>
+            <li><strong>Cyan circle:</strong> the position you chose.</li>
+          </ul>
+          <p class="fine">The practice pictures below are drawn by our code to look like this, so we know the right answers.</p>
+        </figcaption>
+      </figure>
+      <div class="sp-cases" role="group" aria-label="Choose a sign" id="signs-pick"></div>
+      <h3 class="sp-h3 sp-case-title" id="signs-title"></h3>
+      <div class="sp-frames" id="signs-frames"></div>
+      <p class="sp-words" id="signs-words"></p>
+      <p class="sp-lesson" id="signs-lesson"></p>
+      <p class="fine sp-colour-note">These practice pictures share exactly one colour. In real data every picture has its own wavelength: pictures from the same detector are close in colour, not identical.</p>
+    </div>
+    <div class="sp-pager"><a class="btn sp-pager-next" href="#traps" data-view="traps"><span>Next: Traps</span><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 5l7 7-7 7"/></svg></a></div>
+  </section>
+
+  <!-- Step 3: three traps. The visitor decides first, then reads why. -->
+  <section class="view" data-view="traps" aria-labelledby="traps-h" hidden>
+    <div class="view-top">
+      <div class="view-head">
+        <a class="back-link" href="#signs" data-view="signs"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 5l-7 7 7 7"/></svg>Signs to look for</a>
+        <p class="view-step">Step 3 of 5</p>
+        <h2 id="traps-h" class="view-title" tabindex="-1">Traps</h2>
+        <p class="view-lede">Some changes only look real. Decide first, then find out why.</p>
+      </div>
+    <aside class="guide" data-guide="traps" aria-label="Selene's tip">
+      <button type="button" class="guide-open" aria-expanded="true"><span class="selene-slot selene-avatar selene-avatar-sm" data-variant="head"></span>Show Selene's tip</button>
+      <div class="guide-body">
+        <div class="guide-figure" aria-hidden="true"><div class="selene-slot guide-selene" data-variant="figure"></div></div>
+        <div class="guide-thought">
+          <div class="guide-bubble">
+            <svg class="guide-cloud" aria-hidden="true" focusable="false"></svg>
+            <div class="guide-say" data-when="t-ask">
+              <p class="guide-part">Step 3 · Part 1 of 2</p>
+              <p class="guide-text">Each of these looks like a change. For each one, decide: would you mark it now, or wait? There's no wrong click: I'll explain either way, then show you the same trap in real SPHEREx pictures.</p>
+            </div>
+            <div class="guide-say" data-when="t-done" hidden>
+              <p class="guide-part">Step 3 · Part 2 of 2</p>
+              <p class="guide-text">These three fool everyone, astronomers too. Same colour, more than one picture, no flags: then it's worth a look. Ready to practise? Press Next.</p>
+            </div>
+            <div class="guide-actions">
+              <a class="guide-next" data-when="t-done" href="#practice" data-view="practice" hidden><span>Next: Practice</span><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 5l7 7-7 7"/></svg></a>
+              <button type="button" class="guide-voice" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 9.5h3.6L12 6v12l-4.4-3.5H4z"/><path class="gv-on" d="M15.6 9a4.2 4.2 0 0 1 0 6M18.2 6.6a7.6 7.6 0 0 1 0 10.8"/><path class="gv-off" d="M16 9.5l5 5M21 9.5l-5 5"/></svg><span>Selene's voice</span></button>
+              <button type="button" class="guide-hide">Hide tips</button>
+            </div>
+          </div>
+        </div>
+        <span class="guide-trail" aria-hidden="true"><i></i><i></i><i></i></span>
+      </div>
+    </aside>
+    </div>
+    <div class="panel sp-panel">
+      <div class="sp-cases" role="group" aria-label="Choose a trap" id="traps-pick"></div>
+      <h3 class="sp-h3 sp-case-title" id="traps-title"></h3>
+      <div class="sp-frames" id="traps-frames"></div>
+      <p class="sp-words" id="traps-words"></p>
+      <fieldset class="sp-quiz">
+        <legend>Would you mark this picture now?</legend>
+        <div class="sp-choices sp-choices-row" id="traps-choices">
+          <button type="button" class="sp-choice" data-answer="mark">Mark it now</button>
+          <button type="button" class="sp-choice" data-answer="wait">Wait and check first</button>
+        </div>
+      </fieldset>
+      <p class="sp-result" id="traps-result" role="status" aria-live="polite"></p>
+      <!-- After the visitor decides: the same trap in real SPHEREx pictures (from lessons.json). -->
+      <section class="sp-realcase" id="traps-real" aria-labelledby="traps-real-h" hidden>
+        <h3 class="sp-h3" id="traps-real-h"></h3>
+        <div class="sp-realcase-imgs" id="traps-real-imgs"></div>
+        <p id="traps-real-text"></p>
+      </section>
+    </div>
+    <div class="sp-pager"><a class="btn sp-pager-next" href="#practice" data-view="practice"><span>Next: Practice</span><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 5l7 7-7 7"/></svg></a></div>
+  </section>
+
+  <!-- Step 4: five practice rounds, no timer, no score pressure. -->
+  <section class="view" data-view="practice" aria-labelledby="practice-h" hidden>
+    <div class="view-top">
+      <div class="view-head">
+        <a class="back-link" href="#traps" data-view="traps"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 5l-7 7 7 7"/></svg>Traps</a>
+        <p class="view-step">Step 4 of 5</p>
+        <h2 id="practice-h" class="view-title" tabindex="-1">Practice</h2>
+        <p class="view-lede">Five rounds, no timer. Mark it, or wait.</p>
+      </div>
+    <aside class="guide" data-guide="practice" aria-label="Selene's tip">
+      <button type="button" class="guide-open" aria-expanded="true"><span class="selene-slot selene-avatar selene-avatar-sm" data-variant="head"></span>Show Selene's tip</button>
+      <div class="guide-body">
+        <div class="guide-figure" aria-hidden="true"><div class="selene-slot guide-selene" data-variant="figure"></div></div>
+        <div class="guide-thought">
+          <div class="guide-bubble">
+            <svg class="guide-cloud" aria-hidden="true" focusable="false"></svg>
+            <div class="guide-say" data-when="p-play">
+              <p class="guide-part">Step 4 · Part 1 of 2</p>
+              <p class="guide-text">Your turn! No rings to help you now. Look at the pictures and their colours, then choose Mark as candidate or Not yet. Take your time.</p>
+            </div>
+            <div class="guide-say" data-when="p-done" hidden>
+              <p class="guide-part">Step 4 · Part 2 of 2</p>
+              <p class="guide-text">All five done. Whatever your score, you now know what to look for, and what to be careful about. Press Next to see how it works in the sky viewer.</p>
+            </div>
+            <div class="guide-actions">
+              <a class="guide-next" data-when="p-done" href="#viewer" data-view="viewer" hidden><span>Next: In the sky viewer</span><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 5l7 7-7 7"/></svg></a>
+              <button type="button" class="guide-voice" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 9.5h3.6L12 6v12l-4.4-3.5H4z"/><path class="gv-on" d="M15.6 9a4.2 4.2 0 0 1 0 6M18.2 6.6a7.6 7.6 0 0 1 0 10.8"/><path class="gv-off" d="M16 9.5l5 5M21 9.5l-5 5"/></svg><span>Selene's voice</span></button>
+              <button type="button" class="guide-hide">Hide tips</button>
+            </div>
+          </div>
+        </div>
+        <span class="guide-trail" aria-hidden="true"><i></i><i></i><i></i></span>
+      </div>
+    </aside>
+    </div>
+    <div class="panel sp-panel">
+      <p class="sp-round" id="practice-round"></p>
+      <div class="sp-frames" id="practice-frames"></div>
+      <p class="sp-words" id="practice-words"></p>
+      <fieldset class="sp-quiz">
+        <legend>What would you do?</legend>
+        <div class="sp-choices sp-choices-row" id="practice-choices">
+          <button type="button" class="sp-choice" data-answer="mark"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 4h10v16l-5-4-5 4z"/></svg>Mark as candidate</button>
+          <button type="button" class="sp-choice" data-answer="wait">Not yet</button>
+        </div>
+      </fieldset>
+      <p class="sp-result" id="practice-result" role="status" aria-live="polite"></p>
+      <div class="sp-controls">
+        <button type="button" class="btn" id="practice-next" hidden>Next round</button>
+        <button type="button" class="btn btn-quiet" id="practice-again" hidden>Practise again</button>
+      </div>
+    </div>
+    <div class="sp-pager"><a class="btn sp-pager-next" href="#viewer" data-view="viewer"><span>Next: In the sky viewer</span><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 5l7 7-7 7"/></svg></a></div>
+  </section>
+
+  <!-- Step 5: how and when to do it in the real viewer. -->
+  <section class="view" data-view="viewer" aria-labelledby="viewer-h" hidden>
+    <div class="view-top">
+      <div class="view-head">
+        <a class="back-link" href="#practice" data-view="practice"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 5l-7 7 7 7"/></svg>Practice</a>
+        <p class="view-step">Step 5 of 5</p>
+        <h2 id="viewer-h" class="view-title" tabindex="-1">In the sky viewer</h2>
+        <p class="view-lede">Four checks before you press Mark as candidate on real SPHEREx pictures.</p>
+      </div>
+    <aside class="guide" data-guide="viewer" aria-label="Selene's tip">
+      <button type="button" class="guide-open" aria-expanded="true"><span class="selene-slot selene-avatar selene-avatar-sm" data-variant="head"></span>Show Selene's tip</button>
+      <div class="guide-body">
+        <div class="guide-figure" aria-hidden="true"><div class="selene-slot guide-selene" data-variant="figure"></div></div>
+        <div class="guide-thought">
+          <div class="guide-bubble">
+            <svg class="guide-cloud" aria-hidden="true" focusable="false"></svg>
+            <div class="guide-say" data-when="v-read">
+              <p class="guide-part">Step 5</p>
+              <p class="guide-text">Real pictures are noisier than these. Tick off the four checks as you go, then try it on the comet 3I/ATLAS. I'll be there too.</p>
+            </div>
+            <div class="guide-actions">
+              <a class="guide-next" data-when="v-read" href="viewer.html?target=3I-ATLAS"><span>Open the comet in the sky viewer</span><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 5l7 7-7 7"/></svg></a>
+              <button type="button" class="guide-voice" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 9.5h3.6L12 6v12l-4.4-3.5H4z"/><path class="gv-on" d="M15.6 9a4.2 4.2 0 0 1 0 6M18.2 6.6a7.6 7.6 0 0 1 0 10.8"/><path class="gv-off" d="M16 9.5l5 5M21 9.5l-5 5"/></svg><span>Selene's voice</span></button>
+              <button type="button" class="guide-hide">Hide tips</button>
+            </div>
+          </div>
+        </div>
+        <span class="guide-trail" aria-hidden="true"><i></i><i></i><i></i></span>
+      </div>
+    </aside>
+    </div>
+    <div class="panel sp-panel">
+      <h3 class="sp-h3">Before you mark</h3>
+      <ol class="sp-checks">
+        <li><label><input type="checkbox"> <span><strong>Pause on the picture.</strong> Press Pause, or pick it in the strip or the Table tab. The button always marks the picture on screen.</span></label></li>
+        <li><label><input type="checkbox"> <span><strong>Read its colour and status.</strong> The line under the picture gives the microns and the status. A Flagged picture needs extra care.</span></label></li>
+        <li><label><input type="checkbox"> <span><strong>Compare in a similar colour.</strong> Every real picture has its own wavelength; pictures from the same detector are close in colour. Use Compare, or the Table tab, to find one with a similar micron number on another date.</span></label></li>
+        <li><label><input type="checkbox"> <span><strong>Look before and after.</strong> If it is in only one picture, check the next one. A blip that never comes back is probably the camera.</span></label></li>
+      </ol>
+      <p class="sp-checks-out" id="viewer-checks-out" aria-live="polite"></p>
+      <h3 class="sp-h3">Then</h3>
+      <p>Press <strong>Mark as candidate</strong>, just under the picture. Your marked pictures go to <strong>My candidates</strong>, step 3 of the sky viewer.</p>
+      <p class="sp-saving" id="viewer-saving">Checking whether saving is switched on…</p>
+      <h3 class="sp-h3">What happens to a candidate</h3>
+      <p>A candidate is a note to look again. In My candidates you can open each picture again, add a note saying what caught your eye, copy its link to share, or export your list. Anyone can then open the picture at the IRSA archive, from the sky viewer's Details tab, and check it more closely.</p>
+      <div class="sp-controls">
+        <a class="btn" href="viewer.html?target=3I-ATLAS">Try it on the comet 3I/ATLAS</a>
+        <a class="btn btn-quiet" href="viewer.html#my-candidates">Open My candidates</a>
+      </div>
+    </div>
+  </section>
+
+  <p class="sr-only" id="sp-live" aria-live="polite"></p>
+</main>
+
+<footer class="site-foot">
+  <p>Data: NASA/IPAC Infrared Science Archive (IRSA). Acknowledgement and data DOIs are listed in the project's ACKNOWLEDGEMENTS.md. This project is not endorsed by NASA or IRSA.</p>
+  <p>The practice pictures on this page are drawn by our own code. Selene's portrait was made with Google Gemini, an AI image generator, from a prompt written by the team.</p>
+</footer>
+
+<script src="js/selene.js?v=1"></script>
+<script src="js/nav.js?v=1"></script>
+<script src="js/theme.js?v=1"></script>
+<script src="js/cloud.js?v=1"></script>
+<script src="js/spot.js?v=1"></script>
+<script src="js/guide.js?v=1"></script>
+</body>
+</html>
