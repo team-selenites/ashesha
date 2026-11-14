@@ -16,11 +16,13 @@ event.detail = {
   observation: { target, obs_id, ra, dec, date, mjd, detector,
                  wavelength_um, thumbnail, image_url, view_link, status },
   image_number: 3,   // place of this image in date order, counting from 1
-  image_count: 12    // how many images the loaded set has
+  image_count: 12,   // how many images the loaded set has
+  note: "…"          // the image's description, or null (added 14 November 2026)
 }
 ```
 
-- `observation` carries **exactly** the 12 contract fields from RULES section 3. Nothing is renamed. Viewer-only extras (`brightness`, `flags`, the viewer's own `note`, `irsa_link`) are not sent.
+- `observation` carries **exactly** the 12 contract fields from RULES section 3. Nothing is renamed. Viewer-only extras (`brightness`, `flags`, `irsa_link`) are not sent.
+- `note` is the viewer's short description of the image (string, or `null` when there is none). It travels **beside** `observation`, like `image_number`, never inside it. My Candidates shows it read-only as "Viewer description" and keeps it apart from the user's own `personal_note`. Decided 14 November 2026.
 - **Handled signal:** the module calls `event.preventDefault()` once it has dealt with the event, whether it saved the image or found a duplicate. If nobody does, the viewer announces "My Candidates is not ready yet, so this image was not saved." The module announces its own result ("Saved…", "This observation is already in My Candidates.").
 
 ## Fields that can be null
