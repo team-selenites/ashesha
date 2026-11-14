@@ -198,12 +198,13 @@
   // ---------- Selene and her voice ----------
 
   // Her words appear while her lips move; with her voice switched on she also plays the step's
-  // recording. Her voice is off until the visitor turns it on, because it would talk over a
-  // screen reader. The choice is remembered.
+  // recording. Her voice is on unless the visitor has switched it off (Pawana, 14 November
+  // 2026); that choice is remembered. Where the browser holds back sound (a page opened without
+  // a click yet), she speaks silently: js/selene.js falls back to words only.
   if (window.Selene) window.Selene.mountAll();
   var selene = window.Selene ? window.Selene.mount($("tour-selene")) : null;
-  var voiceOn = false;
-  try { voiceOn = localStorage.getItem(VOICE_KEY) === "on"; } catch (e) {}
+  var voiceOn = true;
+  try { voiceOn = localStorage.getItem(VOICE_KEY) !== "off"; } catch (e) {}
   // Only recorded lines are ever played (never the device's built-in voice), so the voice
   // button only appears once this guide's recordings are found. Lines without one stay silent.
   // A step without a recording (such as one that names the visitor's own date) has no voice

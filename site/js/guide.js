@@ -104,9 +104,12 @@
   // The voice switch in each cloud plays the tip's recording (found by its words, see
   // js/selene.js). It is the same switch as the page's tour, so one choice covers both, and it
   // only shows once her recordings are found. The device's built-in voice is never used.
+  // Her voice is on unless the visitor has switched it off (Pawana, 14 November 2026); that
+  // choice is remembered. The browser holds back sound until the first click or key press, and
+  // until then she speaks silently (js/selene.js falls back to words only).
   var VOICE_KEY = (CFG && CFG.voiceKey) || "selenites-selene-voice";
-  var voiceOn = false;
-  try { voiceOn = localStorage.getItem(VOICE_KEY) === "on"; } catch (e) {}
+  var voiceOn = true;
+  try { voiceOn = localStorage.getItem(VOICE_KEY) !== "off"; } catch (e) {}
   var voiceBtns = Array.prototype.slice.call(document.querySelectorAll(".guide-voice"));
   function showVoice() {
     voiceBtns.forEach(function (b) {
