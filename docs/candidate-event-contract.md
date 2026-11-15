@@ -1,6 +1,6 @@
 # Mark a Candidate: event contract
 
-The handshake between the sky viewer (Pawana and a team member) and the Mark a Candidate module (Shrashti). It answers the open questions in section 6 of Shrashti's technical spec. Decided by Pawana on 11 November 2026.
+The handshake between the sky viewer (Pawana) and the Mark a Candidate module (Shrashti). It answers the open questions in section 6 of Shrashti's technical spec. Decided by Pawana on 11 November 2026.
 
 ## The event
 
