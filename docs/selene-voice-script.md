@@ -9,7 +9,7 @@ Eight lines in Your Beginnings stay silent on purpose: they carry the visitor's 
 - `site/assets/voice/manifest.json` lists every recording as { guide, text, file }. `js/selene.js` loads it and plays a recording only when **the words on screen match it exactly** (spaces tidied).
 - So when someone edits a line, its old recording simply stops playing and the line is silent (its words still appear) until it is recorded again. A guide can never say something different from the screen.
 - The device's built-in voice is never used, because it sounds robotic.
-- Voice is off until the visitor switches it on, because it would talk over a screen reader. The switch is in the tour card and in each tip cloud; they are the same setting, one per guide, and it is remembered. Say hello always speaks, since the visitor asked for it.
+- Voice is on unless the visitor switches it off (decided by Pawana on 14 November 2026). The switch is in the tour card and in each tip cloud; they are the same setting, one per guide, and it is remembered. Browsers hold sound back until the visitor's first click, so nothing is heard before they act, and a guide's voice waits a moment so a screen reader can go first (`docs/sonification-design.md`). Say hello always speaks, since the visitor asked for it.
 - The voice switch only appears when the guide has recordings.
 
 ## Adding or re-recording a line

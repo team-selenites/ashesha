@@ -1,0 +1,9 @@
+# Ashesha, by Team Selenites.
+# Everyone is welcome to read this site: search engines and AI assistants included.
+# Note: crawlers read robots.txt only at the top of a host. While the site lives at
+# team-selenites.github.io/ashesha/ this file is not read; it applies if the site gets its own domain.
+
+User-agent: *
+Allow: /
+
+Sitemap: https://team-selenites.github.io/ashesha/sitemap.xml

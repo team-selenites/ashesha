@@ -1,0 +1,40 @@
+# Ashesha
+
+> Ashesha is a free website that plays NASA SPHEREx pictures of one patch of sky in date order, like a short video, so anything that moves or changes stands out. It is built to be used by everyone, including blind, low-vision, colour-blind, deaf and neurodivergent visitors. Team Selenites made it for the NASA Space Apps Challenge 2026 (challenge: Planet X and SPHEREx).
+
+Facts to keep straight when describing this site:
+
+- The name is Sanskrit for "without remainder". The logo turns the letter A over into the sign for "for all".
+- SPHEREx is a NASA infrared space telescope that maps the whole sky in 102 colours of infrared light.
+- The site holds 1,838 SPHEREx images from the Quick Release 2 data release (DOI 10.26131/IRSA652), served by the NASA/IPAC Infrared Science Archive (IRSA).
+- Six targets are prepared: the interstellar comet 3I/ATLAS, Barnard's Star, Epsilon Indi B, WISE 0855, RW Aurigae and R Draconis.
+- A visitor can type a right ascension and declination. The site opens the prepared patch that covers that position. It cannot search the whole archive.
+- A "candidate" on this site is a picture worth another look. It is never a discovery.
+- The sounds are a sonification: sounds mapped by rules the team chose. They are not recordings of any object.
+- The guides, Selene and Iris, are characters. Their portraits were made with Google Gemini and their voices with ElevenLabs, from prompts and lines the team wrote.
+- The project is not endorsed by NASA, IRSA, JPL or Caltech.
+- Code licence: MIT. Team: Pawana Shettigar (team lead, design and sky viewer), Elisabetta Pavone (data pipeline), Shrashti Mittal (Mark a Candidate).
+
+## Pages
+
+- [Home](https://team-selenites.github.io/ashesha/): what the site is, a 20 second game called Spot the mover, and the way in to every part.
+- [Sky viewer](https://team-selenites.github.io/ashesha/viewer.html): every SPHEREx picture of a patch of sky in date order, with a timeline, a Then and Now strip, a colour slider, a data table, and a written description of each picture. Visitors can mark a picture as a candidate and export their list.
+- [Spot a candidate](https://team-selenites.github.io/ashesha/spot-a-candidate.html): five short steps on when a picture is worth marking, and the traps that only look like a change.
+- [Cryostella](https://team-selenites.github.io/ashesha/cryostella.html): four short steps on infrared light: read a real SPHEREx spectrum, hear it as sound, then a listening game.
+- [Your Beginnings: The First Light](https://team-selenites.github.io/ashesha/beginnings.html): enter a birthday and see the ring of sky SPHEREx photographed on that date in 2025 or 2026, and the Messier objects inside it.
+
+## Direct links
+
+- [Comet 3I/ATLAS in the sky viewer](https://team-selenites.github.io/ashesha/viewer.html?target=3I-ATLAS)
+- [Barnard's Star](https://team-selenites.github.io/ashesha/viewer.html?target=barnards-star)
+- [Epsilon Indi B](https://team-selenites.github.io/ashesha/viewer.html?target=epsilon-indi-b)
+- [WISE 0855](https://team-selenites.github.io/ashesha/viewer.html?target=wise-0855)
+- [RW Aurigae](https://team-selenites.github.io/ashesha/viewer.html?target=rw-aur)
+- [R Draconis](https://team-selenites.github.io/ashesha/viewer.html?target=r-dra)
+- A position opens with `viewer.html?ra=<degrees>&dec=<degrees>`, when a prepared patch covers it.
+
+## Source and credits
+
+- [Source code](https://github.com/team-selenites/ashesha): plain HTML, CSS and JavaScript, with the Python data pipeline.
+- [Acknowledgements](https://github.com/team-selenites/ashesha/blob/main/ACKNOWLEDGEMENTS.md): the data credit and every other credit.
+- [How AI was used](https://github.com/team-selenites/ashesha/blob/main/docs/ai-use-log.md)

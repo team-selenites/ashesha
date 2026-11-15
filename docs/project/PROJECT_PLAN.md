@@ -1,7 +1,7 @@
 # Team Selenites: NASA Space Apps Challenge 2026 Project Plan
 
 **Challenge:** Planet X and SPHEREx (advanced difficulty)
-**Repo:** https://github.com/Team-Selenites-rough-work/spherex
+**Repo:** https://github.com/team-selenites/ashesha (the work moved here on 14 November 2026, from the working repository this snapshot was written in)
 **Status:** Snapshot as of 9 November 2026. The living plan is in Claude Docs.
 
 ## 1. Goal

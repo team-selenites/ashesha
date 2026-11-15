@@ -1,0 +1,28 @@
+{
+  "name": "Ashesha: follow a comet through SPHEREx",
+  "short_name": "Ashesha",
+  "description": "A sky tool for all. Play NASA SPHEREx pictures in date order and spot what moves.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "browser",
+  "lang": "en-GB",
+  "background_color": "#F4EEFA",
+  "theme_color": "#F4EEFA",
+  "icons": [
+    {
+      "src": "assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/ashesha-mark.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
