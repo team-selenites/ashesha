@@ -205,16 +205,18 @@
     spot: { blurb: "Learn the signs worth marking and the traps that fool everyone, then practise on made-up skies.", meta: "5 steps · about 4 minutes", cta: "Spot a candidate" },
     cryostella: { blurb: "Walk past the end of the rainbow, then read, hear and play with the light beyond it.", meta: "4 steps · about 3 minutes", cta: "Open Cryostella" },
     // Selene guides more than one part, so this card has its own greeting.
-    beginnings: { blurb: "Tell Selene your birthday and watch SPHEREx's pictures from that date build a ring around the sky.", meta: "4 steps · about 2 minutes", cta: "Open Your Beginnings",
+    beginnings: {
+      blurb: "Tell Selene your birthday and watch SPHEREx's pictures from that date build a ring around the sky.",
+      meta: "4 steps · about 2 minutes",
+      cta: "Open Your Beginnings",
+      hello: "Tell me your birthday, and I'll show you the sky SPHEREx saw that day, and the famous objects it met!"
+    },
     stories: {
       blurb: "Meet six famous objects in the night sky through the science of astronomy and the myths people told about them.",
       meta: "6 stories · about 5 minutes",
       cta: "Read the stories",
       hello: "Come with me. I'll show you six places in the sky where science and mythology meet!"
-}
-
-                 hello: "Tell me your birthday, and I'll show you the sky SPHEREx saw that day, and the famous objects it met!" }
-  };
+    }
   function hello(s) { return (DETAIL[s.id] && DETAIL[s.id].hello) || HELLO[s.id] || HELLO[s.guide]; }
   // A small drawing in the corner of each card, in the guide's own motif (decoration only).
   var DECOR = {
