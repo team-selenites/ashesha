@@ -4,9 +4,10 @@
 
 - `index.html`: the home page, with the Spot the mover game, the guides' cards, the sky map and the team.
 - `viewer.html`: the sky viewer, in three steps (choose a patch of sky, watch it change, My candidates).
-- `spot-a-candidate.html`, `cryostella.html`, `beginnings.html`: the other three parts.
+- `spot-a-candidate.html`, `cryostella.html`, `beginnings.html`, `stories.html`: the other learning sections.
+- `css/stories.css`: styles for the Stories from the Sky page.
 - `404.html`, `robots.txt`, `sitemap.xml`, `llms.txt`, `site.webmanifest`: the files search engines, AI assistants and browsers look for.
-- `css/`, `js/`, `assets/`, `data/`: styles, code, pictures and voices, and the data the pages read.
+- `css/`, `js/`, `assets/`, `data/`: shared styles, code, pictures and voices, and the data the pages read.
 
 **Who owns it:** Pawana (design, interface and sky viewer). Shrashti owns the Mark a Candidate module inside it.
 
