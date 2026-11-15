@@ -311,6 +311,22 @@
   gap: 8px;
 }
 
+.mc-arrange {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px var(--mc-gap);
+  grid-column: 1 / -1;
+}
+
+.mc-arrange .mc-field {
+  flex: 1 1 220px;
+  max-width: 320px;
+}
+
+.mc-select {
+  cursor: pointer;
+}
+
 .mc-results-summary {
   margin: 8px 0 var(--mc-gap);
   color: var(--muted);
