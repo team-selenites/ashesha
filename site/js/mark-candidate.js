@@ -67,6 +67,7 @@
     copyLinkFailed: 'Could not copy the observation link. Please try again.',
     copySummaryFailed: 'Could not copy the candidate summary. Please try again.',
     copyExportFailed: 'Could not copy the candidate text. Please try again.',
+    exportFailed: 'Could not export the candidates. Please try again.',
     noObservation: 'This date has no picture, so there is nothing to save.',
     unknownStatus: 'This image has a status that My Candidates does not recognise, so it was not saved.',
     invalidDetector: 'This image has a detector value that is not valid, so it was not saved.',
@@ -96,6 +97,8 @@
     loadFailed: false,    // true when storage could not be read: never treated as "empty"
     pending: [],          // [{ record, index }] deleted but still undoable
     query: '',
+    sort: 'saved',        // 'saved' (date saved) or 'observed' (observation date), newest first
+    view: 'grouped',      // 'grouped' (by target) or 'flat'
     statusOn: { 'clear': true, 'faint': true, 'not-detected': true },
     expanded: {},         // candidateId -> true
     editing: {},          // candidateId -> true while the personal note is being edited
@@ -169,7 +172,7 @@
   }
 
   function detectorText(value) {
-    return isWholeNumber(value, 1, 6) ? value + ' of 6' : NOT_AVAILABLE;
+    return isWholeNumber(value, 1, 6) ? String(value) : NOT_AVAILABLE;
   }
 
   function formatSaved(iso) {
@@ -547,7 +550,8 @@
 
     event.preventDefault();
     var where = isWholeNumber(record.image_number, 1) ? ', image ' + imageNumberText(record) : '';
-    var text = 'Saved to My Candidates: ' + record.observation.target + where + '.';
+    // REQUIREMENTS B-9: the result starts with "Saved as candidate N." (N counts this one).
+    var text = 'Saved as candidate ' + next.length + '. ' + record.observation.target + where + '.';
     setBanner('saved', text, record.candidateId);
     announce(text);
     renderAll();
@@ -567,6 +571,26 @@
     if (difference !== 0) { return difference; }
     if (a.candidateId === b.candidateId) { return 0; }
     return a.candidateId < b.candidateId ? 1 : -1;
+  }
+
+  // Observation time for sorting: MJD when present, otherwise the readable date. Unknown sorts last.
+  function observedTime(record) {
+    var o = record.observation;
+    if (isFiniteNumber(o.mjd)) { return (o.mjd - 40587) * 86400000; }
+    if (hasText(o.date)) {
+      var time = Date.parse(o.date.replace(',', ''));
+      if (!isNaN(time)) { return time; }
+    }
+    return -Infinity;
+  }
+
+  // Order used for cards. Group order always follows the newest save, whatever this is.
+  function compareForSort(a, b) {
+    if (state.sort === 'observed') {
+      var ta = observedTime(a), tb = observedTime(b);
+      if (ta !== tb) { return tb > ta ? 1 : -1; }
+    }
+    return compareNewestFirst(a, b);
   }
 
   function filtersAreActive() {
@@ -614,7 +638,7 @@
 
     var list = order.map(function (target) { return groups[target]; });
     list.forEach(function (group) {
-      group.items.sort(function (a, b) { return compareNewestFirst(a.record, b.record); });
+      group.items.sort(function (a, b) { return compareForSort(a.record, b.record); });
     });
     list.sort(function (a, b) {
       if (b.latest !== a.latest) { return b.latest - a.latest; }
@@ -695,6 +719,25 @@
     return lines.join('\n');
   }
 
+  // One flat record per candidate, the same shape as docs/mark-a-candidate/sample-candidates.json.
+  function exportRecord(record) {
+    var out = { candidateId: record.candidateId, savedAt: record.savedAt, personal_note: record.personal_note };
+    OBSERVATION_FIELDS.forEach(function (field) { out[field] = record.observation[field]; });
+    out.image_number = record.image_number;
+    out.image_count = record.image_count;
+    out.note = record.note;
+    return out;
+  }
+
+  function buildExportJson() {
+    return JSON.stringify({
+      format: 'selenites-candidates',
+      version: 1,
+      exportedAt: new Date().toISOString(),
+      candidates: state.candidates.slice().sort(compareNewestFirst).map(exportRecord)
+    }, null, 2);
+  }
+
   function legacyCopy(text) {
     var previous = document.activeElement;
     var buffer = h('textarea', { className: 'mc-copy-buffer', readonly: true, 'aria-hidden': 'true', tabindex: '-1' });
@@ -737,12 +780,23 @@
       filters.appendChild(h('label', { className: 'mc-check' }, [input, statusIcon(status), h('span', { text: STATUS_LABELS[status] })]));
     });
 
+    function choice(id, setting, labelText, options) {
+      var select = h('select', { id: id, className: 'mc-input mc-select', 'data-mc-setting': setting },
+        options.map(function (option) { return h('option', { value: option[0], text: option[1] }); }));
+      return h('div', { className: 'mc-field' }, [h('label', { className: 'mc-label', 'for': id, text: labelText }), select]);
+    }
+
     dom.controls = h('div', { className: 'mc-controls' }, [
       h('div', { className: 'mc-field' }, [h('label', { className: 'mc-label', 'for': 'mc-search', text: 'Search by target or observation ID' }), search]),
       filters,
       h('div', { className: 'mc-controls-actions' }, [
         action('Clear filters', 'clear-filters'),
-        action('Export All as Text', 'export-text')
+        action('Export All as Text', 'export-text'),
+        action('Export All as JSON', 'export-json')
+      ]),
+      h('div', { className: 'mc-arrange' }, [
+        choice('mc-sort', 'sort', 'Sort by', [['saved', 'Date saved (newest first)'], ['observed', 'Observation date (newest first)']]),
+        choice('mc-view', 'view', 'View', [['grouped', 'Grouped by target'], ['flat', 'Flat list']])
       ])
     ]);
   }
@@ -816,8 +870,12 @@
     Array.prototype.forEach.call(dom.controls.querySelectorAll('[data-mc-filter]'), function (input) {
       input.checked = state.statusOn[input.getAttribute('data-mc-filter')] !== false;
     });
-    var exportButton = dom.controls.querySelector('[data-mc-action="export-text"]');
-    exportButton.disabled = state.candidates.length === 0;
+    Array.prototype.forEach.call(dom.controls.querySelectorAll('[data-mc-action^="export-"]'), function (button) {
+      button.disabled = state.candidates.length === 0;
+    });
+    Array.prototype.forEach.call(dom.controls.querySelectorAll('[data-mc-setting]'), function (select) {
+      select.value = state[select.getAttribute('data-mc-setting')];
+    });
   }
 
   function renderExportFallback() {
@@ -863,6 +921,15 @@
         h('p', { text: MESSAGES.noMatchBody }),
         action('Clear filters', 'clear-filters', null, { primary: true })
       ]));
+      return;
+    }
+
+    if (state.view === 'flat') {
+      var items = [];
+      groups.forEach(function (group) { items = items.concat(group.items); });
+      items.sort(function (a, b) { return compareForSort(a.record, b.record); });
+      dom.list.appendChild(h('ul', { className: 'mc-card-list mc-card-list--flat', 'aria-label': 'All candidates' },
+        items.map(function (item) { return item.pending ? buildDeletedRow(item.record) : buildCard(item.record); })));
       return;
     }
 
@@ -956,22 +1023,10 @@
     var panel = h('div', { className: 'mc-details-body' });
 
     panel.appendChild(h('div', { className: 'mc-details-section' }, [
-      h('h5', { className: 'mc-subtitle', text: 'Observation details (read-only)' }),
+      h('h5', { className: 'mc-subtitle', text: 'More details (read-only)' }),
       factList([
-        ['Target', o.target],
-        ['Observation ID', textOrNotAvailable(o.obs_id)],
-        ['Image', imageNumberText(record)],
-        ['Observation date', textOrNotAvailable(o.date)],
-        ['Status', statusBadge(o.status)],
-        ['Wavelength', displayNumber(o.wavelength_um, 3, ' \u00B5m')],
-        ['Detector', detectorText(o.detector)],
-        ['RA', displayNumber(o.ra, 5, '\u00B0')],
-        ['Dec', displayNumber(o.dec, 5, '\u00B0')],
         ['MJD', displayNumber(o.mjd, 5)],
-        ['Thumbnail', hasText(o.thumbnail) ? 'Available' : NOT_AVAILABLE],
-        ['Image file', hasText(o.image_url) ? 'Available' : NOT_AVAILABLE],
-        ['Observation link', link || NOT_AVAILABLE],
-        ['Saved', timeNode(record.savedAt)]
+        ['Observation link', link || NOT_AVAILABLE]
       ])
     ]));
 
@@ -1158,6 +1213,25 @@
     });
   }
 
+  function exportAllAsJson() {
+    if (!loadFresh() || state.candidates.length === 0) { renderAll(); return; }
+    var count = state.candidates.length;
+    try {
+      var blob = new Blob([buildExportJson()], { type: 'application/json' });
+      var url = URL.createObjectURL(blob);
+      var link = h('a', { href: url, download: 'my-candidates-' + new Date().toISOString().slice(0, 10) + '.json', hidden: true });
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+      setBanner('saved', 'Downloaded ' + count + ' ' + plural(count, 'candidate') + ' as a JSON file.', null);
+    } catch (error) {
+      setBanner('error', MESSAGES.exportFailed, null);
+    }
+    announce(state.banner.text);
+    renderAll();
+  }
+
   function savePersonalNote(candidateId) {
     var draft = state.drafts[candidateId];
     if (draft === undefined) {
@@ -1295,6 +1369,7 @@
         announce('Filters cleared.');
         break;
       case 'export-text': exportAllAsText(); break;
+      case 'export-json': exportAllAsJson(); break;
       case 'close-export-fallback':
         state.exportFallback = null;
         renderAll();
@@ -1340,6 +1415,15 @@
   }
 
   function onRootChange(event) {
+    var setting = event.target.getAttribute && event.target.getAttribute('data-mc-setting');
+    if (setting) {
+      state[setting] = event.target.value;
+      renderList();
+      announce(setting === 'sort' ?
+        'Sorted by ' + (state.sort === 'observed' ? 'observation date' : 'date saved') + ', newest first.' :
+        (state.view === 'flat' ? 'Showing a flat list.' : 'Grouped by target.'));
+      return;
+    }
     var status = event.target.getAttribute && event.target.getAttribute('data-mc-filter');
     if (!status) { return; }
     state.statusOn[status] = event.target.checked;
