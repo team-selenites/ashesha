@@ -216,7 +216,8 @@
       meta: "6 stories · about 5 minutes",
       cta: "Read the stories",
       hello: "Come with me. I'll show you six places in the sky where science and mythology meet!"
-    }
+    }     
+  };
   function hello(s) { return (DETAIL[s.id] && DETAIL[s.id].hello) || HELLO[s.id] || HELLO[s.guide]; }
   // A small drawing in the corner of each card, in the guide's own motif (decoration only).
   var DECOR = {
