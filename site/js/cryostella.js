@@ -10,7 +10,7 @@
 // Everything shown comes from data files:
 //   data/cryostella/index.json      the list of spectra
 //   data/cryostella/<id>.json       one spectrum each (format: docs/cryostella-data.md)
-//   data/sound-key.json             what each sound means (a team member's file)
+//   data/sound-key.json             what each sound means (the sound key file)
 // No sound meaning and no science claim is written in this code.
 (function () {
   "use strict";

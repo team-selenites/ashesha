@@ -130,7 +130,7 @@ A refresh always opens step 1 completely fresh, with nothing picked (keeping an 
 
 In Dark, three extra layers of tiny stars brighten and dim slowly, out of step with each other (cycles of 5.3, 7.1 and 8.9 seconds, never fully off), so now and then a few stars glow a little more while others fade. It runs all the time, with no pause button: Pawana's decision on 11 November 2026, kept deliberately subtle so it does not draw the eye. Nothing moves with reduced motion; the layers are hidden in high contrast, forced colours and print.
 
-This is a deliberate exception to "Do not animate by default" (RULES section 10) and to "nothing moves for more than 5 seconds without a pause control" in `docs/viewer-accessibility-spec.md`; WCAG 2.2.2 (Pause, Stop, Hide) also asks for a way to stop motion that lasts longer than 5 seconds. Visitors who are bothered by it can choose Light or Colour-blind friendly, which have no twinkle, or turn on reduced motion in their device settings. a team member should check it during the accessibility test.
+This is a deliberate exception to "Do not animate by default" (RULES section 10) and to "nothing moves for more than 5 seconds without a pause control" in `docs/viewer-accessibility-spec.md`; WCAG 2.2.2 (Pause, Stop, Hide) also asks for a way to stop motion that lasts longer than 5 seconds. Visitors who are bothered by it can choose Light or Colour-blind friendly, which have no twinkle, or turn on reduced motion in their device settings. The team should check it during the accessibility test.
 
 ### Selene blends into the page
 
@@ -146,7 +146,7 @@ The cut-out ends in a straight line at her waist, which looked like a picture pa
 - The card never sits on the part it explains: it goes beside it (right, then left), then below or above; if nothing fits it takes the corner that covers least. A trail of two small moons points at the part. On phones it is a sheet on whichever side of the screen is free, and the page scrolls the part into the space left. The card keeps the same width on every step, and the space for the words is reserved first, so it never grows while Selene speaks.
 - She speaks from a cloud: soft scalloped edges (fluffier on top) with the face of the Moon in it, two dark seas and a few craters kept towards the edges so the words stay crisp. It changes with the theme: moon-grey in Dark, pink-white in Light, white with a yellow edge in Colour-blind friendly.
 - Her voice is a speaker button (muted or speaking icon; small bars move while she talks, so it can be seen as well as heard). It reads each step calmly, one sentence at a time with a soft pause between, slightly slower than normal, using the most natural voice the device has (Edge's "Natural" voices first). It is off until the visitor turns it on, because it would talk over a screen reader. The words on screen are the captions.
-- a team member's recorded voice can replace the device voice: put `selene-tour-1.mp3` to `selene-tour-7.mp3` in `site/assets/voice/` and set `RECORDED = true` in `site/js/tour.js`. The words then follow the recording and Selene's lips follow its loudness. Not yet tested with a real recording.
+- A recorded voice can replace the device voice: put `selene-tour-1.mp3` to `selene-tour-7.mp3` in `site/assets/voice/` and set `RECORDED = true` in `site/js/tour.js`. The words then follow the recording and Selene's lips follow its loudness. Not yet tested with a real recording.
 - The card is wider than before (620 px, 740 px for the welcome) so Selene can be shown large enough to see her lips; she stands at the bottom of the card, beside the buttons.
 
 ## Selene herself
@@ -187,7 +187,7 @@ Before the cut-out, the Gemini watercolour portrait was shown with softly faded 
   - Lip-sync: the mouth is calculated from two numbers (how open, how round or wide) and blends smoothly between letters; the jaw drops as she opens; teeth and tongue show when the mouth is open.
 - She only moves while she talks, then settles and stops. Reduced motion keeps her still. Measured at about 60 frames a second in the in-app browser.
 - Limits, honestly: this is still vector art made in code. Game-level art (Genshin, Hades) needs an illustrator and a rigging tool such as Rive or Live2D; the same parameters would carry over.
-- Next: a team member's recorded narration can replace the device voice (the mouth would follow the loudness of the recording). The plan's supporting characters (Iris for colours, Orpheus for sound, Argus Panoptes for the 102 colours) can be built on the same rig. Gemini prompts for them, with the green-screen rules, are in `docs/character-prompts.md`.
+- Next: a recorded narration can replace the device voice (the mouth would follow the loudness of the recording). The plan's supporting characters (Iris for colours, Orpheus for sound, Argus Panoptes for the 102 colours) can be built on the same rig. Gemini prompts for them, with the green-screen rules, are in `docs/character-prompts.md`.
 
 ## One signature moment
 

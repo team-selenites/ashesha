@@ -9,7 +9,7 @@ Decided by: Pawana (idea from Elisabetta, toggle from Pawana)
 - **Scientific** is a sonification of the data only. It is the default.
 - **Immersive** adds atmosphere on top. It is off until a visitor turns it on. Sound never starts by itself.
 - Immersive shows a short line: the added sound is atmosphere, not data, and not what the object sounds like.
-- If ambient sound is tied to background data, the mapping is written in a team member's sound mapping file, one line per sound.
+- If ambient sound is tied to background data, the mapping is written in the sound mapping file, one line per sound.
 - The asteroid cue is not in the first build. Add it later only for a target that is an asteroid. None of the five test targets is one.
 
 ## Why
@@ -18,5 +18,5 @@ Keeps the honest rules: say "a sonification", never "this is what the comet soun
 
 ## Owners
 
-- Toggle in the viewer: Pawana and a team member
-- Sound mapping and accessibility checks: a team member
+- Toggle in the viewer: Pawana
+- Sound mapping and accessibility checks: Pawana
