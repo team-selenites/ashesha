@@ -43,6 +43,10 @@
   var card = $("tour-card"), bubble = $("tour-bubble"), spot = $("tour-spot");
   var stepEl = $("tour-step"), titleEl = $("tour-title"), textEl = $("tour-text");
   var ghostEl = $("tour-ghost");
+  // A step can show a picture in the cloud above its words (media: an HTML string, or a function
+  // returning one). The home tour shows the Ashesha logo there. It plays its animation once the
+  // card has appeared (the class is-play), not while the card is still out of sight.
+  var mediaEl = $("tour-media");
   // The words type in letter by letter, laid out first so nothing jumps (js/cloud.js).
   var typer = window.SeleneType(ghostEl);
   // In a step's words, [name] marks the control to click: it is highlighted in the cloud, and
@@ -198,16 +202,23 @@
   // ---------- Selene and her voice ----------
 
   // Her words appear while her lips move; with her voice switched on she also plays the step's
-  // recording. Her voice is off until the visitor turns it on, because it would talk over a
-  // screen reader. The choice is remembered.
+  // recording. Her voice is on unless the visitor has switched it off (Pawana, 14 November
+  // 2026); that choice is remembered. Where the browser holds back sound (a page opened without
+  // a click yet), she speaks silently: js/selene.js falls back to words only.
   if (window.Selene) window.Selene.mountAll();
   var selene = window.Selene ? window.Selene.mount($("tour-selene")) : null;
-  var voiceOn = false;
-  try { voiceOn = localStorage.getItem(VOICE_KEY) === "on"; } catch (e) {}
+  var voiceOn = true;
+  try { voiceOn = localStorage.getItem(VOICE_KEY) !== "off"; } catch (e) {}
   // Only recorded lines are ever played (never the device's built-in voice), so the voice
   // button only appears once this guide's recordings are found. Lines without one stay silent.
+  // A step without a recording (such as one that names the visitor's own date) has no voice
+  // button at all, rather than a switch that does nothing.
+  var voiceAvail = false, voiceText = "";
+  function fitVoice() {
+    voiceBtn.hidden = !(voiceAvail && (!voiceText || window.Selene.recording(GUIDE, voiceText)));
+  }
   voiceBtn.hidden = true;
-  if (window.Selene && window.Selene.voiceReady) window.Selene.voiceReady.then(function () { if (window.Selene.hasVoice(GUIDE)) voiceBtn.hidden = false; });
+  if (window.Selene && window.Selene.voiceReady) window.Selene.voiceReady.then(function () { voiceAvail = window.Selene.hasVoice(GUIDE) && window.Selene.canSpeak; fitVoice(); });
   if (!window.Selene || !window.Selene.canSpeak) { voiceBtn.hidden = true; voiceOn = false; }
   function showVoice() {
     voiceBtn.setAttribute("aria-pressed", voiceOn ? "true" : "false");
@@ -218,6 +229,8 @@
   function speak(i) {
     var raw = val(STEPS[i].text), text = plain(raw);
     textEl.textContent = text;
+    voiceText = text;
+    if (window.Selene) fitVoice();
     layWords(raw);
     if (!selene) { typer.all(); return; }
     card.classList.add("is-talking");
@@ -430,12 +443,19 @@
   }
   // The lit margin around a part: PAD, but never more than half the gap to a neighbouring
   // element, so the spotlight hugs the part instead of cutting into the controls next to it.
+  // The neighbours are the part's own siblings and those of the boxes it sits in: a step link
+  // alone in its list item has no siblings, but the next step's item is right beside it, so
+  // looking only one level up let the light spill over the steps either side.
   function margins(el, r) {
     var m = { t: PAD, b: PAD, l: PAD, r: PAD };
-    var sibs = el.parentElement ? el.parentElement.children : [];
+    var sibs = [];
+    for (var node = el, depth = 0; node && node.parentElement && node !== document.body && depth < 4; node = node.parentElement, depth++) {
+      var kids = node.parentElement.children;
+      for (var k = 0; k < kids.length; k++) if (kids[k] !== node) sibs.push(kids[k]);
+    }
     for (var i = 0; i < sibs.length; i++) {
       var o = sibs[i];
-      if (o === el || !o.offsetWidth || !o.offsetHeight) continue;
+      if (o === el || o.contains(el) || !o.offsetWidth || !o.offsetHeight) continue;
       var q = o.getBoundingClientRect();
       var across = Math.min(q.right, r.right) - Math.max(q.left, r.left) > 0;
       var along = Math.min(q.bottom, r.bottom) - Math.max(q.top, r.top) > 0;
@@ -838,6 +858,12 @@
       // New words while the card is out of sight, so its new size is known before it moves.
       stepEl.textContent = label(index);
       titleEl.textContent = val(step.title);
+      if (mediaEl) {
+        var media = step.media ? val(step.media) : "";
+        mediaEl.classList.remove("is-play");
+        mediaEl.innerHTML = media;
+        mediaEl.hidden = !media;
+      }
       back.hidden = nearest(index - 1, -1) < 0;
       next.hidden = !!step.action && !step.nextToo;
       // The control to click pulses gently where there is no arrow.
@@ -857,6 +883,7 @@
       setTimeout(function () {
         if (!dialog.open || my !== token) return;
         card.classList.remove("is-hidden");
+        if (mediaEl && !mediaEl.hidden) { void mediaEl.offsetWidth; mediaEl.classList.add("is-play"); }
         keepInView(my);
         popTrail();
         speak(index);

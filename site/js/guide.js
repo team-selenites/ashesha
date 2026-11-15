@@ -104,9 +104,12 @@
   // The voice switch in each cloud plays the tip's recording (found by its words, see
   // js/selene.js). It is the same switch as the page's tour, so one choice covers both, and it
   // only shows once her recordings are found. The device's built-in voice is never used.
+  // Her voice is on unless the visitor has switched it off (Pawana, 14 November 2026); that
+  // choice is remembered. The browser holds back sound until the first click or key press, and
+  // until then she speaks silently (js/selene.js falls back to words only).
   var VOICE_KEY = (CFG && CFG.voiceKey) || "selenites-selene-voice";
-  var voiceOn = false;
-  try { voiceOn = localStorage.getItem(VOICE_KEY) === "on"; } catch (e) {}
+  var voiceOn = true;
+  try { voiceOn = localStorage.getItem(VOICE_KEY) !== "off"; } catch (e) {}
   var voiceBtns = Array.prototype.slice.call(document.querySelectorAll(".guide-voice"));
   function showVoice() {
     voiceBtns.forEach(function (b) {
@@ -117,11 +120,19 @@
   }
   voiceBtns.forEach(function (b) { b.hidden = true; });
   showVoice();
+  // A tip without a recording (such as one that names the visitor's own date) shows no voice
+  // button at all, rather than a switch that does nothing.
+  var voiceLoaded = false;
+  function fitVoice(g) {
+    var b = g.querySelector(".guide-voice");
+    if (!b) return;
+    var slot = g.querySelector(".guide-selene"), who = (slot && slot.getAttribute("data-character")) || "selene";
+    var p = Array.prototype.filter.call(g.querySelectorAll(".guide-text"), function (el) { return !el.closest("[hidden]"); })[0];
+    b.hidden = !(voiceLoaded && window.Selene.hasVoice(who) && (!p || window.Selene.recording(who, p.textContent)));
+  }
   if (window.Selene && window.Selene.voiceReady) window.Selene.voiceReady.then(function () {
-    voiceBtns.forEach(function (b) {
-      var g = b.closest(".guide"), slot = g && g.querySelector(".guide-selene");
-      b.hidden = !window.Selene.hasVoice((slot && slot.getAttribute("data-character")) || "selene");
-    });
+    voiceLoaded = true;
+    guides.forEach(fitVoice);
   });
   voiceBtns.forEach(function (b) {
     b.addEventListener("click", function () {
@@ -191,7 +202,9 @@
       if (el.hidden === on) changed = true;
       el.hidden = !on;
     });
+    fitVoice(g);
     draw(g);
+    updateMini();
     if ((talk || changed) && !folded && g._selene && !reduced() && !root.classList.contains("is-touring")) {
       // The tip types in letter by letter while her lips move (laid out first, so nothing jumps).
       var p = Array.prototype.filter.call(g.querySelectorAll(".guide-text"), function (el) { return !el.closest("[hidden]"); })[0];
@@ -201,10 +214,10 @@
       if (g._typing) g._typing.start();
       g.classList.add("is-talking");
       g._selene.say(p.textContent, {
-        // Her recorded voice, when the visitor has switched it on (off by default: it would
-        // talk over a screen reader). The words on screen are the captions.
+        // Her recorded voice, unless the visitor has switched it off. The words on screen are
+        // the captions.
         voice: voiceOn,
-        onSpeaking: function (on) { g.classList.toggle("is-speaking", on); },
+        onSpeaking: function (on) { g.classList.toggle("is-speaking", on); updateMini(); },
         onReveal: function (n) { if (g._typing) g._typing.reveal(n); },
         onDone: function () { g.classList.remove("is-talking"); }
       });
@@ -252,5 +265,115 @@
     new MutationObserver(function () { refresh(false); }).observe(stage, { attributes: true, attributeFilter: ["data-state"] });
   }
   guides.forEach(function (g) { g.querySelector(".guide-open").setAttribute("aria-expanded", folded ? "false" : "true"); });
+
+  // ---------- mini Selene: she stays with you as you scroll ----------
+  // Once her cloud has scrolled out of sight, a small Selene (her face, and the same tip in a
+  // little cloud) waits in the bottom-right corner of the screen, so the tip is always beside
+  // whatever the visitor is doing, and the page is no longer for it. She slides away when the
+  // full cloud is back on screen, and stays away while tips are hidden or the tour runs. Her
+  // voice button is the same switch as the big one. "See the full tip" (or the little cloud)
+  // goes back up to it. The words in her little cloud are a copy, so screen readers skip them;
+  // the full tip is in the page. She waits bottom right, just above Back to top; she rises above the
+  // sky viewer's Next bar while it is on screen (Pawana, 14 November 2026).
+  var mini = null, miniText = null, miniVoice = null, io = null, tucked = false;
+  function shownText(g) {
+    var p = g && Array.prototype.filter.call(g.querySelectorAll(".guide-text"), function (el) { return !el.closest("[hidden]"); })[0];
+    return p ? p.textContent.replace(/\s+/g, " ").trim() : "";
+  }
+  function placeMini() {
+    if (!mini || !mini.classList.contains("is-shown")) return;
+    var lift = "";
+    var bar = document.querySelector("main > .view:not([hidden]) .choose-next");
+    if (bar && bar.offsetParent) {
+      // Whenever the bar is in her corner (stuck to the bottom or scrolling past), she stands on it.
+      var r = bar.getBoundingClientRect(), vh = window.innerHeight;
+      if (!mini.style.bottom) mini._base = parseFloat(getComputedStyle(mini).bottom) || 16;
+      var cornerTop = vh - (mini._base || 16) - mini.offsetHeight;
+      if (r.top < vh && r.bottom > cornerTop - 8) lift = Math.round(vh - r.top + 12) + "px";
+    }
+    if (mini.style.bottom !== lift) mini.style.bottom = lift;
+  }
+  function updateMini() {
+    if (!mini) return;
+    var g = current(), text = shownText(g);
+    var show = !!(g && text && !folded && g._seen === false && !root.classList.contains("is-touring"));
+    if (miniText.textContent !== text) {
+      // A new tip while she is tucked away: a small dot on her face says so.
+      if (miniText.textContent && tucked) mini.classList.add("has-news");
+      miniText.textContent = text;
+    }
+    var mv = g && g.querySelector(".guide-voice");
+    miniVoice.hidden = !mv || mv.hidden;
+    if (mv) { miniVoice.setAttribute("aria-pressed", mv.getAttribute("aria-pressed")); miniVoice.title = mv.title; }
+    mini.classList.toggle("is-speaking", !!(g && g.classList.contains("is-speaking")));
+    if (show !== mini.classList.contains("is-shown")) mini.classList.toggle("is-shown", show);
+    placeMini();
+  }
+  function backToTip() {
+    var g = current(), b = g && g.querySelector(".guide-body");
+    if (!b) return;
+    b.setAttribute("tabindex", "-1");
+    b.scrollIntoView({ block: "center", behavior: reduced() ? "auto" : "smooth" });
+    b.focus({ preventScroll: true });
+  }
+  if (window.IntersectionObserver) {
+    var slot0 = guides[0].querySelector(".guide-selene");
+    var who = (slot0 && slot0.getAttribute("data-character")) || "selene";
+    var tipName = guides[0].getAttribute("aria-label") || "Selene's tip";
+    mini = document.createElement("div");
+    mini.className = "guide-mini";
+    // Her face folds the little cloud away and back, leaving just her face in the corner. On
+    // phones, where the cloud would cover a lot of the screen, she starts folded.
+    mini.innerHTML =
+      '<button type="button" class="guide-mini-toggle" aria-expanded="true">' +
+        '<span class="selene-slot selene-avatar guide-mini-face" data-variant="head" data-character="' + who + '" aria-hidden="true"></span>' +
+        '<span class="sr-only">' + tipName + '</span><i class="guide-mini-dot" aria-hidden="true"></i></button>' +
+      '<span class="guide-mini-trail" aria-hidden="true"><i></i><i></i></span>' +
+      '<div class="guide-mini-bubble" id="guide-mini-bubble">' +
+        '<p class="guide-mini-text" aria-hidden="true"></p>' +
+        '<div class="guide-mini-actions"><button type="button" class="guide-mini-back">See the full tip<span class="sr-only"> (' + tipName + ")</span></button></div>" +
+      "</div>";
+    miniText = mini.querySelector(".guide-mini-text");
+    // Her voice button: a copy of the big one, pressing the big one for her.
+    var model = guides[0].querySelector(".guide-voice");
+    miniVoice = model ? model.cloneNode(true) : document.createElement("button");
+    miniVoice.classList.add("guide-mini-voice");
+    miniVoice.hidden = true;
+    mini.querySelector(".guide-mini-actions").insertBefore(miniVoice, mini.querySelector(".guide-mini-back"));
+    miniVoice.addEventListener("click", function () {
+      var mv = current() && current().querySelector(".guide-voice");
+      if (mv) mv.click();
+      updateMini();
+    });
+    mini.querySelector(".guide-mini-back").addEventListener("click", backToTip);
+    // The little cloud itself also goes back, for a quick tap.
+    mini.querySelector(".guide-mini-bubble").addEventListener("click", function (e) { if (!e.target.closest("button")) backToTip(); });
+    var toggle = mini.querySelector(".guide-mini-toggle");
+    toggle.setAttribute("aria-controls", "guide-mini-bubble");
+    function setTucked(on) {
+      tucked = on;
+      mini.classList.toggle("is-tucked", on);
+      toggle.setAttribute("aria-expanded", on ? "false" : "true");
+      if (!on) mini.classList.remove("has-news");
+      placeMini();
+    }
+    toggle.addEventListener("click", function () { setTucked(!tucked); });
+    setTucked(!!(window.matchMedia && window.matchMedia("(max-width: 639px)").matches));
+    document.body.appendChild(mini);
+    if (window.Selene) window.Selene.mountAll(mini);
+
+    // Her full cloud counts as on screen while a third of it shows below the menu.
+    io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { e.target._guide._seen = e.isIntersecting && e.intersectionRatio >= 0.3; });
+      updateMini();
+    }, { rootMargin: "-72px 0px 0px 0px", threshold: [0, 0.3, 0.6, 1] });
+    guides.forEach(function (g) { var b = g.querySelector(".guide-body"); b._guide = g; io.observe(b); });
+    new MutationObserver(updateMini).observe(root, { attributes: true, attributeFilter: ["class", "data-view"] });
+    ["selenites:guide-voice", "selenites:tour-voice"].forEach(function (n) { document.addEventListener(n, function () { setTimeout(updateMini, 0); }); });
+    var placing = 0;
+    window.addEventListener("scroll", function () { if (!placing) placing = requestAnimationFrame(function () { placing = 0; placeMini(); }); }, { passive: true });
+    window.addEventListener("resize", placeMini);
+  }
+
   requestAnimationFrame(function () { refresh(true); });
 })();

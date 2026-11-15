@@ -54,41 +54,21 @@
   var ringDone = false;
 
   // ---------- Selene's tips: which part of each step she is on ----------
+  // Her voice switch (in each cloud) is run by js/guide.js, the same one as on every page.
   var guideState = { day: "d-pick", ring: "r-none", meet: "m-none", card: "c-none" };
-  var VOICE_KEY = "selenites-selene-voice", voiceOn = false;
-  try { voiceOn = localStorage.getItem(VOICE_KEY) === "on"; } catch (e) {}
   window.SELENITES_GUIDE = {
     state: function (view) { return guideState[view] || ""; },
     // While Selene asks for something, that control has a still ring (css/beginnings.css).
     nudge: { "d-pick": "bd-fields", "d-year": "bd-stubs", "d-leap": "bd-stubs", "d-ready": "guide-next",
       "r-none": "guide-next", "r-play": "ring-play", "r-done": "guide-next",
       "m-none": "guide-next", "m-meet": "meet-others", "m-one": "guide-next", "m-more": "guide-next", "m-empty": "meet-near",
-      "c-none": "guide-next", "c-card": "card-save", "c-saved": "guide-next" },
-    voice: function () { return voiceOn; }
+      "c-none": "guide-next", "c-card": "card-save", "c-saved": "guide-next" }
   };
   function setGuide(view, state, quiet) {
     if (guideState[view] === state) return;
     guideState[view] = state;
     document.dispatchEvent(new CustomEvent("selenites:guide", { detail: { quiet: !!quiet } }));
   }
-  function showVoice() {
-    document.querySelectorAll(".guide-voice").forEach(function (b) {
-      b.setAttribute("aria-pressed", voiceOn ? "true" : "false");
-      b.title = voiceOn ? "Selene's voice is on" : "Selene's voice is off";
-    });
-  }
-  showVoice();
-  if (!("speechSynthesis" in window)) document.querySelectorAll(".guide-voice").forEach(function (b) { b.hidden = true; });
-  document.addEventListener("click", function (e) {
-    var b = e.target.closest ? e.target.closest(".guide-voice") : null;
-    if (!b) return;
-    voiceOn = !voiceOn;
-    try { localStorage.setItem(VOICE_KEY, voiceOn ? "on" : "off"); } catch (err) {}
-    showVoice();
-    document.querySelectorAll(".guide-selene").forEach(function (s) { if (s._selene) s._selene.stop(); });
-    if (voiceOn) document.dispatchEvent(new CustomEvent("selenites:guide"));
-  });
-
   // ---------- Steps: one screen at a time ----------
   var VIEWS = ["day", "ring", "meet", "card"];
   var TITLES = { day: "Your day", ring: "SPHEREx's ring", meet: "Who it met", card: "Your card" };

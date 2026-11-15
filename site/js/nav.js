@@ -52,8 +52,8 @@
   // small. One idea, two meanings: for all, and a comet followed through the sky.
   // The comet sits a little low and is tipped 14 degrees clockwise, so it dives down to the
   // right through the legs like a comet falling across the sky. A glint (a soft band of light,
-  // clipped to the comet's shape) runs along it once when the name's story opens or the logo
-  // is hovered; at rest it is hidden.
+  // clipped to the comet's shape) runs along it once when the logo is hovered; at rest it is
+  // hidden. Selene's home tour shows it large and plays it in (index.html, the "name" step).
   var markCount = 0;
   function brandMark(cls) {
     var n = ++markCount, id = "ash-tail-" + n, clip = "ash-clip-" + n, shine = "ash-shine-" + n;
@@ -81,36 +81,7 @@
     if (v.indexOf(id) < 0) { v.push(id); try { localStorage.setItem(VISITED_KEY, JSON.stringify(v)); } catch (e) {} }
   }
 
-  window.SelenitesSite = { sections: SECTIONS, icon: icon, visited: visited, markVisited: markVisited };
-
-  // The name's story (home page only): a shade the logo's comet pulls down from the top of the
-  // screen, in the page's own colours. Pull the comet back up to roll it away.
-  function shadeStory() {
-    return '<div class="ash-shade" id="ash-shade" role="dialog" aria-modal="true" aria-labelledby="ash-shade-h" hidden>' +
-      '<div class="ashs-scrim" aria-hidden="true"></div>' +
-      '<div class="ashs-sheet">' +
-        '<span class="ashs-water" aria-hidden="true">A</span>' +
-        '<div class="ashs-inner">' +
-          '<p class="ashs-name">' + brandMark("ashs-mark") + '<span class="ashs-word">Ashesha</span><span class="ashs-say">say it a-SHAY-sha</span></p>' +
-          '<h2 class="ashs-hook" id="ash-shade-h" tabindex="-1">Look closely. Our A is upside down.</h2>' +
-          '<div class="ashs-pairs">' +
-            '<p class="ashs-pair"><span class="ashs-glyph" aria-hidden="true"><span class="ashs-flip">A</span></span>' +
-              '<span><span class="ashs-tag">In mathematics</span><span class="sr-only">The upside-down A </span><span aria-hidden="true">It </span>means “for all”.</span></p>' +
-            '<p class="ashs-pair"><span class="ashs-glyph ashs-deva" lang="sa">अशेष</span>' +
-              '<span><span class="ashs-tag">In Sanskrit</span>Ashesha means “without remainder”.</span></p>' +
-          "</div>" +
-          '<p class="ashs-big">No one left out. <span class="ashs-pop">That includes you.</span></p>' +
-          '<p class="ashs-small">The comet in our A stands for a real one: 3I/ATLAS, a visitor from another star.</p>' +
-          '<a class="ashs-go" href="viewer.html?target=3I-ATLAS">Follow the comet<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 5l7 7-7 7"/></svg></a>' +
-          '<p class="ashs-pull" aria-hidden="true">Pull up to close</p>' +
-        "</div>" +
-      "</div>" +
-      '<button type="button" class="ashs-grip" aria-label="Close: pull the comet back up">' +
-        '<svg viewBox="0 0 96 24" aria-hidden="true" focusable="false"><defs><linearGradient id="ashs-c-g" x1="0" x2="1"><stop offset="0" class="ashs-c-tail-a"/><stop offset="1" class="ashs-c-tail-b"/></linearGradient></defs>' +
-        '<path d="M-30 12 80 7V17Z" fill="url(#ashs-c-g)"/><circle class="ashs-c-ring" cx="84" cy="12" r="12.5"/><circle class="ashs-c-head" cx="84" cy="12" r="9"/></svg>' +
-      "</button>" +
-    "</div>";
-  }
+  window.SelenitesSite = { sections: SECTIONS, icon: icon, brandMark: brandMark, visited: visited, markVisited: markVisited };
 
   var host = document.querySelector(".sn[data-page]");
   if (!host) return;
@@ -128,16 +99,10 @@
   var tourGuide = (tourFigure && tourFigure.getAttribute("data-character")) || "selene";
   host.innerHTML =
     '<nav class="sn-bar" id="site-nav" aria-label="Main">' +
-      // On the home page the name is a button that opens its story (what Ashesha means and
-      // why the A is upside down); on every other page it is the link home.
-      (page === "home"
-        ? '<div class="sn-brand-wrap"><button type="button" class="sn-brand sn-brand-btn" aria-haspopup="dialog">'
-        : '<div class="sn-brand-wrap"><a class="sn-brand" href="index.html">') +
+      '<div class="sn-brand-wrap"><a class="sn-brand" href="index.html">' +
         brandMark("sn-logo") +
-        '<span class="sn-brand-t"><span class="sn-brand-a">Ashesha' +
-          (page === "home" ? '<svg class="sn-brand-more" viewBox="0 0 12 12" aria-hidden="true" focusable="false"><path d="M6 .8 7.2 4.8 11.2 6 7.2 7.2 6 11.2 4.8 7.2.8 6 4.8 4.8Z"/></svg><span class="sr-only">: what the name means</span>' : '<span class="sr-only"> (home page)</span>') +
-        '</span><span class="sn-brand-b">Follow a comet through SPHEREx</span></span>' +
-      (page === "home" ? "</button>" : "</a>") + "</div>" +
+        '<span class="sn-brand-t"><span class="sn-brand-a">Ashesha<span class="sr-only"> (home page)</span>' +
+        '</span><span class="sn-brand-b">Follow a comet through SPHEREx</span></span></a></div>' +
       '<button type="button" class="sn-toggle" aria-expanded="false" aria-controls="sn-menu">' +
         '<span class="sn-burger" aria-hidden="true"><i></i><i></i><i></i></span><span class="sn-toggle-t">Menu</span>' +
       "</button>" +
@@ -160,150 +125,6 @@
   // The tour button only appears on pages that have a tour (tour.js hides it again if the
   // browser cannot run the tour).
   if (document.getElementById("tour")) tourBtn.hidden = false;
-
-  // ---------- the name's story (home page only) ----------
-  // The comet pulls the shade. Pressing the name sends the logo's comet up to the top of the
-  // screen; it falls, unrolling the shade behind it like a blind on its cord, and comes to rest on
-  // the hem. Pull the comet back up (or press it, press Escape, or click the dimmed page) and the
-  // shade simply rolls up with it.
-  var nameBtn = host.querySelector(".sn-brand-btn");
-  if (nameBtn) {
-    document.body.insertAdjacentHTML("beforeend", shadeStory());
-    var shade = document.getElementById("ash-shade");
-    var sheet = shade.querySelector(".ashs-sheet");
-    var grip = shade.querySelector(".ashs-grip");
-    var shadeGo = shade.querySelector(".ashs-go");
-    var calm = window.matchMedia("(prefers-reduced-motion: reduce)");
-    var closing = false, moves = [];
-    var REST = 14; // the comet rests tipped like the one in the logo
-
-    var stopMoves = function () { moves.forEach(function (m) { m.cancel(); }); moves = []; };
-    var setHem = function () { shade.style.setProperty("--hem", sheet.offsetHeight + "px"); };
-    // Where the logo's comet is, measured from the comet's resting place on the hem.
-    var home = function () {
-      var l = nameBtn.querySelector(".sn-logo").getBoundingClientRect();
-      var g = grip.getBoundingClientRect();
-      var tilt = new DOMMatrix(getComputedStyle(grip).transform);
-      return { x: l.left + l.width * 0.8 - (g.left + g.width / 2) + tilt.e, y: l.top + l.height * 0.45 - (g.top + g.height / 2) + tilt.f };
-    };
-    var turn = function (x, y, deg, s) { return "translate(" + x + "px, " + y + "px) rotate(" + deg + "deg) scale(" + (s || 1) + ")"; };
-
-    var openShade = function () {
-      stopMoves();
-      closing = false;
-      shade.hidden = false;
-      shade.classList.remove("is-closing");
-      sheet.style.clipPath = ""; sheet.style.transform = ""; grip.style.transform = "";
-      // Hiding the page's scrollbar would shift everything sideways; hold its width as padding.
-      var bar = window.innerWidth - document.documentElement.clientWidth;
-      if (bar > 0) document.documentElement.style.paddingRight = bar + "px";
-      document.documentElement.classList.add("ash-shade-open");
-      setHem();
-      void shade.offsetWidth; // restart the words settling in
-      shade.classList.add("is-open");
-      nameBtn.classList.add("comet-out");
-      shade.querySelector("#ash-shade-h").focus({ preventScroll: true });
-      if (calm.matches || !grip.animate) return;
-
-      var h = sheet.offsetHeight, from = home();
-      var t = { duration: 1300, fill: "backwards" };
-      // 0 to 30%: the comet leaves the logo for the top of the screen. 30 to 85%: it falls and the
-      // shade unrolls with it, edge for edge. 85 to 100%: it settles onto its tilt.
-      moves.push(grip.animate([
-        { offset: 0, transform: turn(from.x, from.y, 0, 0.6), easing: "cubic-bezier(0.45, 0, 0.25, 1)" },
-        { offset: 0.3, transform: turn(0, -h, 90), easing: "cubic-bezier(0.22, 1, 0.36, 1)" },
-        { offset: 0.85, transform: turn(0, 0, 90), easing: "cubic-bezier(0.34, 0, 0.2, 1)" },
-        { offset: 1, transform: turn(0, 0, REST) }
-      ], t));
-      moves.push(sheet.animate([
-        { offset: 0, clipPath: "inset(0 0 100% 0)" },
-        { offset: 0.3, clipPath: "inset(0 0 100% 0)", easing: "cubic-bezier(0.22, 1, 0.36, 1)" },
-        { offset: 0.85, clipPath: "inset(0 0 0% 0)" },
-        { offset: 1, clipPath: "inset(0 0 0% 0)" }
-      ], t));
-    };
-
-    var closeShade = function (pulled) {
-      if (shade.hidden || closing) return;
-      closing = true;
-      var done = function () {
-        stopMoves();
-        shade.hidden = true;
-        shade.classList.remove("is-open", "is-closing");
-        sheet.style.clipPath = ""; sheet.style.transform = ""; sheet.style.transition = "";
-        grip.style.transform = ""; grip.style.transition = "";
-        document.documentElement.classList.remove("ash-shade-open");
-        document.documentElement.style.paddingRight = "";
-        nameBtn.classList.remove("comet-out");
-        closing = false;
-        nameBtn.focus();
-      };
-      if (calm.matches || !grip.animate) { done(); return; }
-      stopMoves();
-      shade.classList.add("is-closing");
-      var h = sheet.offsetHeight;
-      var up = Math.min(0, pulled || 0); // how far it was already pulled up, in px
-      sheet.style.transition = "none"; grip.style.transition = "none";
-      // Simply roll up: the comet rides the hem straight up and out of sight, keeping its tilt.
-      var t = { duration: 520, easing: "cubic-bezier(0.55, 0, 0.45, 1)", fill: "forwards" };
-      moves.push(grip.animate([{ transform: turn(0, up, REST) }, { transform: turn(0, -h - 40, REST) }], t));
-      moves.push(sheet.animate([{ clipPath: "inset(0 0 " + (-up) + "px 0)" }, { clipPath: "inset(0 0 100% 0)" }], t));
-      setTimeout(done, 520);
-    };
-
-    // Pulling the comet: up rolls the shade up with it, edge for edge, and the comet turns to point
-    // the way it is going. Past a short distance (or a quick flick) the shade rolls away; less
-    // springs back. Pulling down stretches a little. A press without a pull closes it too.
-    var startY = 0, lastY = 0, lastT = 0, speed = 0, dragging = false, moved = false, pull = 0;
-    grip.addEventListener("pointerdown", function (e) {
-      if (e.button !== 0 || closing) return;
-      stopMoves();
-      dragging = true; moved = false; pull = 0; startY = lastY = e.clientY; lastT = e.timeStamp; speed = 0;
-      sheet.style.transition = "none"; grip.style.transition = "none";
-      try { grip.setPointerCapture(e.pointerId); } catch (err) {}
-    });
-    grip.addEventListener("pointermove", function (e) {
-      if (!dragging) return;
-      var dy = e.clientY - startY;
-      if (Math.abs(dy) > 4) moved = true;
-      var dt = Math.max(1, e.timeStamp - lastT);
-      speed = (e.clientY - lastY) / dt; lastY = e.clientY; lastT = e.timeStamp;
-      pull = dy;
-      if (dy < 0) {
-        var up = Math.max(dy, -sheet.offsetHeight);
-        sheet.style.clipPath = "inset(0 0 " + (-up) + "px 0)"; sheet.style.transform = "";
-        grip.style.transform = turn(0, up, REST);
-      } else {
-        sheet.style.clipPath = ""; sheet.style.transform = "translateY(" + dy * 0.25 + "px)";
-        grip.style.transform = turn(0, dy * 0.25, REST);
-      }
-    });
-    var endDrag = function () {
-      if (!dragging) return;
-      dragging = false;
-      if (!moved) { closeShade(0); return; }
-      if (pull < -70 || speed < -0.6) { closeShade(pull); return; }
-      // Spring back into place.
-      sheet.style.transition = ""; grip.style.transition = "";
-      sheet.style.clipPath = ""; sheet.style.transform = ""; grip.style.transform = "";
-    };
-    grip.addEventListener("pointerup", endDrag);
-    grip.addEventListener("pointercancel", endDrag);
-    // Keyboard: Enter or Space on the comet closes (the click is ignored after a pointer pull).
-    grip.addEventListener("click", function (e) { if (e.detail === 0) closeShade(0); });
-
-    nameBtn.addEventListener("click", openShade);
-    shade.querySelector(".ashs-scrim").addEventListener("click", function () { closeShade(0); });
-    shade.addEventListener("keydown", function (e) {
-      if (e.key === "Escape") { e.preventDefault(); closeShade(0); return; }
-      // Keep keyboard focus inside the shade: Tab moves between Follow the comet and the comet.
-      if (e.key === "Tab") {
-        e.preventDefault();
-        (document.activeElement === shadeGo ? grip : shadeGo).focus();
-      }
-    });
-    window.addEventListener("resize", function () { if (!shade.hidden) setHem(); });
-  }
 
   // ---------- the pill behind the current page ----------
   // The pill marks where you are. Pointing at or tabbing to another section only hints at it (a
@@ -348,14 +169,37 @@
     requestAnimationFrame(function () { follow(document.documentElement.getAttribute("data-view")); placePill(); });
   }
 
-  // A click moves the pill to the section, then the next page opens once it has arrived.
+  // ---------- moving between pages ----------
+  // Where the browser can carry a view from one page to the next (cross-document view
+  // transitions, css/nav.css), the menu stays put while the page fades over, and the pill glides
+  // from the old section to the new one. Only the pill and the row of links are named, and only
+  // for the moment of the change: a name makes an element its own layer, which would cut the
+  // capsule's frosted blur off from the page behind it.
   var reduceQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+  var crossPage = "onpagereveal" in window && !!(window.CSS && CSS.supports && CSS.supports("view-transition-name", "sn-pill"));
+  function nameNav(on) {
+    pill.style.viewTransitionName = on ? "sn-pill" : "";
+    list.style.viewTransitionName = on ? "sn-links" : "";
+  }
+  window.addEventListener("pageswap", function (e) { if (e.viewTransition) nameNav(true); });
+  window.addEventListener("pagereveal", function (e) {
+    if (!e.viewTransition) { nameNav(false); return; }   // also a page brought back with Back
+    nameNav(true);
+    // The clouds already settled on the last page: keep them still, so the sky does not slide
+    // under the fade (css/app.css, .sky). Picking a theme lets them drift in again (js/theme.js).
+    document.documentElement.classList.add("sky-still");
+    e.viewTransition.finished.then(function () { nameNav(false); }, function () { nameNav(false); });
+    // A change cut short (a quick second click, a reload) rejects this; nothing to do then.
+    e.viewTransition.ready.catch(function () {});
+  });
+
+  // Elsewhere, a click moves the pill to the section, then the next page opens once it has arrived.
   list.addEventListener("click", function (e) {
     var a = e.target.closest ? e.target.closest(".sn-link") : null;
     if (!a || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
     var href = a.getAttribute("href");
     if (href.charAt(0) === "#") { if (!narrowQuery.matches) pillTo(a); return; }   // a step of this page
-    if (a === currentLink || narrowQuery.matches || reduceQuery.matches) return;
+    if (a === currentLink || narrowQuery.matches || reduceQuery.matches || crossPage) return;
     e.preventDefault();
     setCurrent(a);
     pillTo(a);

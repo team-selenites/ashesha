@@ -14,6 +14,7 @@ try { var t = localStorage.getItem("selenites-theme"); if (t === "light" || t ==
 <link rel="stylesheet" href="css/tokens.css?v=1">
 <link rel="stylesheet" href="css/app.css?v=1">
 <link rel="stylesheet" href="css/nav.css?v=1">
+<link rel="expect" href="#page-ready" blocking="render">
 <link rel="stylesheet" href="css/spot.css?v=1">
 </head>
 <body class="spot">
@@ -138,9 +139,9 @@ try { var t = localStorage.getItem("selenites-theme"); if (t === "light" || t ==
         <div class="guide-thought">
           <div class="guide-bubble">
             <svg class="guide-cloud" aria-hidden="true" focusable="false"></svg>
-            <div class="guide-say" data-when="s-look">
+            <div class="guide-say" data-when="s-look s-more">
               <p class="guide-part">Step 2 · Part 1 of 2</p>
-              <p class="guide-text">Here are three signs worth marking. First, look at the real picture at the top: that's what SPHEREx pictures look like. Then open each sign with its button and compare the pictures from left to right. The dashed white box shows where to look.</p>
+              <p class="guide-text">Here are three signs worth marking. Flip through each sign's pictures with the arrows, or press Blink, the way astronomers spot changes. Watch the dashed white box. Once you've seen every picture, I'll tell you what it means.</p>
             </div>
             <div class="guide-say" data-when="s-done" hidden>
               <p class="guide-part">Step 2 · Part 2 of 2</p>
@@ -157,28 +158,60 @@ try { var t = localStorage.getItem("selenites-theme"); if (t === "light" || t ==
       </div>
     </aside>
     </div>
-    <div class="panel sp-panel">
-      <figure class="sp-real">
-        <img src="data/pictures/3i_atlas/all_images/2025-12-15_000006_2.41um.png" width="400" height="404" loading="lazy"
-             alt="A real SPHEREx picture of the comet 3I/ATLAS, 15 December 2025, 2.41 microns, labelled clear. A grid of coarse purple and orange pixels with a big pale yellow glow in the middle, inside a cyan dashed circle.">
-        <figcaption>
-          <h3 class="sp-h3">How to read a real SPHEREx picture</h3>
-          <p class="sp-real-src">The comet 3I/ATLAS on 15 December 2025, at 2.41 microns. Real SPHEREx data.</p>
-          <ul class="sp-list">
-            <li><strong>Tiny:</strong> 41 by 41 pixels, so everything looks blocky.</li>
-            <li><strong>Colour scale, not real colour:</strong> dark purple is faint, pale yellow is bright.</li>
-            <li><strong>Grainy:</strong> every pixel has noise. A single speckle means little.</li>
-            <li><strong>Cyan circle:</strong> the position you chose.</li>
-          </ul>
-          <p class="fine">The practice pictures below are drawn by our code to look like this, so we know the right answers.</p>
-        </figcaption>
-      </figure>
+    <!-- A blink comparator, the way astronomers find things that move or change (Clyde Tombaugh
+         found Pluto with one): one picture at a time, flipped by hand or blinked. What a sign
+         means opens once all its pictures have been seen. Drawn by js/spot.js (blinkStage). -->
+    <div class="panel sp-panel sp-signs">
       <div class="sp-cases" role="group" aria-label="Choose a sign" id="signs-pick"></div>
-      <h3 class="sp-h3 sp-case-title" id="signs-title"></h3>
-      <div class="sp-frames" id="signs-frames"></div>
-      <p class="sp-words" id="signs-words"></p>
-      <p class="sp-lesson" id="signs-lesson"></p>
-      <p class="fine sp-colour-note">These practice pictures share exactly one colour. In real data every picture has its own wavelength: pictures from the same detector are close in colour, not identical.</p>
+      <div class="sp-blink">
+        <div class="sp-blink-look">
+          <figure class="sp-plate">
+            <div class="sp-stage" id="signs-stage" role="img" aria-roledescription="practice picture" aria-describedby="signs-words-sr">
+              <div class="sp-stage-pics" id="signs-pics"></div>
+            </div>
+            <figcaption class="sp-plate-cap" id="signs-hud" aria-hidden="true"></figcaption>
+          </figure>
+          <div class="sp-flip" role="group" aria-label="Pictures, oldest first" id="signs-flip">
+            <button type="button" class="sp-flip-step" data-step="-1" aria-label="Earlier picture"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 5l-7 7 7 7"/></svg></button>
+            <div class="sp-flip-thumbs" id="signs-thumbs"></div>
+            <button type="button" class="sp-flip-step" data-step="1" aria-label="Later picture"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 5l7 7-7 7"/></svg></button>
+            <button type="button" class="sp-blink-btn" id="signs-blink" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path class="bl-play" d="M8 5.5v13l10.5-6.5z"/><path class="bl-stop" d="M7 6h3.6v12H7zM13.4 6H17v12h-3.6z"/></svg><span>Blink</span></button>
+          </div>
+        </div>
+        <div class="sp-blink-read">
+          <h3 class="sp-h3 sp-case-title" id="signs-title"></h3>
+          <p class="sp-short" id="signs-short"></p>
+          <div class="sp-seen" id="signs-seen" aria-hidden="true"></div>
+          <div class="sp-meaning is-locked" id="signs-meaning" tabindex="-1">
+            <h4 class="sp-meaning-h"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 0c.9 6.5 4.6 10.6 12 12-7.4 1.4-11.1 5.5-12 12-.9-6.5-4.6-10.6-12-12C7.4 10.6 11.1 6.5 12 0z"/></svg>What it means</h4>
+            <p id="signs-lesson"></p>
+          </div>
+          <details class="sp-describe">
+            <summary>Describe the pictures in words</summary>
+            <p id="signs-words"></p>
+          </details>
+          <p class="sr-only" id="signs-words-sr"></p>
+          <!-- How to read the pictures: a key, not a lecture. The real picture shows what these
+               practice pictures imitate. -->
+          <div class="sp-key" role="group" aria-labelledby="signs-key-h">
+            <p class="sp-key-h" id="signs-key-h">Reading the pictures</p>
+            <div class="sp-key-body">
+              <ul class="sp-key-list">
+                <li><span class="sp-key-ramp" aria-hidden="true"></span><span><strong>Faint to bright:</strong> a colour scale, not real colour.</span></li>
+                <li><span class="sp-key-ic sp-key-target" aria-hidden="true"></span><span><strong>Cyan circle:</strong> the position you chose.</span></li>
+                <li><span class="sp-key-ic sp-key-look" aria-hidden="true"></span><span><strong>White box:</strong> where to look.</span></li>
+                <li><span class="sp-key-ic sp-key-grain" aria-hidden="true"></span><span><strong>Grainy and blocky:</strong> 41 by 41 pixels, each with noise. One speckle means little.</span></li>
+              </ul>
+              <figure class="sp-key-real">
+                <img src="data/pictures/3i_atlas/all_images/2025-12-15_000006_2.41um.png" width="400" height="404" loading="lazy"
+                     alt="A real SPHEREx picture of the comet 3I/ATLAS, 15 December 2025, 2.41 microns. A grid of coarse purple and orange pixels with a big pale yellow glow in the middle, inside a cyan dashed circle.">
+                <figcaption>Real SPHEREx</figcaption>
+              </figure>
+            </div>
+            <p class="fine sp-colour-note">Ours are drawn to look like real SPHEREx pictures, so we know the answers. They share exactly one colour; in real data every picture has its own wavelength, close to its neighbours but not identical.</p>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="sp-pager"><a class="btn sp-pager-next" href="#traps" data-view="traps"><span>Next: Traps</span><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 5l7 7-7 7"/></svg></a></div>
   </section>
@@ -362,5 +395,7 @@ try { var t = localStorage.getItem("selenites-theme"); if (t === "light" || t ==
 <script src="js/cloud.js?v=1"></script>
 <script src="js/spot.js?v=1"></script>
 <script src="js/guide.js?v=1"></script>
+<!-- The page first paints here, once every script above has built its part (the expect link in the head). -->
+<i id="page-ready" hidden></i>
 </body>
 </html>

@@ -21,6 +21,7 @@ try { var t = localStorage.getItem("selenites-theme"); if (t === "light" || t ==
 <link rel="stylesheet" href="css/tokens.css?v=1">
 <link rel="stylesheet" href="css/app.css?v=1">
 <link rel="stylesheet" href="css/nav.css?v=1">
+<link rel="expect" href="#page-ready" blocking="render">
 <link rel="stylesheet" href="css/home.css?v=1">
 </head>
 <body class="home">
@@ -215,6 +216,7 @@ try { var t = localStorage.getItem("selenites-theme"); if (t === "light" || t ==
         <div class="tour-body" aria-live="polite" aria-atomic="true">
           <p class="tour-step" id="tour-step"></p>
           <h2 class="tour-title" id="tour-title"></h2>
+          <div class="tour-media" id="tour-media" aria-hidden="true" hidden></div>
           <p class="sr-only" id="tour-text"></p>
           <p class="tour-typed" aria-hidden="true"><span class="tour-ghost" id="tour-ghost"></span><span class="tour-ink" id="tour-ink"></span></p>
         </div>
@@ -249,8 +251,23 @@ try { var t = localStorage.getItem("selenites-theme"); if (t === "light" || t ==
     guide: "selene", guideName: "Selene",
     label: function (step, k, n) { return PAGES[step.page] + " · Part " + k + " of " + n; },
     steps: [
-      { id: "welcome", page: 0, welcome: true, title: "Hi, I'm Selene",
-        text: "I'm named after the Greek goddess of the Moon, and I look after this whole site. It lets you watch pictures from NASA's SPHEREx space telescope change over time, spot things that move, and explore the colours of light. Let me show you around. You'll do the clicking.",
+      // She opens with the site's name: what Ashesha means, shown with the logo playing in (the
+      // A turns over into ∀, then the comet streaks through it). This replaces the shade the
+      // logo used to pull down (Pawana, 14 November 2026).
+      { id: "welcome", page: 0, welcome: true, title: "Welcome to Ashesha",
+        text: "Hiii! I'm Selene! I'm named after the Greek goddess of the Moon, and I look after this whole site. It lets you watch pictures from NASA's SPHEREx space telescope change over time, spot things that move, and explore the colours of light. But first, let me tell you about our name.",
+        next: "Tell me" },
+      { id: "name", page: 0, target: ".sn-brand", title: "Why Ashesha?",
+        media: function () {
+          var mark = window.SelenitesSite && window.SelenitesSite.brandMark ? window.SelenitesSite.brandMark("tn-mark") : "";
+          return '<div class="tn">' + mark +
+            '<p class="tn-name"><span class="tn-word">Ashesha</span><span class="tn-say">say it a-SHAY-sha</span></p>' +
+            '<ul class="tn-means">' +
+              '<li><span class="tn-glyph"><span class="tn-flip">A</span></span><span><b>for all</b> in mathematics</span></li>' +
+              '<li><span class="tn-glyph tn-deva" lang="sa">अशेष</span><span><b>without remainder</b> in Sanskrit</span></li>' +
+            "</ul></div>";
+        },
+        text: "See our logo? The A is upside down. In mathematics, that means “for all”. In Sanskrit, Ashesha means “without remainder”. So: no one left out, and that includes you. The comet in our A symbolises 3I/ATLAS, a visitor from another star. Now let me show you around. You'll do the clicking.",
         next: "Start the tour" },
       { id: "idea", page: 0, target: "#top", title: "How it works",
         text: "SPHEREx photographs the whole sky every six months, in 102 colours of infrared light. Put its pictures of one patch of sky in date order, and anything that moves or changes gives itself away. That idea is behind everything here." },
@@ -297,5 +314,7 @@ try { var t = localStorage.getItem("selenites-theme"); if (t === "light" || t ==
 <script src="js/cloud.js?v=1"></script>
 <script src="js/home.js?v=1"></script>
 <script src="js/tour.js?v=1"></script>
+<!-- The page first paints here, once every script above has built its part (the expect link in the head). -->
+<i id="page-ready" hidden></i>
 </body>
 </html>

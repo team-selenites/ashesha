@@ -33,19 +33,16 @@ html.is-touring .sn { position: relative; }
 }
 
 /* Brand: the Ashesha mark and the name. The mark is the A turned over (∀, "for all") with a
-   comet streaking through it as the crossbar (js/nav.js, brandMark). On the home page the
-   brand is a button that opens the name's story; elsewhere it links home. */
+   comet streaking through it as the crossbar (js/nav.js, brandMark). It links home. */
 .sn-brand-wrap { position: relative; justify-self: start; }
 .sn-brand {
   display: inline-flex; align-items: center; gap: 10px; min-height: 44px;
   color: var(--ink); text-decoration: none; border-radius: 14px; padding: 2px 10px 2px 2px;
 }
-.sn-brand-btn { font: inherit; background: none; border: 0; cursor: pointer; text-align: left; }
 .sn-logo { width: 38px; height: 38px; flex: none; overflow: visible; }
 .sn-brand-t { display: grid; line-height: 1.1; }
 .sn-brand-a { display: inline-flex; align-items: center; gap: 5px; font-weight: 700; font-size: 19px; letter-spacing: -0.015em; }
 .sn-brand-b { font-size: 12.5px; color: var(--muted); letter-spacing: 0.04em; }
-.sn-brand-more { width: 11px; height: 11px; fill: var(--pop); }
 
 /* The mark's parts. --ash-cut is the background colour, so the comet's ring reads as a gap. */
 .ash-mark { --ash-cut: var(--bg); }
@@ -133,6 +130,29 @@ html[data-tour-seen] .sn-tour { border-color: color-mix(in srgb, var(--rule) 70%
 
 .sn-toggle { display: none; }
 
+/* ---------- Moving between pages ----------
+   The menu holds still while one page fades into the next, and the pill glides from the old
+   section to the new one (js/nav.js names the pill and the links just for the change). Each
+   page waits until every script has built its part before it first paints (<link rel="expect">
+   in its head, <i id="page-ready"> at the end of its body), so nothing pops in after the fade.
+   Off with reduced motion: the page simply changes. */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition { navigation: auto; }
+}
+/* The new page dissolves in over the old one, which stays fully drawn underneath. The browser's
+   own cross-fade fades both at once, so for a moment the two pages show through each other and
+   the sky dims; this way the shared sky and colours never flicker, only the words change. */
+::view-transition-group(root) { animation-duration: 220ms; }
+::view-transition-image-pair(root) { isolation: auto; }
+::view-transition-old(root) { animation: none; mix-blend-mode: normal; }
+::view-transition-new(root) { animation: vt-page-in 220ms cubic-bezier(0.33, 0, 0.2, 1) both; mix-blend-mode: normal; }
+@keyframes vt-page-in { from { opacity: 0; } }
+::view-transition-group(sn-pill) { animation-duration: 340ms; animation-timing-function: var(--ease-out-quart, cubic-bezier(0.25, 1, 0.5, 1)); }
+/* The pill changes width, not shape: stretch its picture to the box instead of scaling it up. */
+::view-transition-old(sn-pill), ::view-transition-new(sn-pill) { height: 100%; animation: none; }
+::view-transition-old(sn-pill) { display: none; }
+::view-transition-group(sn-links) { animation-duration: 340ms; }
+
 /* ---------- Narrow windows and phones: a Menu button and a panel ---------- */
 @media (max-width: 959px) {
   .sn { padding-block: 8px; }
@@ -178,171 +198,11 @@ html[data-tour-seen] .sn-tour { border-color: color-mix(in srgb, var(--rule) 70%
 @keyframes sn-drop { from { opacity: 0; transform: translateY(-6px) scale(0.99); } to { opacity: 1; transform: none; } }
 @media (max-width: 380px) { .sn-brand-b { display: none; } }
 
-/* ---------- The name's shade ----------
-   Pressing the name on the home page: the logo's comet rises to the top of the screen and falls,
-   unrolling a shade behind it like a blind on its cord, then rests on the hem. Pull the comet up
-   and the shade rolls up after it. The shade wears the page's own theme: clouds along the hem in
-   Light, stars and a moon's glow in Dark, yellow stars in Colour-blind friendly. A large, faint
-   upside-down A sits behind the words. */
-html.ash-shade-open { overflow: hidden; }
-.ash-shade { position: fixed; inset: 0; z-index: 100; --hem: 60vh; }
-.ash-shade[hidden] { display: none; }
-.ashs-scrim { position: absolute; inset: 0; background: rgba(12, 6, 26, 0.42); }
-.ashs-sheet {
-  position: absolute; top: 0; left: 0; right: 0; width: 100%;
-  max-height: 88vh; display: flex; flex-direction: column; overflow: hidden;
-  background: var(--bg); color: var(--ink);
-  /* A soft curved hem, lowest in the middle where the comet hangs. */
-  border-radius: 0 0 50% 50% / 0 0 34px 34px;
-  box-shadow: 0 1px 0 color-mix(in srgb, var(--rule) 40%, transparent), 0 40px 80px -40px rgba(10, 4, 24, 0.65);
-  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), clip-path 0.45s cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: transform, clip-path;
-}
-/* The theme's decoration sits behind the words. */
-.ashs-sheet::before { content: ""; position: absolute; inset: 0; pointer-events: none; }
-:root[data-theme="light"] .ashs-sheet::before {
-  background:
-    radial-gradient(70% 60% at 100% 0%, color-mix(in srgb, var(--pop) 14%, transparent), transparent 70%),
-    radial-gradient(50% 60% at 0% 0%, color-mix(in srgb, var(--link) 10%, transparent), transparent 70%),
-    radial-gradient(circle at 5% 104%, #fff 0 38px, transparent 39px),
-    radial-gradient(circle at 13% 108%, #fff 0 50px, transparent 51px),
-    radial-gradient(circle at 23% 104%, #fff 0 32px, transparent 33px),
-    radial-gradient(circle at 79% 105%, #fff 0 40px, transparent 41px),
-    radial-gradient(circle at 90% 106%, #fff 0 52px, transparent 53px);
-  opacity: 0.8;
-}
-:root:not([data-theme="light"]) .ashs-sheet::before {
-  background:
-    radial-gradient(circle at 94% 10%, color-mix(in srgb, var(--sn-moon) 22%, transparent), transparent 160px),
-    radial-gradient(60% 80% at 0% 100%, color-mix(in srgb, var(--accent) 10%, transparent), transparent 70%),
-    radial-gradient(circle at 8% 18%, var(--sn-moon) 0 1.2px, transparent 1.8px),
-    radial-gradient(circle at 27% 8%, var(--sn-moon) 0 1px, transparent 1.6px),
-    radial-gradient(circle at 44% 30%, var(--sn-moon) 0 1.4px, transparent 2px),
-    radial-gradient(circle at 63% 12%, var(--sn-moon) 0 1px, transparent 1.6px),
-    radial-gradient(circle at 76% 44%, var(--sn-moon) 0 1.2px, transparent 1.8px),
-    radial-gradient(circle at 88% 70%, var(--sn-moon) 0 1px, transparent 1.6px),
-    radial-gradient(circle at 16% 66%, var(--sn-moon) 0 1px, transparent 1.6px),
-    radial-gradient(circle at 37% 84%, var(--sn-moon) 0 1.3px, transparent 1.9px),
-    radial-gradient(circle at 56% 62%, var(--sn-moon) 0 1px, transparent 1.6px);
-  opacity: 0.75;
-}
-/* The big faint ∀: the font's own A, turned over, cropped by the shade's edge. */
-.ashs-water {
-  position: absolute; right: -0.04em; top: 50%; pointer-events: none; user-select: none;
-  font-size: clamp(260px, 34vw, 520px); font-weight: 700; line-height: 0.8; color: var(--pop);
-  opacity: 0.07; transform: translateY(-50%) rotate(180deg);
-}
-.ashs-inner {
-  position: relative; overflow-y: auto; overscroll-behavior: contain;
-  width: 100%; max-width: 1180px; margin: 0 auto; box-sizing: border-box;
-  padding: 36px 24px 8px; display: grid; gap: 14px; justify-items: start;
-}
-.ashs-name { display: flex; align-items: center; gap: 10px; margin: 0; }
-.ashs-mark { width: 34px; height: 34px; flex: none; overflow: visible; }
-.ashs-word { font-weight: 700; font-size: 18px; letter-spacing: -0.01em; }
-.ashs-say { font-size: 14px; color: var(--muted); letter-spacing: 0.03em; padding-left: 10px; border-left: 1px solid color-mix(in srgb, var(--rule) 60%, transparent); }
-.ashs-hook { margin: 6px 0 0; font-size: clamp(30px, 2.4vw + 16px, 44px); font-weight: 700; line-height: 1.06; letter-spacing: -0.025em; text-wrap: balance; }
-.ashs-hook:focus { outline: none; }
-.ashs-pairs { display: grid; gap: 12px; }
-.ashs-pair { display: grid; grid-template-columns: 48px minmax(0, 1fr); gap: 14px; align-items: center; margin: 0; font-size: 17px; line-height: 1.4; }
-.ashs-glyph {
-  display: grid; place-items: center; width: 48px; height: 48px; border-radius: 50%;
-  font-size: 30px; font-weight: 700; line-height: 1; color: var(--pop);
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--pop) 45%, transparent);
-}
-.ashs-flip { display: inline-block; transform: rotate(180deg); transform-origin: 50% 49.5%; }
-.ashs-deva { font-size: 16px; font-weight: 400; font-family: "Nirmala UI", "Noto Sans Devanagari", "Kohinoor Devanagari", var(--font); }
-.ashs-tag { display: block; margin-bottom: 1px; font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
-.ashs-big { margin: 6px 0 0; font-size: 24px; font-weight: 700; line-height: 1.2; letter-spacing: -0.01em; }
-.ashs-pop { color: var(--pop); }
-.ashs-small { margin: 0; font-size: 15.5px; line-height: 1.5; color: var(--muted); max-width: 32rem; }
-.ashs-go {
-  display: inline-flex; align-items: center; gap: 8px; min-height: 46px; padding: 0 20px 0 22px; margin-top: 2px;
-  border-radius: 999px; background: var(--accent); color: var(--accent-ink); font-weight: 700; font-size: 16px; text-decoration: none;
-}
-.ashs-go svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
-/* Sits just right of the comet, clear of its tail. */
-.ashs-pull { justify-self: center; translate: 96px 0; grid-column: 1 / -1; margin: 10px 0 18px; font-size: 13px; color: var(--muted); letter-spacing: 0.02em; }
-
-/* Laptops and wider: the story spreads across the shade. The name and the hook on the left; the
-   meanings, the line for the reader and the button on the right, after a hairline. */
-@media (min-width: 960px) {
-  .ashs-inner {
-    padding: 56px 48px 4px; column-gap: 0; row-gap: 16px; align-items: start;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
-    grid-template-areas: "name pairs" "hook pairs" "hook big" "hook small" "hook go" "pull pull";
-  }
-  .ashs-name { grid-area: name; }
-  .ashs-hook { grid-area: hook; padding-right: 56px; font-size: clamp(44px, 3vw + 12px, 64px); }
-  .ashs-pairs, .ashs-big, .ashs-small, .ashs-go { padding-left: 56px; border-left: 1px solid color-mix(in srgb, var(--rule) 40%, transparent); }
-  .ashs-pairs { grid-area: pairs; }
-  .ashs-big { grid-area: big; margin: 0; padding-top: 6px; }
-  .ashs-small { grid-area: small; max-width: none; }
-  .ashs-go { grid-area: go; justify-self: start; margin-left: 56px; padding-left: 22px; border-left: 0; }
-  .ashs-pull { grid-area: pull; }
-}
-@media (max-width: 559px) {
-  .ashs-sheet { border-radius: 0 0 50% 50% / 0 0 22px 22px; }
-  .ashs-water { font-size: 300px; right: -0.12em; }
-  .ashs-pull { translate: 84px 0; }
-}
-
-/* The comet: the shade's pull-cord. Its head is the centre of a 56 px button, sitting on the
-   lowest point of the hem like a bead, ringed in the page colour; the tail streams behind it. */
-.ashs-grip {
-  position: absolute; left: calc(50% - 28px); top: calc(var(--hem) - 30px);
-  width: 56px; height: 56px; padding: 0; border: 0; border-radius: 50%; background: none;
-  cursor: grab; touch-action: none; transform: rotate(14deg);
-  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
-}
-.ashs-grip:active { cursor: grabbing; }
-.ashs-grip svg { position: absolute; left: -56px; top: 16px; width: 96px; height: 24px; overflow: visible; pointer-events: none; }
-.ashs-c-tail-a { stop-color: var(--sn-moon); stop-opacity: 0; }
-.ashs-c-tail-b { stop-color: var(--sn-moon); stop-opacity: 1; }
-.ashs-c-ring { fill: var(--bg); }
-.ashs-c-head { fill: var(--sn-moon); filter: drop-shadow(0 0 8px var(--sn-moon-glow)) drop-shadow(0 0 18px var(--sn-moon-glow)); }
-.ashs-grip:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
-
-/* The logo's own comet is away while the shade is down. */
-.sn-brand-btn.comet-out .sn-logo .ash-comet { opacity: 0; transition: opacity 0.2s ease-out; }
-.sn-brand-btn .sn-logo .ash-comet { transition: opacity 0.4s ease-out 0.1s; }
-
-.ash-shade.is-closing .ashs-inner { opacity: 0; transition: opacity 0.2s ease-in; }
-.ash-shade.is-closing .ashs-scrim { opacity: 0; transition: opacity 0.45s ease-in-out; }
-@media (prefers-reduced-motion: no-preference) {
-  .ash-shade.is-open .ashs-scrim { animation: ashs-dim 0.5s ease-out backwards; }
-  /* The words appear as the hem passes them, one after another. */
-  .ash-shade.is-open .ashs-inner > * { animation: ashs-settle 0.7s cubic-bezier(0.22, 1, 0.36, 1) backwards; }
-  .ash-shade.is-open .ashs-inner > :nth-child(1) { animation-delay: 0.5s; }
-  .ash-shade.is-open .ashs-inner > :nth-child(2) { animation-delay: 0.58s; }
-  .ash-shade.is-open .ashs-inner > :nth-child(3) { animation-delay: 0.66s; }
-  .ash-shade.is-open .ashs-inner > :nth-child(4) { animation-delay: 0.74s; }
-  .ash-shade.is-open .ashs-inner > :nth-child(5) { animation-delay: 0.82s; }
-  .ash-shade.is-open .ashs-inner > :nth-child(6) { animation-delay: 0.9s; }
-  .ash-shade.is-open .ashs-inner > :nth-child(7) { animation-delay: 1.3s; }
-  .ash-shade.is-open .ashs-water { animation: ashs-water 1.6s cubic-bezier(0.22, 1, 0.36, 1) 0.45s backwards; }
-  /* Once it has landed, the comet sways twice on its cord: a hint that it can be pulled. */
-  .ash-shade.is-open .ashs-grip svg { animation: ashs-sway 1.6s ease-in-out 1.5s 2; transform-origin: 84px 12px; }
-  .sn-brand-btn { transition: scale 0.12s ease-out; }
-  .sn-brand-btn:active { scale: 0.97; }
-  .ashs-go svg { transition: translate 0.2s var(--ease-out-quart, ease-out); }
-  @media (hover: hover) { .ashs-go:hover svg { translate: 3px 0; } .ashs-grip:hover svg { scale: 1.12; } }
-  .ashs-grip svg { transition: scale 0.2s ease-out; transform-origin: 84px 12px; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .ashs-sheet, .ashs-grip, .ash-shade.is-closing .ashs-inner, .ash-shade.is-closing .ashs-scrim { transition: none; }
-}
-@keyframes ashs-dim { from { opacity: 0; } to { opacity: 1; } }
-@keyframes ashs-settle { from { opacity: 0; translate: 0 -10px; } to { opacity: 1; translate: 0 0; } }
-@keyframes ashs-water { from { opacity: 0; translate: 0 -40px; } to { opacity: 0.07; translate: 0 0; } }
-@keyframes ashs-sway { 0%, 100% { rotate: 0deg; } 30% { rotate: -10deg; } 65% { rotate: 6deg; } }
-
 @media (forced-colors: active) {
   .sn::before { background: Canvas; -webkit-mask-image: none; mask-image: none; bottom: 0; }
   .sn-island { border: 1px solid CanvasText; }
   .sn-link[aria-current="page"] { outline: 2px solid Highlight; }
   .sn-pill { display: none; }
   .ash-legs { fill: CanvasText; } .ash-head { fill: Highlight; } .ash-tail-a, .ash-tail-b { stop-color: Highlight; } .ash-cut { fill: Canvas; } .ash-glint { display: none; }
-  .ashs-sheet { border-bottom: 2px solid CanvasText; } .ashs-go { border: 2px solid CanvasText; } .ashs-c-head { fill: Highlight; filter: none; } .ashs-c-tail-a, .ashs-c-tail-b { stop-color: Highlight; } .ashs-water { display: none; }
 }
 @media print { .sn { display: none; } }

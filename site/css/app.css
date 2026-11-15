@@ -406,6 +406,8 @@ html[data-theme="light"] .sky { opacity: 1; visibility: visible; transition-dela
    motion of 5 seconds or less). Switched off for reduced motion by the global rule above. */
 .sky svg { width: calc(100% + 80px); height: 100%; }
 html[data-theme="light"] .sky svg { animation: sky-float 4.5s cubic-bezier(0.25, 1, 0.5, 1) both; }
+/* Arriving from another page of the site: the clouds have already settled, so they stay put. */
+html.sky-still .sky svg { animation: none; }
 @keyframes sky-float { from { transform: translateX(-80px); } to { transform: translateX(0); } }
 
 
@@ -1045,6 +1047,52 @@ html[data-tour-seen] .btn-stage { background: transparent; color: var(--stage-in
 .tour-card.is-welcome .tour-figure { width: 300px; height: 228px; animation: selene-rise 760ms var(--ease-out-expo) both; }
 @keyframes selene-rise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
 
+/* A picture in the cloud above a step's words (js/tour.js, media). The home tour's "Why Ashesha?"
+   step shows the logo large: it arrives as an ordinary A, turns over into ∀ ("for all"), the
+   comet streaks through it, and a glint runs along the comet now and then while she talks. */
+.tour-media { margin: 2px 0 10px; }
+.tour-media[hidden] { display: none; }
+.tn { display: grid; grid-template-columns: 76px minmax(0, 1fr); column-gap: 14px; row-gap: 6px; align-items: center; }
+.tn-mark { grid-row: span 2; width: 76px; height: 76px; overflow: visible; --ash-cut: var(--bubble-bg); }
+.tn-mark .ash-legs { fill: var(--bubble-ink); transform-box: view-box; transform-origin: 32px 32px; }
+.tn-mark .ash-head { fill: var(--bubble-pop); }
+.tn-mark .ash-tail-a, .tn-mark .ash-tail-b { stop-color: var(--bubble-pop); }
+.tn-name { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; margin: 0; }
+.tn-word { font-size: 24px; font-weight: 700; letter-spacing: -0.015em; color: var(--bubble-ink); }
+.tn-say { font-size: 13.5px; color: var(--bubble-muted); letter-spacing: 0.02em; }
+.tn-means { display: grid; gap: 4px; margin: 0; padding: 0; list-style: none; font-size: 14px; line-height: 1.35; color: var(--bubble-muted); }
+.tn-means li { display: flex; align-items: center; gap: 8px; }
+.tn-means b { color: var(--bubble-ink); }
+.tn-glyph {
+  display: inline-grid; place-items: center; flex: none; min-width: 26px; height: 26px; padding: 0 5px; box-sizing: border-box;
+  border-radius: 999px; font-size: 15px; font-weight: 700; line-height: 1; color: var(--bubble-pop);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--bubble-pop) 45%, transparent);
+}
+.tn-flip { display: inline-block; transform: rotate(180deg); }
+.tn-deva { font-size: 12.5px; font-weight: 400; font-family: "Nirmala UI", "Noto Sans Devanagari", "Kohinoor Devanagari", var(--font); }
+@media (prefers-reduced-motion: no-preference) {
+  .tour-media.is-play .tn-mark .ash-legs { animation: tn-turn 900ms cubic-bezier(0.65, 0, 0.35, 1) 150ms both; }
+  .tour-media.is-play .tn-mark .ash-comet { animation: ash-streak 650ms cubic-bezier(0.22, 1, 0.36, 1) 1050ms both; }
+  .tour-media.is-play .tn-mark .ash-glint { animation: tn-glint 5s ease-in-out 1700ms infinite; }
+  .tour-media.is-play .tn-name { animation: tn-in 500ms var(--ease-out-quart) 250ms both; }
+  .tour-media.is-play .tn-means li { animation: tn-in 500ms var(--ease-out-quart) 1300ms both; }
+  .tour-media.is-play .tn-means li + li { animation-delay: 1500ms; }
+  .tour-media.is-play .tn-flip { animation: tn-flip 700ms cubic-bezier(0.65, 0, 0.35, 1) 1500ms both; }
+}
+/* Upright A first (the ∀ turned over), held a moment, then turned. */
+@keyframes tn-turn { 0% { opacity: 0; rotate: 180deg; scale: 0.85; } 25% { opacity: 1; rotate: 180deg; scale: 1; } 100% { opacity: 1; rotate: 360deg; scale: 1; } }
+@keyframes tn-flip { from { transform: rotate(0deg); } to { transform: rotate(180deg); } }
+@keyframes tn-in { from { opacity: 0; translate: 0 6px; } to { opacity: 1; translate: 0 0; } }
+/* One sweep along the comet, then a rest, every five seconds. */
+@keyframes tn-glint { 0% { translate: 0 0; opacity: 1; } 15% { opacity: 1; } 18% { translate: 76px 0; opacity: 0; } 100% { translate: 76px 0; opacity: 0; } }
+@media (forced-colors: active) { .tn-glyph { border: 1px solid CanvasText; } }
+/* Phones (the card is a sheet): a smaller logo beside the name; the meanings are left to her words. */
+.tour-card.is-sheet .tn { grid-template-columns: 52px minmax(0, 1fr); column-gap: 10px; }
+.tour-card.is-sheet .tn-mark { grid-row: auto; width: 52px; height: 52px; }
+.tour-card.is-sheet .tn-say { flex-basis: 100%; }
+.tour-card.is-sheet .tn-word { font-size: 20px; }
+.tour-card.is-sheet .tn-means { display: none; }
+
 /* Phones: a sheet across the free side of the screen. Selene is shown from the chest up with her
    raised hand, close enough to see her lips and hand move. */
 .tour-card.is-sheet, .tour-card.is-sheet.is-welcome { width: calc(100vw - 24px); grid-template-columns: 104px minmax(0, 1fr); column-gap: 14px; }
@@ -1263,6 +1311,69 @@ html:not(.has-views) .guide { display: none; }
 @media (hover: hover) { .guide-open:hover { border-color: var(--accent); } }
 html.guide-folded .guide-body { display: none; }
 html.guide-folded .guide-open { display: inline-flex; }
+
+/* Mini Selene (js/guide.js): once her cloud has scrolled away, her face and the same tip wait in
+   the bottom-right corner, just above Back to top (most pages keep their content to the left), in a small cloud with the same colours, edge and glow. She rises in
+   and sinks away; with reduced motion she simply appears. */
+.guide-body:focus { outline: none; }
+.guide-mini {
+  position: fixed; z-index: 6;
+  right: max(16px, env(safe-area-inset-right, 0px)); bottom: calc(max(16px, env(safe-area-inset-bottom, 0px)) + 60px);
+  display: flex; flex-direction: row-reverse; align-items: flex-end; width: max-content; max-width: min(340px, calc(100vw - 32px));
+  visibility: hidden; opacity: 0; pointer-events: none;
+  transform: translateY(18px) scale(0.97); transform-origin: 100% 100%;
+}
+.guide-mini.is-shown { visibility: visible; opacity: 1; pointer-events: auto; transform: none; }
+@media (prefers-reduced-motion: no-preference) {
+  .guide-mini { transition: opacity 220ms ease-out, transform 420ms var(--ease-out-quart), visibility 0s linear 420ms; }
+  .guide-mini.is-shown { transition-delay: 0s; }
+}
+.guide-mini-face {
+  width: 52px; height: 52px; cursor: pointer;
+  box-shadow: 0 0 0 2.5px var(--bubble-line), 0 0 18px var(--bubble-glow), 0 10px 22px -12px rgba(20, 10, 40, 0.5);
+}
+/* Two thought bubbles rising from her to the cloud. */
+.guide-mini-trail { position: relative; flex: none; width: 16px; height: 52px; }
+.guide-mini-trail i {
+  position: absolute; border-radius: 50%; border: 2px solid var(--bubble-line);
+  background: radial-gradient(circle at 34% 30%, var(--bubble-bg-2), var(--bubble-bg) 72%);
+}
+.guide-mini-trail i:nth-child(1) { width: 6px; height: 6px; right: 1px; top: 24px; }
+.guide-mini-trail i:nth-child(2) { width: 10px; height: 10px; right: 5px; top: 10px; }
+.guide-mini-bubble {
+  min-width: 0; max-height: 40vh; overflow: auto; margin-bottom: 22px; padding: 10px 12px 0;
+  border-radius: 22px; color: var(--bubble-ink); cursor: pointer;
+  background: linear-gradient(var(--bubble-bg-2), var(--bubble-bg));
+  border: 2.5px solid var(--bubble-line);
+  box-shadow: 0 0 16px var(--bubble-glow), 0 16px 32px -18px rgba(20, 10, 40, 0.55);
+}
+.guide-mini-text { margin: 0; font-size: 13.5px; line-height: 1.45; }
+.guide-mini-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0 12px; }
+.guide-mini-back {
+  font: inherit; font-size: 13px; min-height: 44px; padding: 0 4px; margin-left: auto; cursor: pointer;
+  color: var(--bubble-muted); background: none; border: 0; text-decoration: underline; text-underline-offset: 3px;
+}
+.guide-mini-back:focus-visible { outline: 3px solid var(--bubble-line); outline-offset: 2px; }
+@media (hover: hover) { .guide-mini-back:hover { color: var(--bubble-ink); } }
+.guide-mini.is-speaking .guide-voice svg { color: var(--bubble-pop); }
+@media (prefers-reduced-motion: no-preference) {
+  .guide-mini.is-speaking .guide-mini-face { animation: mini-talk 1.6s ease-in-out infinite alternate; }
+}
+@keyframes mini-talk { to { box-shadow: 0 0 0 2.5px var(--bubble-pop), 0 0 24px var(--bubble-glow), 0 10px 22px -12px rgba(20, 10, 40, 0.5); } }
+/* Phones: a little smaller. */
+@media (max-width: 639px) {
+  .guide-mini-face { width: 48px; height: 48px; }
+  .guide-mini-trail { height: 48px; width: 14px; }
+  .guide-mini-trail i:nth-child(1) { top: 22px; } .guide-mini-trail i:nth-child(2) { top: 8px; right: 4px; }
+  .guide-mini-bubble { margin-bottom: 18px; padding: 10px 12px 0; }
+  .guide-mini-text { font-size: 14px; }
+}
+html.is-touring .guide-mini, html.guide-folded .guide-mini { display: none; }
+@media (forced-colors: active) {
+  .guide-mini-bubble { background: Canvas; color: CanvasText; border-color: CanvasText; box-shadow: none; }
+  .guide-mini-trail { display: none; }
+}
+@media print { .guide-mini { display: none; } }
 .guide { display: grid; }
 
 /* Phones: a lobed cloud would be tall and narrow here, so the words sit in a compact rounded
@@ -1420,14 +1531,16 @@ html[data-nudge="guide-next"] .guide[data-guide="watch"] .guide-next:not([hidden
 /* The light theme's background clouds would show through the lit part as white blobs. */
 html.is-touring .sky { visibility: hidden; }
 
-/* Words appearing in a cloud: laid out first, then each drifts in (fades in and rises a touch
-   into place) as Selene reaches it. No caret. */
+/* Words appearing in a cloud: laid out first, then each settles in as Selene reaches it, fading
+   up and rising a few pixels on a long, soft ease-out, so the words overlap and read as one
+   flowing line rather than ticking on one by one. No blur (a blur on every word made the text
+   look smudged and is heavy to draw) and no caret. */
 .is-typing .w {
-  display: inline-block; opacity: 0; transform: translateY(0.35em); filter: blur(3px);
-  transition: opacity 380ms ease-out, transform 480ms cubic-bezier(0.22, 0.8, 0.3, 1), filter 380ms ease-out;
+  display: inline-block; opacity: 0; transform: translateY(0.22em);
+  transition: opacity 560ms cubic-bezier(0.25, 1, 0.5, 1), transform 640ms cubic-bezier(0.25, 1, 0.5, 1);
 }
-.is-typing .w.on { opacity: 1; transform: none; filter: none; }
-@media (prefers-reduced-motion: reduce) { .is-typing .w { transition: none; transform: none; filter: none; } }
+.is-typing .w.on { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) { .is-typing .w { transition: none; transform: none; } }
 /* The tour's words are typed in place now (no overlay copy). */
 .tour-ghost { visibility: visible; }
 
@@ -1506,3 +1619,10 @@ html.is-touring[data-nudge] #v-mark-btn, html.is-touring[data-nudge] .guide-next
 .guide-voice[aria-pressed="true"] { font-weight: 700; }
 .guide-voice:focus-visible { outline: 3px solid var(--bubble-line); outline-offset: 2px; }
 .guide.is-speaking .guide-voice svg { color: var(--bubble-pop); }
+
+/* Mini Selene folded to just her face (her face is the switch); a dot says a new tip came. */
+.guide-mini-toggle { position: relative; flex: none; padding: 0; border: 0; background: none; border-radius: 50%; cursor: pointer; }
+.guide-mini-toggle:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+.guide-mini.is-tucked .guide-mini-trail, .guide-mini.is-tucked .guide-mini-bubble { display: none; }
+.guide-mini-dot { display: none; position: absolute; top: 0; right: 0; width: 14px; height: 14px; border-radius: 50%; background: var(--bubble-pop); border: 2px solid var(--bubble-bg-2); }
+.guide-mini.is-tucked.has-news .guide-mini-dot { display: block; }

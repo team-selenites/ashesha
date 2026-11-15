@@ -575,7 +575,19 @@
     });
   function recording(who, text) { return LINES[lineKey(who, text)] || null; }
 
+  // One voice at a time. A tip cloud and the tour (or Selene and Iris) each have their own
+  // guide, so a tip still being read aloud would talk over the tour when it opens. Whoever starts
+  // speaking aloud takes the voice; the one who had it goes quiet and shows the rest of her words
+  // at once.
+  var voiceOwner = null;
+  function takeVoice(inst) {
+    if (voiceOwner && voiceOwner !== inst && voiceOwner.hush) voiceOwner.hush();
+    voiceOwner = inst;
+  }
+
   Instance.prototype.stop = function () {
+    if (voiceOwner === this) voiceOwner = null;
+    this.hush = null;
     this.run++;
     this.pending = (this.pending || 0) + 1;
     this.timers.forEach(clearInterval);
@@ -621,12 +633,22 @@
       self.voiced = false;
       self.audio = null;
       self.level = null;
+      self.hush = null;
+      if (voiceOwner === self) voiceOwner = null;
       speaking(false);
       reveal(len);
       self.settle(2600);
       done();
     }
     this.skip = function () { if (!self.audio) { finish(); self.lipStop(); if (self.video) self.rest(); } };
+    // Another guide has started speaking aloud: stop the sound, show the rest of the words.
+    this.hush = function () {
+      if (finished || run !== self.run) return;
+      if (self.audio) { try { self.audio.pause(); } catch (e) {} }
+      if (self.video) { try { self.video.pause(); } catch (e) {} self.rest(); }
+      self.lipStop();
+      finish();
+    };
 
     // A talking clip: she moves and speaks in the video, and the words follow it.
     if (opts.video && this.video) {
@@ -645,6 +667,7 @@
       };
       v.onended = function () { if (run === self.run) finish(); };
       v.muted = !opts.voice;
+      if (opts.voice) takeVoice(self);
       v.src = opts.video;
       this.setActive(true);
       this.speaking = true;
@@ -661,7 +684,7 @@
       if (reduced() && !(audio && opts.voice)) { reveal(len); done(); return; }
       self.setActive(true);
       self.speaking = true;
-      if (audio && opts.voice) { recorded(); return; }
+      if (audio && opts.voice) { takeVoice(self); recorded(); return; }
       silent();
     }
     function silent() {
