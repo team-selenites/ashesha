@@ -1,0 +1,8 @@
+# Keeps the GitHub Actions used by the publishing workflow up to date.
+# The website itself has no outside code libraries to update.
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"

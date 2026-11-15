@@ -1,0 +1,82 @@
+# Publishes the site/ folder to GitHub Pages: https://team-selenites.github.io/ashesha/
+#
+# Runs when main changes inside site/, or by hand from the Actions tab.
+# One-time setup in the repository: Settings > Pages > Source: "GitHub Actions".
+name: Publish the website
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "site/**"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+# The least this job needs: read the code, write the Pages deployment.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deployment at a time. A newer push waits for the running one to finish.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Get the code
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Check the pages and data before publishing
+        run: |
+          python3 - <<'EOF'
+          import glob, io, json, os, re, sys
+          problems = []
+          # Every JSON file the site reads must parse (NaN is read as "no value", as the site does).
+          for path in glob.glob("site/**/*.json", recursive=True) + ["site/site.webmanifest"]:
+              text = io.open(path, encoding="utf-8").read()
+              try:
+                  json.loads(re.sub(r":\s*-?(?:NaN|Infinity)(?=\s*[,}\]])", ": null", text))
+              except ValueError as error:
+                  problems.append("%s does not parse: %s" % (path, error))
+          # Every local file a page points at must exist.
+          for page in glob.glob("site/*.html"):
+              text = io.open(page, encoding="utf-8").read()
+              for link in re.findall(r'(?:src|href)\s*=\s*"([^"#?]+)', text):
+                  if re.match(r"^(https?:|mailto:|data:)", link):
+                      continue
+                  if not os.path.exists(os.path.join("site", link)):
+                      problems.append("%s points at a missing file: %s" % (page, link))
+          # Every recorded voice line must have its sound file.
+          manifest = json.load(io.open("site/assets/voice/manifest.json", encoding="utf-8"))
+          for line in manifest["lines"]:
+              if not os.path.exists(os.path.join("site/assets/voice", line["file"])):
+                  problems.append("voice file missing: " + line["file"])
+          for problem in problems:
+              print("::error::" + problem)
+          print("checked the site:", len(problems), "problems")
+          sys.exit(1 if problems else 0)
+          EOF
+
+      - name: Check the scripts for syntax errors
+        run: for f in site/js/*.js; do node --check "$f"; done
+
+      - name: Set up Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload the site folder
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+      - name: Publish
+        id: deployment
+        uses: actions/deploy-pages@v4
