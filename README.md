@@ -35,7 +35,7 @@ Links can open the tool directly, for example `?target=3I-ATLAS`. Links with coo
 
 ## The team
 
-Pawana, Elisabetta, Shrashti, a team member, a team member and a team member.
+Pawana, Elisabetta and Shrashti.
 
 ## Data and credits
 

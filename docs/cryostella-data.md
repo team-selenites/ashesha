@@ -1,6 +1,6 @@
 # Cryostella: data format
 
-Cryostella (the frozen water section, S2) shows a spectrum for each of 2 or 3 targets: a chart, a data table, a Spectrum Player that plays it as sound, and a short explanation. Owner: Pawana. Data: Elisabetta. Sound meanings: a team member.
+Cryostella (the frozen water section, S2) shows a spectrum for each of 2 or 3 targets: a chart, a data table, a Spectrum Player that plays it as sound, and a short explanation. Owner: Pawana. Data: Elisabetta. Sound meanings: Pawana.
 
 The page reads only these files, so real data replaces the practice data without code changes.
 
@@ -10,7 +10,7 @@ The page reads only these files, so real data replaces the practice data without
 | --- | --- | --- |
 | `site/data/cryostella/index.json` | Pawana | The list of targets, in the order shown: `{ "targets": [ { "id", "file" } ] }` |
 | `site/data/cryostella/<id>.json` | Elisabetta's pipeline | One spectrum (format below) |
-| `site/data/sound-key.json` | a team member | What each sound means. Cryostella reads the `spectrum` section |
+| `site/data/sound-key.json` | Pawana | What each sound means. Cryostella reads the `spectrum` section |
 
 The page opens one target directly with `cryostella.html?target=<id>`.
 
