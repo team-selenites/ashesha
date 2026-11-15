@@ -28,6 +28,7 @@
     { id: "orchestra", href: null, name: "Cosmic Orchestra", desc: "Hear the sky as sound", icon: "sound", guide: "orpheus", ready: false, map: true },
     { id: "games", href: null, name: "Weave the Cosmic Tapestry", desc: "Puzzles made from SPHEREx pictures", icon: "games", ready: false, map: true },
     { id: "beginnings", href: "beginnings.html", name: "Your Beginnings", desc: "The sky SPHEREx saw on your birthday", icon: "star", guide: "selene", ready: true, map: true },
+    { id: "stories", href: "stories.html", name: "Stories", desc: "Discover the myths and science behind the night sky", icon: "star", guide: "selene", ready: true, map: true },
     { id: "candidates", href: "viewer.html#my-candidates", name: "My candidates", desc: "Pictures you marked", icon: "mark", ready: true, map: false }
   ];
 
