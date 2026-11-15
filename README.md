@@ -30,7 +30,8 @@ We would rather say this plainly than let a page promise too much.
 
 - **Live search of the archive.** A typed position opens only when it falls inside one of the six prepared patches. Anywhere else, the site says how far away the nearest prepared patch is.
 - **Cosmic Orchestra.** The sound of a spectrum plays in Cryostella. Sound for movement in the sky viewer is designed (`docs/sonification-design.md`) but not built.
-- **Weave the Cosmic Tapestry.** The data for the two games, Timeline Puzzle and Predict the Path, is prepared in `site/data/`. The game pages are not built.
+- **Weave the Cosmic Tapestry.** The data for the two games, Timeline Puzzle and Predict the Path, is prepared in `site/data/`. The game pages are not built yet.
+- **3I/ATLAS science check:** Its trajectory is open and hyperbolic, not a closed ellipse. It is moving too fast to be captured by the Sun's gravity and will continue back into interstellar space.
 - **Screen reader testing.** The site was checked by keyboard and by script in the browser. A full pass with the NVDA screen reader is still to do.
 - **Four guide lines** are waiting for a voice recording. They are listed in `docs/selene-voice-script.md`. Their words still appear on screen.
 
