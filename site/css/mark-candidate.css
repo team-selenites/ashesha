@@ -134,20 +134,45 @@
   justify-content: space-between;
   gap: 8px 16px;
   margin: 0 0 var(--mc-gap);
-  padding: 12px 16px;
-  border: 2px solid var(--rule);
-  border-inline-start: 8px solid var(--accent);
-  border-radius: var(--mc-radius);
+  padding: 12px 14px 12px 18px;
+  border: 2px solid var(--pop, var(--accent));
+  border-radius: 24px;
   background: var(--mc-surface);
+  box-shadow: 0 8px 24px var(--cloud-shadow, transparent);
+}
+
+.mc-banner--saved .mc-banner-text::before {
+  content: "\2713";
+  display: inline-grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  margin-inline-end: 10px;
+  border-radius: 50%;
+  background: var(--pop, var(--accent));
+  color: var(--bg);
+  font-size: 15px;
+  vertical-align: middle;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .mc-banner:not([hidden]) {
+    animation: mc-pop-in 260ms var(--mc-ease);
+  }
+}
+
+@keyframes mc-pop-in {
+  from { opacity: 0; transform: translateY(-6px) scale(0.98); }
+  to { opacity: 1; transform: none; }
 }
 
 .mc-banner--duplicate {
-  border-inline-start-style: double;
+  border-style: double;
+  border-width: 4px;
 }
 
 .mc-banner--error {
   border-style: dashed;
-  border-inline-start-style: dashed;
 }
 
 .mc-banner-text {
@@ -163,62 +188,81 @@
   gap: 8px;
 }
 
-/* ---------- Overview ---------- */
+/* ---------- Search and filters ---------- */
 
-.mc-overview {
+.mc-tools {
   margin: 0 0 var(--mc-gap);
-  padding: 16px;
-  border: 2px solid var(--rule);
-  border-radius: var(--mc-radius);
 }
 
-.mc-total {
-  margin: 0 0 10px;
-  font-size: var(--step-1, 20px);
-}
-
-.mc-total strong {
-  font-size: var(--step-2, 28px);
-  font-variant-numeric: tabular-nums;
-}
-
-.mc-target-counts {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.mc-target-count {
+.mc-tools-toggle {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  max-width: 100%;
-  padding: 4px 6px 4px 12px;
+  min-height: 44px;
+  padding: 8px 16px;
   border: 2px solid var(--rule);
   border-radius: 999px;
-}
-
-.mc-target-name {
-  min-width: 0;
-  overflow-wrap: anywhere;
+  background: var(--mc-surface);
   font-weight: 700;
+  cursor: pointer;
+  list-style: none;
 }
 
-.mc-target-num {
-  min-width: 28px;
-  padding: 2px 8px;
-  border-radius: 999px;
-  background: var(--accent);
-  color: var(--accent-ink);
-  font-weight: 700;
-  text-align: center;
-  font-variant-numeric: tabular-nums;
+.mc-tools-toggle::-webkit-details-marker {
+  display: none;
 }
 
-/* ---------- Search and filters ---------- */
+.mc-tools-toggle::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(-45deg);
+  transition: transform var(--mc-fast) var(--mc-ease);
+}
+
+.mc-tools[open] > .mc-tools-toggle::before {
+  transform: rotate(45deg);
+}
+
+.mc-tools-toggle:hover {
+  border-color: var(--ink);
+}
+
+.mc-tools-state {
+  color: var(--pop, var(--muted));
+}
+
+.mc-tools > .mc-controls {
+  margin-top: 12px;
+  padding: 16px;
+  border: 2px solid var(--rule);
+  border-radius: var(--mc-radius);
+  background: var(--mc-surface);
+}
+
+.mc-export {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+  margin: 24px 0 0;
+  padding-top: 16px;
+  border-top: 2px dashed var(--rule);
+}
+
+.mc-export-label {
+  margin: 0;
+  color: var(--muted);
+}
+
+.mc-export-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
 
 .mc-controls {
   display: grid;
@@ -314,6 +358,7 @@
 .mc-arrange {
   display: flex;
   flex-wrap: wrap;
+  align-items: flex-end;
   gap: 8px var(--mc-gap);
   grid-column: 1 / -1;
 }
@@ -462,7 +507,7 @@ p.mc-empty {
 
 .mc-card-main {
   display: grid;
-  grid-template-columns: 96px minmax(0, 1fr) auto;
+  grid-template-columns: 120px minmax(0, 1fr) auto;
   grid-template-areas: "thumb body actions";
   gap: 12px var(--mc-gap);
   align-items: start;
@@ -471,10 +516,10 @@ p.mc-empty {
 .mc-thumb-frame {
   grid-area: thumb;
   display: block;
-  width: 96px;
-  height: 96px;
+  width: 120px;
+  height: 120px;
   border: 2px solid var(--rule);
-  border-radius: 8px;
+  border-radius: 10px;
   background: var(--scroll-track);
   overflow: hidden;
 }
@@ -513,6 +558,16 @@ p.mc-empty {
   overflow-wrap: anywhere;
 }
 
+.mc-card-id {
+  margin: -4px 0 10px;
+  color: var(--muted);
+  font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .mc-card-actions {
   grid-area: actions;
   display: flex;
@@ -525,7 +580,7 @@ p.mc-empty {
 
 .mc-facts {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   gap: 8px 16px;
   margin: 0;
 }
@@ -606,6 +661,7 @@ p.mc-empty {
 
 .mc-details-section .mc-facts {
   justify-self: stretch;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
 }
 
 .mc-subtitle {
@@ -723,15 +779,15 @@ p.mc-empty {
 
 @media (max-width: 640px) {
   .mc-card-main {
-    grid-template-columns: 72px minmax(0, 1fr);
+    grid-template-columns: 88px minmax(0, 1fr);
     grid-template-areas:
       "thumb body"
       "actions actions";
   }
 
   .mc-thumb-frame {
-    width: 72px;
-    height: 72px;
+    width: 88px;
+    height: 88px;
   }
 
   .mc-card-actions {
@@ -744,6 +800,7 @@ p.mc-empty {
 
   .mc-banner-actions,
   .mc-controls-actions,
+  .mc-export-actions,
   .mc-actions {
     width: 100%;
   }
@@ -765,7 +822,7 @@ p.mc-empty {
 
 @media (min-width: 900px) {
   .mc-controls {
-    grid-template-columns: minmax(220px, 1.2fr) auto auto;
+    grid-template-columns: minmax(220px, 1.2fr) auto;
   }
 
   .mc-controls-actions {
@@ -796,12 +853,11 @@ p.mc-empty {
   .mc-input,
   .mc-note-field,
   .mc-check,
-  .mc-target-count {
+  .mc-tools-toggle {
     border-color: CanvasText;
   }
 
-  .mc-btn--primary,
-  .mc-target-num {
+  .mc-btn--primary {
     forced-color-adjust: none;
     background: ButtonText;
     color: ButtonFace;

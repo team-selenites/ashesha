@@ -786,17 +786,26 @@
       return h('div', { className: 'mc-field' }, [h('label', { className: 'mc-label', 'for': id, text: labelText }), select]);
     }
 
-    dom.controls = h('div', { className: 'mc-controls' }, [
-      h('div', { className: 'mc-field' }, [h('label', { className: 'mc-label', 'for': 'mc-search', text: 'Search by target or observation ID' }), search]),
-      filters,
-      h('div', { className: 'mc-controls-actions' }, [
-        action('Clear filters', 'clear-filters'),
+    // Tucked behind one button so the list stays the main thing on the page.
+    dom.toolsState = h('span', { className: 'mc-tools-state' });
+    dom.controls = h('details', { className: 'mc-tools' }, [
+      h('summary', { className: 'mc-tools-toggle' }, [h('span', { text: 'Sort and filter' }), dom.toolsState]),
+      h('div', { className: 'mc-controls' }, [
+        h('div', { className: 'mc-field' }, [h('label', { className: 'mc-label', 'for': 'mc-search', text: 'Search by target or observation ID' }), search]),
+        filters,
+        h('div', { className: 'mc-arrange' }, [
+          choice('mc-sort', 'sort', 'Sort by', [['saved', 'Date saved (newest first)'], ['observed', 'Observation date (newest first)']]),
+          choice('mc-view', 'view', 'View', [['grouped', 'Grouped by target'], ['flat', 'Flat list']]),
+          h('div', { className: 'mc-controls-actions' }, [action('Clear filters', 'clear-filters')])
+        ])
+      ])
+    ]);
+
+    dom.exportBar = h('div', { className: 'mc-export' }, [
+      h('p', { className: 'mc-export-label', text: 'Keep a copy of your candidates' }),
+      h('div', { className: 'mc-export-actions' }, [
         action('Export All as Text', 'export-text'),
         action('Export All as JSON', 'export-json')
-      ]),
-      h('div', { className: 'mc-arrange' }, [
-        choice('mc-sort', 'sort', 'Sort by', [['saved', 'Date saved (newest first)'], ['observed', 'Observation date (newest first)']]),
-        choice('mc-view', 'view', 'View', [['grouped', 'Grouped by target'], ['flat', 'Flat list']])
       ])
     ]);
   }
@@ -806,11 +815,10 @@
     root.classList.add('mc-root');
     buildControls();
     dom.banner = h('div', { className: 'mc-banner', hidden: true });
-    dom.overview = h('section', { className: 'mc-overview', 'aria-label': 'Candidate overview', hidden: true });
     dom.summary = h('p', { className: 'mc-results-summary', role: 'status' });
     dom.exportFallback = h('div', { className: 'mc-export-fallback', hidden: true });
     dom.list = h('div', { className: 'mc-list', tabindex: '-1' });
-    [dom.banner, dom.overview, dom.controls, dom.summary, dom.exportFallback, dom.list].forEach(function (node) {
+    [dom.banner, dom.controls, dom.summary, dom.list, dom.exportBar, dom.exportFallback].forEach(function (node) {
       root.appendChild(node);
     });
   }
@@ -834,43 +842,16 @@
     dom.banner.hidden = false;
   }
 
-  function renderOverview() {
-    dom.overview.textContent = '';
-    var total = state.candidates.length;
-    if (state.loadFailed || total === 0) { dom.overview.hidden = true; return; }
-
-    var counts = {}, latest = {}, targets = [];
-    state.candidates.forEach(function (record) {
-      var target = record.observation.target;
-      if (!counts[target]) { counts[target] = 0; latest[target] = 0; targets.push(target); }
-      counts[target] += 1;
-      latest[target] = Math.max(latest[target], savedTime(record));
-    });
-    targets.sort(function (a, b) { return latest[b] - latest[a] || (a < b ? -1 : 1); });
-
-    dom.overview.appendChild(h('p', { className: 'mc-total' }, [
-      h('strong', { text: String(total) }),
-      ' ' + plural(total, 'candidate') + ' saved across ' + targets.length + ' ' + plural(targets.length, 'target')
-    ]));
-    var list = h('ul', { className: 'mc-target-counts', 'aria-label': 'Candidates per target' });
-    targets.forEach(function (target) {
-      list.appendChild(h('li', { className: 'mc-target-count' }, [
-        h('span', { className: 'mc-target-name', text: target }),
-        h('span', { className: 'mc-target-num' }, [String(counts[target]), h('span', { className: 'mc-sr-only', text: ' ' + plural(counts[target], 'candidate') })])
-      ]));
-    });
-    dom.overview.appendChild(list);
-    dom.overview.hidden = false;
-  }
-
   function renderControls() {
     var hasRecords = !state.loadFailed && (state.candidates.length > 0 || state.pending.length > 0);
-    dom.controls.hidden = !hasRecords;
+    // Sorting and filtering only help once there is more than one candidate.
+    dom.controls.hidden = !hasRecords || (state.candidates.length + state.pending.length < 2 && !filtersAreActive());
+    dom.exportBar.hidden = !hasRecords;
     dom.search.value = state.query;
     Array.prototype.forEach.call(dom.controls.querySelectorAll('[data-mc-filter]'), function (input) {
       input.checked = state.statusOn[input.getAttribute('data-mc-filter')] !== false;
     });
-    Array.prototype.forEach.call(dom.controls.querySelectorAll('[data-mc-action^="export-"]'), function (button) {
+    Array.prototype.forEach.call(dom.exportBar.querySelectorAll('[data-mc-action^="export-"]'), function (button) {
       button.disabled = state.candidates.length === 0;
     });
     Array.prototype.forEach.call(dom.controls.querySelectorAll('[data-mc-setting]'), function (select) {
@@ -890,8 +871,10 @@
   }
 
   function renderSummary() {
+    // Runs on every search and filter change, so the "filters on" marker stays current.
+    dom.toolsState.textContent = filtersAreActive() ? ' · filters on' : '';
     var total = state.candidates.length;
-    if (state.loadFailed || total === 0) { dom.summary.textContent = ''; dom.summary.hidden = true; return; }
+    if (state.loadFailed || total === 0 || !filtersAreActive()) { dom.summary.textContent = ''; dom.summary.hidden = true; return; }
     var matched = state.candidates.filter(matchesFilters).length;
     dom.summary.hidden = false;
     dom.summary.textContent = filtersAreActive() ?
@@ -1025,7 +1008,12 @@
     panel.appendChild(h('div', { className: 'mc-details-section' }, [
       h('h5', { className: 'mc-subtitle', text: 'More details (read-only)' }),
       factList([
+        ['Observation ID', textOrNotAvailable(o.obs_id)],
+        ['Detector', detectorText(o.detector)],
+        ['RA', displayNumber(o.ra, 5, '\u00B0')],
+        ['Dec', displayNumber(o.dec, 5, '\u00B0')],
         ['MJD', displayNumber(o.mjd, 5)],
+        ['Saved', timeNode(record.savedAt)],
         ['Observation link', link || NOT_AVAILABLE]
       ])
     ]));
@@ -1055,17 +1043,18 @@
     var expanded = !!state.expanded[id];
     var titleId = 'mc-card-title-' + safe, detailsId = 'mc-details-' + safe;
 
-    var facts = factList([
-      ['Image', imageNumberText(record)],
-      ['Observation ID', textOrNotAvailable(o.obs_id)],
+    // Inside a target group the heading already names the target, so the card leads with the image.
+    var flat = state.view === 'flat';
+    var title = flat ? o.target : 'Image ' + imageNumberText(record);
+    var factPairs = [
       ['Observation date', textOrNotAvailable(o.date)],
       ['Status', statusBadge(o.status)],
-      ['Wavelength', displayNumber(o.wavelength_um, 3, ' \u00B5m')],
-      ['Detector', detectorText(o.detector)],
-      ['RA', displayNumber(o.ra, 5, '\u00B0')],
-      ['Dec', displayNumber(o.dec, 5, '\u00B0')],
-      ['Saved', timeNode(record.savedAt)]
-    ]);
+      ['Wavelength', displayNumber(o.wavelength_um, 3, ' \u00B5m')]
+    ];
+    if (flat) { factPairs.unshift(['Image', imageNumberText(record)]); }
+    var facts = factList(factPairs);
+    var idLine = hasText(o.obs_id) ?
+      h('p', { className: 'mc-card-id', title: o.obs_id }, [h('span', { className: 'mc-sr-only', text: 'Observation ID: ' }), o.obs_id]) : null;
 
     var headerActions = h('div', { className: 'mc-card-actions' });
     if (!expanded) { headerActions.appendChild(buildOpenControl(record, 'open:' + id)); }
@@ -1081,7 +1070,7 @@
       h('article', { className: 'mc-card' + (expanded ? ' mc-card--expanded' : ''), 'aria-labelledby': titleId, 'data-mc-card': id }, [
         h('div', { className: 'mc-card-main' }, [
           buildThumb(record),
-          h('div', { className: 'mc-card-body' }, [h('h4', { className: 'mc-card-title', id: titleId, text: o.target }), facts]),
+          h('div', { className: 'mc-card-body' }, [h('h4', { className: 'mc-card-title', id: titleId, text: title }), idLine, facts]),
           headerActions
         ]),
         message ? h('p', { className: 'mc-card-message mc-card-message--' + message.kind, text: message.text }) : null,
@@ -1130,7 +1119,6 @@
   function renderAll(options) {
     var focusKey = options && options.focus ? options.focus : currentFocusKey();
     renderBanner();
-    renderOverview();
     renderControls();
     renderSummary();
     renderExportFallback();
