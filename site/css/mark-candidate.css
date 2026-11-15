@@ -1,0 +1,869 @@
+/*
+ * Mark a Candidate module styles
+ * Team Selenites · NASA Space Apps Challenge 2026 · SPHEREx · Owner: Shrashti
+ *
+ * Rules followed here
+ *   - Every class starts with mc-. Nothing outside the module is selected.
+ *   - Colours come only from site/css/tokens.css (Light, Dark and Colour-blind-friendly are
+ *     all handled by those tokens). No raw colour values, no separate theme system.
+ *   - Type is inherited from the application (Atkinson Hyperlegible via --font).
+ *   - Status never relies on colour: each status has its own shape and a written label.
+ *
+ * Load after app.css:  <link rel="stylesheet" href="css/mark-candidate.css?v=1">
+ */
+
+.mc-root {
+  --mc-gap: 16px;
+  --mc-radius: 12px;
+  --mc-surface: var(--bg);
+  --mc-ease: var(--ease-out-quart, ease-out);
+  --mc-fast: var(--t-fast, 140ms);
+
+  margin-top: 16px;
+  color: var(--ink);
+  font-family: inherit;
+  min-width: 0;
+  max-width: 100%;
+}
+
+@supports (background: color-mix(in srgb, red 10%, blue)) {
+  .mc-root {
+    --mc-surface: color-mix(in srgb, var(--accent) 6%, var(--bg));
+  }
+}
+
+.mc-root *,
+.mc-root *::before,
+.mc-root *::after {
+  box-sizing: border-box;
+}
+
+.mc-root :focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+
+/* ---------- Hidden helpers owned by the module ---------- */
+
+.mc-sr-only,
+.mc-live {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.mc-copy-buffer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  border: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.mc-root [hidden] {
+  display: none !important;
+}
+
+/* ---------- Buttons and links that look like buttons ---------- */
+
+.mc-btn {
+  font: inherit;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  min-width: 44px;
+  padding: 8px 16px;
+  border: 2px solid var(--accent);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--ink);
+  text-decoration: none;
+  line-height: 1.2;
+  text-align: center;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: background-color var(--mc-fast) ease-out, border-color var(--mc-fast) ease-out, scale 120ms var(--mc-ease);
+}
+
+.mc-btn:hover {
+  background: var(--mc-surface);
+}
+
+.mc-btn:active {
+  scale: 0.98;
+}
+
+.mc-btn--primary {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+.mc-btn--primary:hover {
+  background: var(--accent);
+  border-color: var(--ink);
+}
+
+.mc-btn[disabled] {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.mc-btn[aria-disabled="true"] {
+  border-style: dashed;
+  cursor: not-allowed;
+}
+
+/* ---------- Result banner (saved, duplicate, error) ---------- */
+
+.mc-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+  margin: 0 0 var(--mc-gap);
+  padding: 12px 14px 12px 18px;
+  border: 2px solid var(--pop, var(--accent));
+  border-radius: 24px;
+  background: var(--mc-surface);
+  box-shadow: 0 8px 24px var(--cloud-shadow, transparent);
+}
+
+.mc-banner--saved .mc-banner-text::before {
+  content: "\2713";
+  display: inline-grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  margin-inline-end: 10px;
+  border-radius: 50%;
+  background: var(--pop, var(--accent));
+  color: var(--bg);
+  font-size: 15px;
+  vertical-align: middle;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .mc-banner:not([hidden]) {
+    animation: mc-pop-in 260ms var(--mc-ease);
+  }
+}
+
+@keyframes mc-pop-in {
+  from { opacity: 0; transform: translateY(-6px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+
+.mc-banner--duplicate {
+  border-style: double;
+  border-width: 4px;
+}
+
+.mc-banner--error {
+  border-style: dashed;
+}
+
+.mc-banner-text {
+  margin: 0;
+  font-weight: 700;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.mc-banner-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* ---------- Search and filters ---------- */
+
+.mc-tools {
+  margin: 0 0 var(--mc-gap);
+}
+
+.mc-tools-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 8px 16px;
+  border: 2px solid var(--rule);
+  border-radius: 999px;
+  background: var(--mc-surface);
+  font-weight: 700;
+  cursor: pointer;
+  list-style: none;
+}
+
+.mc-tools-toggle::-webkit-details-marker {
+  display: none;
+}
+
+.mc-tools-toggle::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(-45deg);
+  transition: transform var(--mc-fast) var(--mc-ease);
+}
+
+.mc-tools[open] > .mc-tools-toggle::before {
+  transform: rotate(45deg);
+}
+
+.mc-tools-toggle:hover {
+  border-color: var(--ink);
+}
+
+.mc-tools-state {
+  color: var(--pop, var(--muted));
+}
+
+.mc-tools > .mc-controls {
+  margin-top: 12px;
+  padding: 16px;
+  border: 2px solid var(--rule);
+  border-radius: var(--mc-radius);
+  background: var(--mc-surface);
+}
+
+.mc-export {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+  margin: 24px 0 0;
+  padding-top: 16px;
+  border-top: 2px dashed var(--rule);
+}
+
+.mc-export-label {
+  margin: 0;
+  color: var(--muted);
+}
+
+.mc-export-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.mc-controls {
+  display: grid;
+  gap: 12px var(--mc-gap);
+  grid-template-columns: 1fr;
+  align-items: end;
+  margin: 0 0 8px;
+}
+
+.mc-field {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.mc-label {
+  font-weight: 700;
+  padding: 0;
+}
+
+.mc-input {
+  font: inherit;
+  width: 100%;
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 2px solid var(--rule);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--ink);
+}
+
+.mc-input:hover {
+  border-color: var(--accent);
+}
+
+.mc-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.mc-filters .mc-label {
+  flex-basis: 100%;
+  margin-bottom: 2px;
+}
+
+.mc-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 4px 12px 4px 8px;
+  border: 2px solid var(--rule);
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.mc-check:hover {
+  border-color: var(--accent);
+}
+
+.mc-check:has(:focus-visible) {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+
+.mc-check-input {
+  width: 22px;
+  height: 22px;
+  margin: 0;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.mc-check-input:focus-visible {
+  outline: none;
+}
+
+.mc-check .mc-status-icon {
+  color: var(--ink);
+}
+
+.mc-controls-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.mc-arrange {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 8px var(--mc-gap);
+  grid-column: 1 / -1;
+}
+
+.mc-arrange .mc-field {
+  flex: 1 1 220px;
+  max-width: 320px;
+}
+
+.mc-select {
+  cursor: pointer;
+}
+
+.mc-results-summary {
+  margin: 8px 0 var(--mc-gap);
+  color: var(--muted);
+  font-size: 14px;
+}
+
+/* ---------- Export fallback (shown only when the clipboard fails) ---------- */
+
+.mc-export-fallback {
+  display: grid;
+  gap: 8px;
+  justify-items: start;
+  margin: 0 0 var(--mc-gap);
+  padding: 12px 16px;
+  border: 2px dashed var(--rule);
+  border-radius: var(--mc-radius);
+}
+
+.mc-export-fallback-text {
+  font: inherit;
+  width: 100%;
+  min-height: 160px;
+  padding: 8px 12px;
+  border: 2px solid var(--rule);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--ink);
+  resize: vertical;
+}
+
+/* ---------- States: empty, no matches, load error ---------- */
+
+.mc-list:focus {
+  outline: none;
+}
+
+.mc-empty,
+.mc-error-state {
+  margin: 0;
+  padding: 20px;
+  border: 2px dashed var(--rule);
+  border-radius: var(--mc-radius);
+  color: var(--ink);
+}
+
+p.mc-empty {
+  color: var(--muted);
+}
+
+.mc-empty--filtered {
+  display: grid;
+  gap: 8px;
+  justify-items: start;
+}
+
+.mc-empty-title {
+  margin: 0;
+  font-size: var(--step-1, 20px);
+}
+
+.mc-empty--filtered p {
+  margin: 0;
+}
+
+.mc-error-state {
+  display: grid;
+  gap: 12px;
+  justify-items: start;
+  border-style: solid;
+  border-width: 2px 2px 2px 8px;
+}
+
+.mc-error {
+  margin: 0;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+/* ---------- Groups ---------- */
+
+.mc-group {
+  margin: 24px 0 0;
+}
+
+.mc-group-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 12px;
+  margin: 0 0 12px;
+  padding-bottom: 6px;
+  border-bottom: 2px solid var(--rule);
+  font-size: var(--step-1, 20px);
+  line-height: 1.2;
+}
+
+.mc-group-name {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.mc-group-count {
+  color: var(--muted);
+  font-size: 15px;
+  font-weight: 400;
+}
+
+.mc-card-list {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mc-card-item {
+  min-width: 0;
+}
+
+/* ---------- Cards ---------- */
+
+.mc-card {
+  min-width: 0;
+  padding: 14px;
+  border: 2px solid var(--rule);
+  border-radius: var(--mc-radius);
+  background: var(--mc-surface);
+}
+
+.mc-card--expanded {
+  border-color: var(--accent);
+}
+
+.mc-card-main {
+  display: grid;
+  grid-template-columns: 120px minmax(0, 1fr) auto;
+  grid-template-areas: "thumb body actions";
+  gap: 12px var(--mc-gap);
+  align-items: start;
+}
+
+.mc-thumb-frame {
+  grid-area: thumb;
+  display: block;
+  width: 120px;
+  height: 120px;
+  border: 2px solid var(--rule);
+  border-radius: 10px;
+  background: var(--scroll-track);
+  overflow: hidden;
+}
+
+.mc-thumb {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+
+.mc-thumb-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  color: var(--muted);
+}
+
+.mc-placeholder-icon {
+  width: 40px;
+  height: 40px;
+}
+
+.mc-card-body {
+  grid-area: body;
+  min-width: 0;
+}
+
+.mc-card-title {
+  margin: 0 0 8px;
+  font-size: var(--step-1, 20px);
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.mc-card-id {
+  margin: -4px 0 10px;
+  color: var(--muted);
+  font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mc-card-actions {
+  grid-area: actions;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+/* ---------- Fact lists (label and value pairs) ---------- */
+
+.mc-facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 8px 16px;
+  margin: 0;
+}
+
+.mc-fact {
+  min-width: 0;
+}
+
+.mc-fact dt {
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.mc-fact dd {
+  margin: 0;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Status: shape plus written label ---------- */
+
+.mc-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mc-status-icon {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  color: var(--ink);
+}
+
+.mc-status--clear .mc-status-icon { color: var(--status-clear); }
+.mc-status--faint .mc-status-icon { color: var(--status-faint); }
+.mc-status--not-detected .mc-status-icon { color: var(--status-nd); }
+.mc-status--unknown .mc-status-icon { color: var(--status-noobs); }
+
+.mc-icon-fill {
+  fill: currentColor;
+  stroke: none;
+}
+
+.mc-icon-stroke {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.mc-icon-dashed {
+  stroke-dasharray: 2.5 2;
+}
+
+/* ---------- Expanded details ---------- */
+
+.mc-details {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 2px solid var(--rule);
+}
+
+.mc-details-body {
+  display: grid;
+  gap: 18px;
+}
+
+.mc-details-section {
+  display: grid;
+  gap: 8px;
+  justify-items: start;
+  min-width: 0;
+}
+
+.mc-details-section .mc-facts {
+  justify-self: stretch;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+}
+
+.mc-subtitle {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.mc-readonly-note,
+.mc-note-text {
+  max-width: 70ch;
+  margin: 0;
+  padding: 10px 12px;
+  border: 2px solid var(--rule);
+  border-radius: 8px;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.mc-readonly-note {
+  border-style: dashed;
+}
+
+.mc-note-text:focus {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+
+.mc-note-text--empty {
+  color: var(--muted);
+}
+
+.mc-hint {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.mc-note-field {
+  font: inherit;
+  width: 100%;
+  max-width: 70ch;
+  min-height: 100px;
+  padding: 10px 12px;
+  border: 2px solid var(--rule);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--ink);
+  resize: vertical;
+}
+
+.mc-note-field:hover {
+  border-color: var(--accent);
+}
+
+.mc-count {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+}
+
+.mc-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.mc-actions--card {
+  padding-top: 4px;
+}
+
+/* ---------- Card messages and the inline delete row ---------- */
+
+.mc-card-message {
+  margin: 10px 0 0;
+  padding: 8px 12px;
+  border: 2px solid var(--rule);
+  border-radius: 8px;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.mc-card-message--error {
+  border-style: dashed;
+}
+
+.mc-deleted {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  padding: 14px;
+  border: 2px dashed var(--accent);
+  border-radius: var(--mc-radius);
+  background: var(--mc-surface);
+}
+
+.mc-deleted:focus {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+
+.mc-deleted-text {
+  margin: 0;
+  font-weight: 700;
+}
+
+.mc-deleted .mc-card-message {
+  flex-basis: 100%;
+  margin: 0;
+}
+
+/* ---------- Small screens: no horizontal overflow ---------- */
+
+@media (max-width: 640px) {
+  .mc-card-main {
+    grid-template-columns: 88px minmax(0, 1fr);
+    grid-template-areas:
+      "thumb body"
+      "actions actions";
+  }
+
+  .mc-thumb-frame {
+    width: 88px;
+    height: 88px;
+  }
+
+  .mc-card-actions {
+    justify-content: flex-start;
+  }
+
+  .mc-facts {
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  }
+
+  .mc-banner-actions,
+  .mc-controls-actions,
+  .mc-export-actions,
+  .mc-actions {
+    width: 100%;
+  }
+}
+
+@media (max-width: 420px) {
+  .mc-card {
+    padding: 10px;
+  }
+
+  .mc-facts {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .mc-btn {
+    flex: 1 1 auto;
+  }
+}
+
+@media (min-width: 900px) {
+  .mc-controls {
+    grid-template-columns: minmax(220px, 1.2fr) auto;
+  }
+
+  .mc-controls-actions {
+    justify-content: flex-end;
+  }
+}
+
+/* ---------- Reduced motion and forced colours ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .mc-root *,
+  .mc-root *::before,
+  .mc-root *::after {
+    transition: none !important;
+    animation: none !important;
+    scroll-behavior: auto !important;
+  }
+
+  .mc-btn:active {
+    scale: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .mc-card,
+  .mc-banner,
+  .mc-btn,
+  .mc-input,
+  .mc-note-field,
+  .mc-check,
+  .mc-tools-toggle {
+    border-color: CanvasText;
+  }
+
+  .mc-btn--primary {
+    forced-color-adjust: none;
+    background: ButtonText;
+    color: ButtonFace;
+  }
+
+  .mc-status-icon {
+    color: CanvasText;
+  }
+}
