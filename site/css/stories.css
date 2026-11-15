@@ -1,0 +1,63 @@
+
+.stories-head,
+.stories-main,
+.stories-footer {
+  width: min(100% - 2rem, 900px);
+  margin-inline: auto;
+}
+
+.stories-head {
+  padding: clamp(5rem, 12vw, 9rem) 0 2rem;
+  text-align: center;
+}
+
+.stories-head .lede {
+  max-width: 680px;
+  margin: 1rem auto 0;
+}
+
+.stories-main {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+  padding: 2rem 0 4rem;
+}
+
+.story-card {
+  padding: clamp(1.25rem, 3vw, 2rem);
+  border: 1px solid var(--line, rgba(100, 80, 130, .2));
+  border-radius: 1.25rem;
+  background: var(--panel, rgba(255, 255, 255, .65));
+}
+
+.story-card h2 {
+  margin: .4rem 0;
+}
+
+.story-number,
+.story-fact {
+  color: var(--muted, #70677d);
+  font-size: .9rem;
+}
+
+.story-card p:last-child {
+  line-height: 1.75;
+}
+
+.stories-note {
+  grid-column: 1 / -1;
+  max-width: 720px;
+  margin: 1rem auto 0;
+  line-height: 1.7;
+}
+
+.stories-footer {
+  padding: 0 0 4rem;
+  text-align: center;
+}
+
+@media (max-width: 650px) {
+  .stories-main {
+    grid-template-columns: 1fr;
+  }
+}
