@@ -770,8 +770,12 @@
     function recorded() {
       var a = new Audio(audio), started = false;
       a.addEventListener("error", function () { if (run === self.run && !started) { self.audio = null; silent(); } }, { once: true });
-      a.addEventListener("playing", function () { started = true; self.voiced = true; voicedIs(true); speaking(true); if (!self.level) self.level = meter(a); self.wake(); });
-      a.addEventListener("ended", finish);
+      // If the recording is slow to start (a slow connection), show the words anyway after a
+      // moment, so the cloud is never empty while the sound loads. They still follow the voice
+      // once it plays (the typer only ever moves forward).
+      var late = setTimeout(function () { if (run === self.run && !started) reveal(len); }, 700);
+      a.addEventListener("playing", function () { clearTimeout(late); started = true; self.voiced = true; voicedIs(true); speaking(true); if (!self.level) self.level = meter(a); self.wake(); });
+      a.addEventListener("ended", function () { clearTimeout(late); finish(); });
       self.audio = a;
       a.play().catch(function () { if (run === self.run && !started) { self.audio = null; silent(); } });
       self.timers.push(setInterval(function () {
