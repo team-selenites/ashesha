@@ -1,9 +1,9 @@
 # site/content
 
-**What is here:** nothing yet. This folder is kept for longer texts, such as Selene's stories, if they move out of the page files.
+**What is here:** Written stories and narrative content used by the Ashesha website, including `Stories`, which contains six short stories inspired by astronomical objects and Greek mythology.
 
 **Who owns it:** Pawana.
 
-**How it connects to the rest:** today every word the site shows is in the HTML pages, the scripts in `site/js/` and the data files in `site/data/`.
+**How it connects to the rest:** These texts provide the narrative layer of the website and complement the astronomical data, visualizations and Selene's guidance.
 
-**Status:** empty.
+**Status:** The six astronomy-inspired stories are prepared. Scientific facts should remain accurate and clearly distinguishable from mythological storytelling.
