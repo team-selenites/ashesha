@@ -65,10 +65,10 @@ Cut order if time runs short, from the bottom: Sky postcards, Your Beginnings, P
 
 | Risk | Mitigation | Owner |
 | --- | --- | --- |
-| Data or website critical path falls behind (Elisabetta, Pawana and a team member) | If either is behind at hour 10 on Saturday, cut the games first and help | Pawana |
+| Data or website critical path falls behind (Elisabetta and Pawana) | If either is behind at hour 10 on Saturday, cut the games first and help | Pawana |
 | IRSA returns temporary HTTP 503 errors | Quiet retries on every request | Elisabetta |
 | Browser cannot call IRSA directly | Prepared stacks cover the five targets and the comet | Elisabetta |
-| Accessibility left until the end | Accessibility checklist reviewed at each milestone | a team member |
+| Accessibility left until the end | Accessibility checklist reviewed at each milestone | Pawana |
 | Scope grows past the weekend | Cut order in section 2 | Pawana |
 | Deadline missed | Submission drafted before Sunday; freeze at 6 PM | Pawana |
 

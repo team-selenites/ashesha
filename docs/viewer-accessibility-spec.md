@@ -20,23 +20,23 @@ A blind or low-vision visitor must get the same facts as a sighted one without s
 
 Each one lists who builds it and when it counts as done.
 
-1. **A written description for every image.** (Pawana, a team member)
+1. **A written description for every image.** (Pawana)
    Template: "Image {n} of {total}. {date}. {wavelength} microns. {status label}. {change note}."
    Done when every frame shows this text under the image and uses it as the image's text alternative.
 
-2. **A data table with the same facts.** (a team member)
+2. **A data table with the same facts.** (unassigned)
    Columns: image number, date, wavelength (microns), status, brightness, note. A real table with a caption and header cells, built from the same data as the strip, never a separate copy.
    Done when a screen reader can read it row by row and column by column.
 
-3. **Keyboard controls.** (a team member)
+3. **Keyboard controls.** (unassigned)
    Play, pause, previous, next, first and last as real buttons. A slider that reads out "3 of 12, 14 August 2025". Arrow keys step, Home and End jump. Autoplay is off.
    Done when the whole viewer can be used with no mouse.
 
-4. **A plain-language summary for each target.** (Pawana, a team member)
+4. **A plain-language summary for each target.** (Pawana)
    Two or three sentences above the viewer saying what you are looking at. Facts checked against the data.
    Done when all five test targets and the comet have one.
 
-5. **Sound as an optional extra.** (a team member)
+5. **Sound as an optional extra.** (Pawana)
    Off by default. Volume and speed controls. The mapping is written in the sound mapping file, one line per sound, and explained in text. The Scientific and Immersive toggle (decided 10 November) applies: Scientific is a sonification of the data only.
    Done when every sound has a written equivalent and the viewer is fully usable with sound off.
 

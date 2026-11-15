@@ -31,7 +31,7 @@ Save it as `selene-green.png`. Send it to Claude Code: it can cut her out for th
 
 Use the lines in `docs/selene-voice-script.md`. Either:
 
-- **a team member records them** (most human, nothing to declare), or
+- **Someone on the team records them** (most human, nothing to declare), or
 - **ElevenLabs, free plan**: pick a warm, calm female voice, speed about 0.95, and download one MP3 per line. Free output is non-commercial and must be credited ("Voice made with ElevenLabs"), or
 - **Kokoro** (open source): Claude Code can make the files on the laptop after a download of about 120 MB.
 
