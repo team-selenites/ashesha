@@ -57,15 +57,22 @@
     nudge: { "c-walk": "rb-range", "c-ir": "guide-next", "r-explore": "read-cursor", "r-find": "read-cursor",
       "r-found-dip": "guide-next", "r-found-bump": "guide-next", "r-open": "guide-next", "h-play": "hear-play", "h-heard": "guide-next", "g-play": "game-play" }
   };
-  function setGuide(view, state) {
+  // hold: words for a screen reader are about to be announced, so her voice waits a moment.
+  function setGuide(view, state, hold) {
     if (guideState[view] === state) return;
     guideState[view] = state;
-    document.dispatchEvent(new CustomEvent("selenites:guide"));
+    document.dispatchEvent(new CustomEvent("selenites:guide", { detail: { hold: !!hold } }));
   }
-  function irisSlots() { return document.querySelectorAll(".guide-selene"); }
-  // Her voice switched on: the spectrum's sound stops, so the two never play together.
-  document.addEventListener("selenites:guide-voice", function (e) { if (e.detail && e.detail.on) stopSweep(false); });
-  function quietIris() { irisSlots().forEach(function (s) { if (s._selene && s._selene.voiced) s._selene.stop(); }); }
+  // One thing at a time (REQUIREMENTS B-5, the "separation" section of data/sound-key.json).
+  // Her voice switched on, in a tip or in the tour: the spectrum's sound stops, so the two never
+  // play together. A sound starting quiets her in turn: playSweep tells js/selene.js, which
+  // keeps the rule for every guide on the page.
+  ["selenites:guide-voice", "selenites:tour-voice"].forEach(function (n) {
+    document.addEventListener(n, function (e) { if (e.detail && e.detail.on) stopSweep(false); });
+  });
+  var floor = window.Selene && window.Selene.sound ? window.Selene.sound : null;
+  // Words for a screen reader come after a sound, never during it.
+  function announceAfterSound(text) { if (floor) floor.whenQuiet(function () { announce(text); }); else announce(text); }
 
   // ---------- Steps: one screen at a time ----------
   var VIEWS = ["colours", "read", "hear", "game"];
@@ -503,13 +510,32 @@
   $("read-cursor").addEventListener("input", function () { if (chosen) onCursor(+this.value); });
 
   // ---------- The sound (Spectrum Player) ----------
-  var key = null, ctx = null, master = null, sweep = null;
+  var key = null, limits = null, ctx = null, master = null, sweep = null;
   function ensureAudio() {
     var AC = window.AudioContext || window.webkitAudioContext;
     if (!AC) return null;
-    if (!ctx) { ctx = new AC(); master = ctx.createGain(); master.connect(ctx.destination); applyVolume(); }
+    if (!ctx) { ctx = new AC(); master = ctx.createGain(); master.connect(limiter() || ctx.destination); applyVolume(); }
     if (ctx.state === "suspended") ctx.resume();
     return ctx;
+  }
+  // The gain cap (the "limits" section of the sound key). Every sound passes through it last.
+  // Up to max_gain a sound is left exactly as it is; anything louder (a chime landing on a loud
+  // part of the sweep) is rounded off smoothly and can never go above master_cap. The volume
+  // slider sits before it and only turns sound down.
+  function limiter() {
+    if (!limits || !ctx.createWaveShaper) return null;
+    var knee = +limits.max_gain, cap = +limits.master_cap;
+    if (!(knee > 0 && cap > knee && cap <= 1)) return null;
+    var n = 4097, curve = new Float32Array(n);
+    for (var i = 0; i < n; i++) {
+      var x = i / (n - 1) * 2 - 1, a = Math.abs(x);
+      var y = a <= knee ? a : knee + (cap - knee) * Math.tanh((a - knee) / (cap - knee));
+      curve[i] = x < 0 ? -y : y;
+    }
+    var shaper = ctx.createWaveShaper();
+    shaper.curve = curve;
+    shaper.connect(ctx.destination);
+    return shaper;
   }
   // aria-valuetext gives the unit, so a screen reader says "8 seconds", not just "8".
   function applyVolume() { $("cr-volume-out").textContent = $("cr-volume").value + "%"; $("cr-volume").setAttribute("aria-valuetext", $("cr-volume").value + " percent"); if (master) master.gain.value = +$("cr-volume").value / 100; }
@@ -547,7 +573,9 @@
   function playSweep(s, hooks) {
     stopSweep(false);
     if (!key || !ensureAudio()) return false;
-    quietIris();
+    // The sound takes its turn: a guide who is speaking aloud goes quiet, and a line that comes
+    // due while it plays waits for it to end. A voice button stops the sound through this too.
+    var ended = floor ? floor.begin(function () { stopSweep(false); }) : null;
     var pts = s.points, dur = +$("cr-speed").value, r = range(s), t0 = ctx.currentTime + 0.1;
     var o = ctx.createOscillator(), g = ctx.createGain();
     o.type = "sine";
@@ -562,7 +590,7 @@
     o.start(t0); o.stop(t0 + dur + 0.2);
     var a = pts[0].wavelength_um, b = pts[pts.length - 1].wavelength_um;
     var extras = hooks.cues === false ? [] : s.features.map(function (f) { return cue(s, f, t0 + (b > a ? (f.wavelength_um - a) / (b - a) : 0) * dur); }).filter(Boolean);
-    sweep = { osc: o, gain: g, extras: extras, t0: t0, dur: dur, a: a, b: b, raf: 0, hooks: hooks, s: s };
+    sweep = { osc: o, gain: g, extras: extras, t0: t0, dur: dur, a: a, b: b, raf: 0, hooks: hooks, s: s, ended: ended };
     o.onended = function () { if (sweep && sweep.osc === o) stopSweep(true); };
     (function tick() {
       if (!sweep || sweep.osc !== o) return;
@@ -586,6 +614,8 @@
       s.osc.stop(now + 0.06);
       s.extras.forEach(function (x) { try { x.stop(now + 0.06); } catch (e) {} });
     } catch (e) {}
+    // The sound has given up its turn: anything waiting for quiet follows after a short gap.
+    if (s.ended) s.ended();
     if (s.hooks.end) s.hooks.end(finished);
   }
   document.addEventListener("keydown", function (e) { if (e.key === "Escape" && sweep) stopSweep(null); });
@@ -608,11 +638,14 @@
         hearBtn.textContent = "Play the spectrum";
         hearChart.setPlayhead(null);
         $("hear-now").textContent = "";
-        if (finished !== false) announce(finished ? "Finished playing." : "Stopped.");
-        if (finished) { setGuide("hear", "h-heard"); progress("played"); }
+        if (finished !== false) announceAfterSound(finished ? "Finished playing." : "Stopped.");
+        // Iris's next tip holds a moment (for keyboard and screen reader users), so "Finished
+        // playing." is read before she speaks.
+        if (finished) { setGuide("hear", "h-heard", true); progress("played"); }
       }
     });
-    if (ok) { hearBtn.textContent = "Stop"; announce("Playing " + chosen.name + ", from the shortest colour to the longest."); }
+    // Nothing is announced while it plays: the words come once the sound has ended (B-5).
+    if (ok) hearBtn.textContent = "Stop";
   });
   function renderSoundKey(k, placeholder) {
     var ul = $("cr-sound-key");
@@ -662,7 +695,7 @@
     var ok = playSweep(game.answer, {
       from: "game", cues: true,
       tick: function (w) { gameChart.setPlayhead(w); },
-      end: function (finished) { gamePlay.textContent = "Play the mystery spectrum"; gameChart.setPlayhead(null); if (finished !== false) announce(finished ? "Finished playing." : "Stopped."); }
+      end: function (finished) { gamePlay.textContent = "Play the mystery spectrum"; gameChart.setPlayhead(null); if (finished !== false) announceAfterSound(finished ? "Finished playing." : "Stopped."); }
     });
     if (ok) gamePlay.textContent = "Stop";
   });
@@ -706,6 +739,7 @@
   var keyLoad = fetchJSON("data/sound-key.json").then(function (data) {
     if (!data || !data.spectrum || !data.spectrum.pitch || !data.spectrum.loudness) throw new Error("no spectrum section");
     key = data.spectrum;
+    limits = data.limits || null;
     renderSoundKey(key, !!data.placeholder);
   }).catch(function () { soundOff("The sound key could not be loaded, so sound is off. The graphs and tables still work."); });
   if (!(window.AudioContext || window.webkitAudioContext)) soundOff("This browser cannot play sound here. The graphs and tables carry the same information.");

@@ -43,6 +43,27 @@
   var card = $("tour-card"), bubble = $("tour-bubble"), spot = $("tour-spot");
   var stepEl = $("tour-step"), titleEl = $("tour-title"), textEl = $("tour-text");
   var ghostEl = $("tour-ghost");
+  // Each line is heard once (REQUIREMENTS B-5). The card used to be a live region, so a screen
+  // reader read every step while the guide's recording said the same words. Now the card is
+  // plain text (it can still be read at any time), and one small live region is given a step's
+  // words only when her voice is not saying them: voice off, no recording, or sound held back.
+  var liveEl = document.createElement("p"), tellTimer = 0;
+  liveEl.className = "sr-only";
+  liveEl.id = "tour-live";
+  liveEl.setAttribute("role", "status");
+  liveEl.setAttribute("aria-live", "polite");
+  dialog.appendChild(liveEl);
+  if (textEl && textEl.parentNode) { textEl.parentNode.removeAttribute("aria-live"); textEl.parentNode.removeAttribute("aria-atomic"); }
+  function tell(text) {
+    clearTimeout(tellTimer);
+    liveEl.textContent = "";
+    if (text) tellTimer = setTimeout(function () { liveEl.textContent = text; }, 40);
+  }
+  function sentences(parts) {
+    return parts.filter(Boolean).map(function (s) { s = String(s).trim(); return /[.!?:]$/.test(s) ? s : s + "."; }).join(" ");
+  }
+  // Words for the screen reader wait for a sound that is playing to end (js/selene.js).
+  function whenQuiet(fn) { if (window.Selene && window.Selene.sound) window.Selene.sound.whenQuiet(fn); else fn(); }
   // A step can show a picture in the cloud above its words (media: an HTML string, or a function
   // returning one). The home tour shows the Ashesha logo there. It plays its animation once the
   // card has appeared (the class is-play), not while the card is still out of sight.
@@ -226,19 +247,32 @@
   }
   showVoice();
 
-  function speak(i) {
+  // hold: the tour has just moved keyboard focus, so her voice waits a moment while a screen
+  // reader reads the button it landed on.
+  function speak(i, hold) {
     var raw = val(STEPS[i].text), text = plain(raw);
     textEl.textContent = text;
     voiceText = text;
     if (window.Selene) fitVoice();
     layWords(raw);
-    if (!selene) { typer.all(); return; }
+    // The step for a screen reader, given once and only if her voice is not saying it.
+    var my = token, given = false;
+    function toReader() {
+      if (given || my !== token) return;
+      given = true;
+      var words = sentences([stepEl.textContent, titleEl.textContent, text]);
+      whenQuiet(function () { if (my === token) tell(words); });
+    }
+    if (!selene) { typer.all(); toReader(); return; }
+    if (!voiceOn) toReader();
     card.classList.add("is-talking");
     selene.say(text, {
       voice: voiceOn,
+      hold: !!hold,
       video: ANIMATED && typeof STEPS[i].text !== "function" ? "assets/" + GUIDE + "/" + GUIDE + "-tour-" + STEPS[i].id + ".mp4" : null,
       onReveal: function (n) { typer.reveal(n); },
       onSpeaking: function (on) { voiceBtn.classList.toggle("is-speaking", on); },
+      onVoiced: function (ok) { if (!ok) toReader(); },
       onDone: function () { card.classList.remove("is-talking"); }
     });
   }
@@ -253,8 +287,14 @@
     try { localStorage.setItem(VOICE_KEY, voiceOn ? "on" : "off"); } catch (e) {}
     // The tip clouds share this switch (js/guide.js): tell them, so both stay in step.
     document.dispatchEvent(new CustomEvent("selenites:tour-voice", { detail: { on: voiceOn, key: VOICE_KEY } }));
-    if (voiceOn) speak(index);
-    else if (selene) { selene.stop(); typer.all(); voiceBtn.classList.remove("is-speaking"); card.classList.remove("is-talking"); selene.settle(1200); }
+    // Her voice was asked for: a sound that is playing stops first (B-5).
+    if (voiceOn && window.Selene && window.Selene.sound) window.Selene.sound.stop();
+    if (voiceOn) { tell(""); speak(index); }
+    else if (selene) {
+      selene.stop(); typer.all(); voiceBtn.classList.remove("is-speaking"); card.classList.remove("is-talking"); selene.settle(1200);
+      // Switched off part-way through a line: the screen reader gets the line instead.
+      tell(textEl.textContent);
+    }
   });
   // Switched in a tip cloud: the tour follows (it speaks with the next step).
   document.addEventListener("selenites:guide-voice", function (e) {
@@ -697,6 +737,9 @@
     var step = STEPS[index];
     card.classList.add("is-done");
     titleEl.textContent = step.doneTitle || "Nicely done";
+    // Read out once any sound (the spectrum just played) has ended.
+    var doneWords = titleEl.textContent;
+    whenQuiet(function () { if (dialog.open && my === token) tell(doneWords); });
     skipPart.hidden = true;
     next.hidden = false;
     pulse(null);
@@ -804,6 +847,9 @@
       quiet = [];
     }
   }, true);
+  // A screen reader can press a button for the visitor without any key reaching the page. Such
+  // a click has no pointer behind it (detail 0), so it counts as the keyboard too.
+  document.addEventListener("click", function (e) { if (e.detail === 0 && e.isTrusted) lastInput = "key"; }, true);
   function focusQuietly(el) {
     if (!el) return;
     // After a click: no ring. After a key press: always a ring, whatever the browser decides.
@@ -827,6 +873,10 @@
     var step = STEPS[index];
     next.setAttribute("aria-disabled", "true");
     if (selene) selene.stop();
+    // The visitor has moved on: a sound still playing stops, and the last step's words are
+    // taken back from the screen reader (B-5).
+    if (window.Selene && window.Selene.sound) window.Selene.sound.stop();
+    tell("");
     voiceBtn.classList.remove("is-speaking");
     card.classList.remove("is-talking");
     var wasShown = !card.classList.contains("is-hidden");
@@ -886,7 +936,7 @@
         if (mediaEl && !mediaEl.hidden) { void mediaEl.offsetWidth; mediaEl.classList.add("is-play"); }
         keepInView(my);
         popTrail();
-        speak(index);
+        speak(index, lastInput === "key");
         // On a "your turn" step, focus goes to the control to click, so a keyboard user can
         // press Enter straight away; Selene's words are read out from the card.
         if (step.action && current) focusQuietly(current);
@@ -932,6 +982,7 @@
     if (raf) cancelAnimationFrame(raf);
     raf = 0;
     if (selene) { selene.stop(); selene.setActive(false); }
+    tell("");
     voiceBtn.classList.remove("is-speaking");
     card.classList.remove("is-talking", "trail-pop");
     token++;

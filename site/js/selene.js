@@ -585,6 +585,50 @@
     voiceOwner = inst;
   }
 
+  // ---------- one thing at a time: a guide's voice and a sound (REQUIREMENTS B-5) ----------
+  // A sonification (the Spectrum Player) and a guide's voice never play together, and the sound
+  // is never just turned down under her voice: one of them stops.
+  //   A sound starts        the guide who is speaking aloud goes quiet (her words stay on screen).
+  //   A line comes due      it waits until the sound has ended, plus a short gap.
+  //   The visitor moves on  (a voice button, the tour's next step): the page stops the sound
+  //                         first with Selene.sound.stop(), so the line does not wait.
+  // The timings are the "separation" section of data/sound-key.json; the numbers below are used
+  // only if that file cannot be read. A page that plays a sound calls Selene.sound.begin(stop)
+  // when it starts and the function it gets back when it has ended.
+  var SEP = { gap: 0.25, hold: 1 };
+  if (window.fetch) fetch("data/sound-key.json").then(function (r) { return r.ok ? r.json() : null; }).then(function (k) {
+    var s = k && k.separation, g = s && s.guide_and_screen_reader;
+    if (s && isFinite(s.gap_before_speech_s)) SEP.gap = Math.max(0, +s.gap_before_speech_s);
+    if (g && isFinite(g.voice_waits_after_focus_move_s)) SEP.hold = Math.max(0, +g.voice_waits_after_focus_move_s);
+  }).catch(function () {});
+  var soundNow = null, quietAt = 0, afterSound = [];
+  function soundBegin(stop) {
+    if (soundNow && soundNow.stop) { var old = soundNow; soundNow = null; try { old.stop(); } catch (e) {} }
+    if (voiceOwner && voiceOwner.hush) voiceOwner.hush();
+    var token = { stop: stop || null };
+    soundNow = token;
+    return function ended() {
+      if (soundNow !== token) return;
+      soundNow = null;
+      quietAt = performance.now() + SEP.gap * 1000;
+      var queue = afterSound;
+      afterSound = [];
+      if (queue.length) setTimeout(function () { queue.forEach(function (fn) { fn(); }); }, SEP.gap * 1000);
+    };
+  }
+  function soundStop() { if (soundNow && soundNow.stop) soundNow.stop(); }
+  // Run fn once no sound is playing: now, or a short gap after the sound has ended.
+  function whenQuiet(fn) {
+    if (soundNow) { afterSound.push(fn); return; }
+    var left = quietAt - performance.now();
+    if (left > 0) setTimeout(fn, left); else fn();
+  }
+  // Tab or Escape: the visitor is moving on, and a screen reader is about to read where they
+  // land, so the guide who is speaking aloud goes quiet. Her words stay on screen.
+  document.addEventListener("keydown", function (e) {
+    if ((e.key === "Tab" || e.key === "Escape") && voiceOwner && voiceOwner.hush) voiceOwner.hush();
+  }, true);
+
   Instance.prototype.stop = function () {
     if (voiceOwner === this) voiceOwner = null;
     this.hush = null;
@@ -613,10 +657,31 @@
       return;
     }
     var audio = opts.audio || (opts.voice ? recording(this.who, text) : null);
+    // A line she will say aloud waits for a sound that is playing to end (B-5), and, with
+    // opts.hold, a moment more, so a screen reader can first read what was just focused.
+    var aloud = !!(opts.voice && (audio || (opts.video && this.video)));
+    var holdNow = !!(opts.hold && !opts.held);
+    if (aloud && (soundNow || performance.now() < quietAt || holdNow)) {
+      var waiter = this, ready = {};
+      for (var k in opts) ready[k] = opts[k];
+      ready.held = true;
+      this.stop();
+      var mine = this.pending;
+      // Asked again when the wait is over, in case a sound started in the meantime.
+      whenQuiet(function () {
+        setTimeout(function () { if (waiter.pending === mine) waiter.say(text, ready); }, holdNow ? SEP.hold * 1000 : 0);
+      });
+      return;
+    }
     var self = this, reveal = opts.onReveal || function () {}, done = opts.onDone || function () {};
     this.stop();
     this.onSpeaking = opts.onSpeaking || null;
     var run = this.run, len = text.length, cursor = 0, finished = false;
+    // opts.onVoiced(true) once her recording really plays; (false) when the line is shown
+    // without sound (no recording, voice off, or the browser held the sound back). A page uses
+    // it so each line is heard once: from her, or from the screen reader, never both.
+    var toldVoiced = false;
+    function voicedIs(ok) { if (toldVoiced || run !== self.run) return; toldVoiced = true; if (opts.onVoiced) opts.onVoiced(ok); }
     this.nextBlink = performance.now() + 500 + Math.random() * 1500;
     // She opens her hand towards the cloud as she starts.
     this.arm.pose = 0.09; this.arm.words = 0; this.arm.next = 2;
@@ -662,6 +727,7 @@
       v.onplaying = function () {
         if (run !== self.run) return;
         started = true;
+        voicedIs(!v.muted);
         if (!v.muted) speaking(true);
         if (!reduced()) self.drawLoop();
       };
@@ -681,7 +747,7 @@
     plain();
 
     function plain() {
-      if (reduced() && !(audio && opts.voice)) { reveal(len); done(); return; }
+      if (reduced() && !(audio && opts.voice)) { voicedIs(false); reveal(len); done(); return; }
       self.setActive(true);
       self.speaking = true;
       if (audio && opts.voice) { takeVoice(self); recorded(); return; }
@@ -690,6 +756,7 @@
     function silent() {
       // Silent: the words type out at a brisk reading pace, and her lips move at a speaking pace
       // while they do, like a character in a game.
+      voicedIs(false);
       self.timers.push(setInterval(function () {
         if (run !== self.run) return;
         cursor = Math.min(len, cursor + 4.6);
@@ -703,7 +770,7 @@
     function recorded() {
       var a = new Audio(audio), started = false;
       a.addEventListener("error", function () { if (run === self.run && !started) { self.audio = null; silent(); } }, { once: true });
-      a.addEventListener("playing", function () { started = true; self.voiced = true; speaking(true); if (!self.level) self.level = meter(a); self.wake(); });
+      a.addEventListener("playing", function () { started = true; self.voiced = true; voicedIs(true); speaking(true); if (!self.level) self.level = meter(a); self.wake(); });
       a.addEventListener("ended", finish);
       self.audio = a;
       a.play().catch(function () { if (run === self.run && !started) { self.audio = null; silent(); } });
@@ -734,6 +801,14 @@
       return made;
     },
     mount: function (slot) { return slot._selene || new Instance(slot); },
+    // One thing at a time (B-5): see "a guide's voice and a sound" above.
+    sound: {
+      begin: soundBegin,
+      stop: soundStop,
+      active: function () { return !!soundNow; },
+      whenQuiet: whenQuiet,
+      gap: function () { return SEP.gap; }
+    },
     spoken: spoken
   };
 })();

@@ -1,7 +1,36 @@
 {
  "owner": "Pawana",
+ "status": "draft for Pawana to approve",
  "placeholder": true,
- "note": "PLACEHOLDER written by Claude Code so the Spectrum Player can be built. Pawana decides what every sound means and replaces these values; the code reads them from here and has none of its own. Every 'meaning' is shown on screen as the text equivalent of the sound.",
+ "note": "DRAFT written by Claude Code on 15 November 2026 for Pawana to approve. Until she approves it, 'placeholder' stays true and the pages show their practice label. The 'spectrum' section is unchanged. 'separation' (B-5) and 'limits' are built for the guides and the Spectrum Player: js/selene.js reads the separation timings and js/cryostella.js reads the gain cap. 'motion' (B-2) and 'explorer' (B-3) are designed but not built yet. The reasons are in docs/sonification-design.md. The code reads every value from here and has none of its own. Every 'meaning' is shown on screen in the sound key, and every 'text' names the words on screen that carry the same fact as the sound.",
+ "decisions": {
+  "date": "2026-11-15",
+  "chosen_by_pawana": [
+   "Ticks, not pure silence, for 'Not detected' images."
+  ],
+  "best_estimate_by_claude_at_pawanas_request": [
+   "B-3 in this build is stepping between pictures. The cursor over the pixels of one picture is parked: it needs measured pixel values from the pipeline.",
+   "The guides' voices stay on by default. Each guide line is heard once: from her recording, or from the screen reader, never both.",
+   "The sound switch is kept for one visit and starts off on a new visit.",
+   "The stars get no extra slide. Their 'How it moves' sentence carries the movement.",
+   "Cryostella keeps its own pitch range and gets the master limiter when B-5 is built."
+  ],
+  "still_open": [],
+  "answered_by_elisabetta": [
+   "The PNG pictures are not north up with east on the left; they keep SPHEREx's detector orientation. East stays on the left ear, as on a sky chart, and every text says 'on the sky', never 'on the picture'."
+  ]
+ },
+ "limits": {
+  "max_gain": 0.22,
+  "master_cap": 0.3,
+  "fade_in_s": 0.02,
+  "fade_out_s": 0.05,
+  "new_sounds_lowest_hz": 110,
+  "new_sounds_highest_hz": 880,
+  "starts": "Off at the start of every visit. Once the visitor switches sound on, that choice is kept for the visit (sessionStorage), and still nothing plays until they press Play or step to a picture.",
+  "volume": "The sound volume slider only turns sounds down from these values, never up.",
+  "meaning": "Sounds are kept soft. Each one fades in and out, so nothing starts with a click or a jump."
+ },
  "spectrum": {
   "pitch": {
    "follows": "wavelength",
@@ -29,6 +58,196 @@
     "meaning": "A falling note marks a dip the team has marked on the graph."
    }
   },
-  "sweep_seconds": { "default": 8, "min": 4, "max": 20 }
+  "sweep_seconds": {
+   "default": 8,
+   "min": 4,
+   "max": 20
+  }
+ },
+ "motion": {
+  "requirement": "B-2",
+  "used_in": "Sky viewer, while the images play",
+  "label": "A sonification: sounds mapped by rules we chose. It is not the sound of the object.",
+  "pitch": {
+   "follows": "wavelength",
+   "low_um": 0.75,
+   "high_um": 5.0,
+   "low_hz": 220,
+   "high_hz": 880,
+   "meaning": "Pitch follows the colour of the image: low notes are the shorter colours, high notes are the longer colours. The same colour is the same note on every target.",
+   "text": "The wavelength in microns in the image description and the table."
+  },
+  "loudness": {
+   "follows": "brightness",
+   "field": "flux_mjysr",
+   "scaled_over": "the Clear and Faint images of this target",
+   "min_gain": 0.04,
+   "max_gain": 0.22,
+   "meaning": "Loudness follows brightness: a brighter image is louder. Each image is a different colour, so a change in loudness is not automatically a real change.",
+   "text": "The brightness in the table, in MJy/sr."
+  },
+  "note": {
+   "sound": "sine",
+   "length_s": 0.18,
+   "plays_for": [
+    "clear",
+    "faint"
+   ],
+   "meaning": "A smooth note is one image that SPHEREx measured: its pitch is the colour and its loudness is the brightness.",
+   "text": "Image {n} of {total}. {date}. {wavelength} microns. {status label}."
+  },
+  "slide": {
+   "follows": "the move of the predicted position (ra, dec) since the last image that has a position",
+   "sound": "triangle",
+   "start_hz": 440,
+   "gain": 0.12,
+   "gap_after_note_s": 0.04,
+   "pan": {
+    "follows": "east or west",
+    "east": -0.8,
+    "west": 0.8,
+    "neither": 0,
+    "meaning": "The sliding note moves to your left ear when the predicted position moved east, and to your right ear when it moved west, as on a sky chart with north at the top. Directions are on the sky, not on the picture: the pictures are not turned north up, so a direction on a picture can be different.",
+    "confirmed": "Elisabetta, 15 November 2026: the PNG pictures are not rotated. They keep SPHEREx's own detector orientation, so the direction on the sky can differ from picture to picture, for the comet and for the five stars. Only the stars' position_xy numbers use a fixed north-up, east-left patch. So the sound follows the sky and never mentions the picture."
+   },
+   "bend": {
+    "follows": "north or south",
+    "north_hz_ratio": 1.5,
+    "south_hz_ratio": 0.667,
+    "neither": 1,
+    "meaning": "The sliding note rises when the predicted position moved north and falls when it moved south."
+   },
+   "length": {
+    "follows": "distance on the sky",
+    "none_below_arcsec": 1,
+    "steps": [
+     {
+      "from_arcsec": 1,
+      "length_s": 0.15,
+      "words": "arcseconds"
+     },
+     {
+      "from_arcsec": 59.5,
+      "length_s": 0.3,
+      "words": "arcminutes"
+     },
+     {
+      "from_arcsec": 3570,
+      "length_s": 0.5,
+      "words": "degrees"
+     }
+    ],
+    "if_too_long_for_the_speed": "shorten the slide so it ends before the next image; never overlap two images",
+    "meaning": "A longer slide is a bigger move: short for arcseconds, medium for arcminutes, long for degrees. No slide means the predicted position stayed in the same place (it moved less than 1 arcsecond)."
+   },
+   "meaning": "A softer sliding note is the predicted position moving since the last image. The position is predicted, not measured from the picture, and a slide does not mean anything was seen there.",
+   "text": "Since image {j} ({date}), the predicted position of {target} moved about {angle} to the {direction} on the sky."
+  },
+  "cues": {
+   "not-detected": {
+    "sound": "tick",
+    "hz": 150,
+    "length_s": 0.08,
+    "gain": 0.05,
+    "meaning": "One soft low tick is an image where nothing was detected. No note plays.",
+    "text": "Not detected."
+   },
+   "not-measured": {
+    "sound": "tick",
+    "repeat": 2,
+    "repeat_gap_s": 0.07,
+    "hz": 150,
+    "length_s": 0.08,
+    "gain": 0.05,
+    "meaning": "Two soft low ticks are an image whose measurement is flagged as failed. No note plays.",
+    "text": "Flagged."
+   },
+   "no-observation": {
+    "sound": "silence",
+    "meaning": "Silence is a date with no SPHEREx image.",
+    "text": "No observation."
+   }
+  },
+  "reduced_motion": {
+   "slide": "two short steady notes instead of a slide: the first at 440 Hz in the centre, the second where the slide would have ended",
+   "step_length_s": 0.12,
+   "meaning": "With reduced motion switched on, the sliding note becomes two steady notes: where it was, then where it is."
+  },
+  "stars": "For the five stars almost every step is under 1 arcsecond, so no slide plays. No extra slide is added: the 'How it moves' sentence carries their movement."
+ },
+ "explorer": {
+  "requirement": "B-3",
+  "used_in": "Sky viewer, while the visitor steps between pictures with the keyboard",
+  "starts": "Only after the visitor presses 'Explore with sound'. Off by default.",
+  "keys": {
+   "previous_next": "Left and Right arrow",
+   "first_last": "Home and End",
+   "letters": "none (B-4)",
+   "again": "the 'Hear this image again' button"
+  },
+  "step": {
+   "plays": "the 'motion' sounds for the image arrived at, once: note or status cue, then slide",
+   "max_length_s": 0.9,
+   "new_step_fades_last_sound_s": 0.05,
+   "meaning": "Each step to another picture plays that picture's sounds once. Hold an arrow key to skim the pictures by ear.",
+   "text": "The image description, read after the sound."
+  },
+  "speech": {
+   "after_sound_s": 0.25,
+   "after_last_key_s": 0.4,
+   "meaning": "The description is read once the sound has ended and the keys have rested."
+  },
+  "cues": {
+   "edge": {
+    "sound": "thud",
+    "hz": 110,
+    "length_s": 0.12,
+    "gain": 0.06,
+    "meaning": "A soft low thud is the first or the last image: there is no picture further that way.",
+    "text": "This is the first image. / This is the last image."
+   }
+  },
+  "pixel_cursor": "Parked. A cursor over the pixels of one picture needs measured pixel values from the pipeline, because the PNGs are stretched for display."
+ },
+ "separation": {
+  "requirement": "B-5",
+  "rule": "One thing at a time. The sound stops for speech. It is never only turned down under speech.",
+  "sound_fade_out_s": 0.05,
+  "gap_before_speech_s": 0.25,
+  "guide_voice": {
+   "visitor_starts_a_sound": "the guide's voice stops, then the sound starts",
+   "visitor_starts_the_voice": "the sound fades out and stops, then the voice starts",
+   "guide_line_due_while_sound_plays": "it waits until the sound has ended, plus gap_before_speech_s",
+   "meaning": "The guide never talks over a sound, and a sound never plays over the guide."
+  },
+  "guide_and_screen_reader": {
+   "default": "The guides' voices stay on by default (Pawana, 14 November).",
+   "one_voice_per_line": "While the guide's recording plays a line, that line's words are not sent to the screen reader's live region. They stay on screen to read at any time. With her voice off, or for a line with no recording, the words go to the live region instead.",
+   "voice_waits_after_focus_move_s": 1.0,
+   "voice_stops_on": [
+    "Escape",
+    "Tab",
+    "the voice button"
+   ],
+   "cannot_do": "A web page cannot tell a screen reader to wait, and cannot tell when one is talking. It can only choose what it gives the screen reader to read, and when.",
+   "meaning": "Each of the guide's lines is heard once: in her own voice, or from your screen reader, never both at the same time."
+  },
+  "screen_reader": {
+   "while_playing": "the live region says nothing; the image description is written when the visitor pauses",
+   "while_stepping": "the description is written after the sound has ended, plus gap_before_speech_s",
+   "cannot_do": "A web page cannot tell when a screen reader is talking. It controls only when its own text changes.",
+   "meaning": "Words come after sounds, never at the same time."
+  },
+  "volume": {
+   "sound": "its own 'Sound volume' slider and its own on and off switch",
+   "voice": "the guide's own voice switch",
+   "meaning": "The sound has its own volume and its own off switch, separate from the guide's voice."
+  },
+  "stops_at_once": [
+   "Escape",
+   "sound switched off",
+   "the tab is hidden",
+   "another page or step opens"
+  ]
  }
 }

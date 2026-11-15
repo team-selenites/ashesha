@@ -110,6 +110,14 @@
   var VOICE_KEY = (CFG && CFG.voiceKey) || "selenites-selene-voice";
   var voiceOn = true;
   try { voiceOn = localStorage.getItem(VOICE_KEY) !== "off"; } catch (e) {}
+  // Is the visitor using the keyboard? A screen reader can also press a button without any key
+  // reaching the page: such a click has no pointer behind it (detail 0).
+  var byKey = false;
+  document.addEventListener("pointerdown", function () { byKey = false; }, true);
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Tab" || e.key === "Enter" || e.key === " " || e.key.indexOf("Arrow") === 0) byKey = true;
+  }, true);
+  document.addEventListener("click", function (e) { if (e.detail === 0 && e.isTrusted) byKey = true; }, true);
   var voiceBtns = Array.prototype.slice.call(document.querySelectorAll(".guide-voice"));
   function showVoice() {
     voiceBtns.forEach(function (b) {
@@ -141,6 +149,9 @@
       showVoice();
       guides.forEach(function (g) { if (g._selene) g._selene.stop(); stopTyping(g); g.classList.remove("is-talking", "is-speaking"); });
       document.dispatchEvent(new CustomEvent("selenites:guide-voice", { detail: { on: voiceOn, key: VOICE_KEY } }));
+      // Her voice was asked for: a sound that is playing stops first, so the two never play
+      // together (REQUIREMENTS B-5).
+      if (voiceOn && window.Selene && window.Selene.sound) window.Selene.sound.stop();
       // Turned on: she says the current tip again, aloud.
       if (voiceOn) refresh(true);
     });
@@ -190,7 +201,11 @@
   // Show the right part for this step; when it changes (or a new step opens) and she is on
   // screen, her lips move while the words appear (silently: the words are already there for
   // screen readers).
-  function refresh(talk) {
+  // hold: her voice waits a moment for a screen reader to finish (REQUIREMENTS B-5,
+  // js/selene.js). true: a new step has just taken keyboard focus (its heading), so it waits
+  // for keyboard users only. "always": the page has just announced something, so it waits for
+  // everyone.
+  function refresh(talk, hold) {
     var g = current();
     var now = g ? state(g.dataset.guide) : "";
     if (!folded && NUDGE[now]) root.setAttribute("data-nudge", NUDGE[now]);
@@ -217,6 +232,7 @@
         // Her recorded voice, unless the visitor has switched it off. The words on screen are
         // the captions.
         voice: voiceOn,
+        hold: hold === "always" || (!!hold && byKey),
         onSpeaking: function (on) { g.classList.toggle("is-speaking", on); updateMini(); },
         onReveal: function (n) { if (g._typing) g._typing.reveal(n); },
         onDone: function () { g.classList.remove("is-talking"); }
@@ -255,11 +271,14 @@
     });
   });
 
-  document.addEventListener("selenites:guide", function (e) { refresh(!(e.detail && e.detail.quiet)); });
+  // detail.hold: the page has just announced something to screen readers ("Finished playing."),
+  // so her voice waits for everyone. A screen reader may be in use with a mouse too, and the
+  // page cannot tell.
+  document.addEventListener("selenites:guide", function (e) { refresh(!(e.detail && e.detail.quiet), e.detail && e.detail.hold ? "always" : false); });
   document.addEventListener("selenites:view", function () {
     guides.forEach(function (g) { if (g !== current()) { if (g._selene) g._selene.stop(); stopTyping(g); } });
     // Wait a frame so the new step has its size before the cloud is drawn.
-    requestAnimationFrame(function () { refresh(true); });
+    requestAnimationFrame(function () { refresh(true, true); });
   });
   if (stage && window.MutationObserver) {
     new MutationObserver(function () { refresh(false); }).observe(stage, { attributes: true, attributeFilter: ["data-state"] });
