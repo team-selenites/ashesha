@@ -532,6 +532,16 @@ p.mc-empty {
   image-rendering: pixelated;
 }
 
+/* A pipeline picture carries its own title and white margin: show only its square of sky
+   (see .stage-layer in app.css for the numbers). */
+.mc-thumb[src*="data/pictures/"] {
+  width: 106.216%;
+  height: 111.892%;
+  max-width: none;
+  margin: -8.649% 0 0 -3.243%;
+  object-fit: fill;
+}
+
 .mc-thumb-placeholder {
   display: flex;
   align-items: center;

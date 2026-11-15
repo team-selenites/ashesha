@@ -120,7 +120,7 @@
   var island = host.querySelector(".sn-island");
   var pill = host.querySelector(".sn-pill");
   var tourBtn = host.querySelector(".sn-tour");
-  var narrowQuery = window.matchMedia("(max-width: 959px)");
+  var narrowQuery = window.matchMedia("(max-width: 1119px)");
 
   // The tour button only appears on pages that have a tour (tour.js hides it again if the
   // browser cannot run the tour).

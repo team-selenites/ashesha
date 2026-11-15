@@ -37,6 +37,17 @@ These were recorded while their wording still describes something temporary. Whe
 - Cryostella: the sound-key step ("for now these are practice ones") and the last game tip ("When real SPHEREx spectra are ready").
 - Any new spectrum, example or guide adds new lines: record them the same way.
 
+## Lines waiting for a recording (15 November 2026)
+
+These four lines are silent on the site until they are recorded. Their words appear as usual. Record each one, save the MP3 in `site/assets/voice/` and add it to `manifest.json` with exactly these words.
+
+| Guide | Where | Words on screen | Why it is silent |
+| --- | --- | --- | --- |
+| Selene | Home tour, "Being built" step | More parts are on their way: the Cosmic Orchestra with Orpheus, and puzzles made from SPHEREx pictures. They join the menu when they're ready. | "this weekend" was removed, because the site stays up after the hackathon. |
+| Selene | Home tour, "Meet the Selenites" step | These are the people who made this site, and me with it. Pawana leads the team. The little sky on each card is a real constellation, drawn from real star positions. | "six" was removed, to match the cards on the page. |
+| Iris | Cryostella, last tip of the listening game | That's all three rounds. Well played! Want more sky? The sky viewer is waiting. | The sentence about real spectra coming later was removed: the spectra on the page are already real SPHEREx data. |
+| Selene | Home page, Say hello on the Your Beginnings card | Tell me your birthday, and I'll show you the sky SPHEREx saw that day, and the famous objects it met! | Never recorded. |
+
 ## Every recorded line
 
 ### Sky viewer tour, Selene (27)

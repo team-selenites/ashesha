@@ -459,6 +459,11 @@ html.sky-still .sky svg { animation: none; }
 .stage-layer { position: absolute; inset: 0; }
 .stage-layer > img, .stage-layer > .stage-gap { position: absolute; inset: 0; width: 100%; height: 100%; }
 .stage-layer > img { object-fit: contain; image-rendering: pixelated; transition: opacity 180ms var(--ease-out-quart); }
+/* The pipeline's pictures are 393 by 414 pixels: a title and a white margin around a 370 pixel
+   square of sky that starts at (12, 32). Show only the sky. The title's facts (date, colour,
+   status) are already in the corner labels and in the words under the picture, and the sky's
+   centre then sits exactly under the reticle. */
+.stage-layer > img[src*="data/pictures/"] { inset: -8.649% auto auto -3.243%; width: 106.216%; height: 111.892%; object-fit: fill; }
 .stage-layer > .is-entering { opacity: 0; }
 .stage-gap {
   display: grid; place-items: center; padding: 24px; text-align: center;
@@ -674,6 +679,9 @@ select {
 }
 .v-thumb:active { scale: 0.97; }
 .v-thumb-pic { width: 100%; aspect-ratio: 1; display: block; background: var(--stage-bg); border-radius: 6px; image-rendering: pixelated; margin-bottom: 4px; }
+/* The same crop for the strip's small pictures. Browsers without object-view-box crop the title
+   only and keep the thin white margin. */
+.v-thumb-pic[src*="data/pictures/"] { object-fit: cover; object-position: 50% 100%; object-view-box: inset(32px 12px 12px 12px); }
 .v-thumb-pic.is-empty { background: transparent; border: 2px dashed var(--status-noobs); box-sizing: border-box; }
 .v-thumb-n { font-weight: 700; font-size: 14px; }
 .v-thumb-date { font-size: 13px; color: var(--muted); }

@@ -190,7 +190,8 @@
     for (var i = 0; i < buttons.length; i++) {
       buttons[i].setAttribute("aria-pressed", buttons[i].dataset.id === item.id ? "true" : "false");
     }
-    if (item.ra !== null) {
+    // A position the visitor typed stays as they typed it.
+    if (item.ra !== null && !opts.keepPosition) {
       document.getElementById("ra").value = item.ra;
       document.getElementById("dec").value = item.dec;
     }
@@ -214,7 +215,11 @@
   // Step 2 opens the picked target (only if it is not already on screen).
   function openPicked() {
     if (!picked) return Promise.resolve();
-    if (currentTarget === picked.id && document.getElementById("stage").dataset.state !== "empty") return Promise.resolve();
+    if (currentTarget === picked.id && document.getElementById("stage").dataset.state !== "empty") {
+      // Already on screen. A typed position may still ask for one exact picture of it.
+      if (pendingObs) { var wanted = pendingObs; pendingObs = null; window.SelenitesViewer.openObs(wanted); }
+      return Promise.resolve();
+    }
     var item = picked;
     caption.textContent = item.practice ? "" : item.name + ": " + item.note;
     setPermanentLink(item.id);
@@ -261,15 +266,134 @@
     });
   }
 
+  // ---------- Step 1: or type a position ----------
+  // The site has no live search of the IRSA archive. A typed position is looked up in
+  // data/patch-index.json, a small file made from the pipeline's own target files
+  // (tools/make_patch_index.py): the patch of sky each prepared target covers and, for the comet,
+  // every predicted position its pictures are centred on. Inside a prepared patch, that target is
+  // picked, as if its card had been pressed. Anywhere else, the visitor is told how far away the
+  // nearest prepared patch is. The same lookup opens a ?ra=&dec= link.
+
+  // "08:55:10.8", "08h55m10.831s", "08 55 10.8" or "133.79". Gives degrees, or null if the text
+  // cannot be read. A right ascension in parts (or marked h) is in hours; a single number is in
+  // degrees, as the hint in the box says.
+  function parseAngle(text, isRa) {
+    var s = String(text).trim().replace(/[−–]/g, "-");
+    var negative = /^-/.test(s);
+    var parts = s.replace(/^[+-]/, "").split(/[\s:hdms°'"′″]+/i).filter(Boolean);
+    if (!parts.length || parts.length > 3) return null;
+    var value = 0;
+    for (var i = 0; i < parts.length; i++) {
+      var last = i === parts.length - 1;
+      if (!(last ? /^\d+(\.\d+)?$/ : /^\d+$/).test(parts[i])) return null;
+      var n = parseFloat(parts[i]);
+      if (i > 0 && n >= 60) return null;
+      value += n / Math.pow(60, i);
+    }
+    if (isRa) {
+      if (negative) return null;
+      if (parts.length > 1 || /h/i.test(s)) value *= 15;
+      return value < 360 ? value : null;
+    }
+    if (value > 90) return null;
+    return negative ? -value : value;
+  }
+
+  // The angle between two sky positions, in arcseconds (all inputs in degrees).
+  function separation(ra1, dec1, ra2, dec2) {
+    var rad = Math.PI / 180;
+    var a = Math.pow(Math.sin((dec2 - dec1) * rad / 2), 2) +
+      Math.cos(dec1 * rad) * Math.cos(dec2 * rad) * Math.pow(Math.sin((ra2 - ra1) * rad / 2), 2);
+    return 2 * Math.asin(Math.min(1, Math.sqrt(a))) / rad * 3600;
+  }
+
+  function sayAngle(arcsec) {
+    if (arcsec < 90) return Math.max(1, Math.round(arcsec)) + (Math.round(arcsec) <= 1 ? " arcsecond" : " arcseconds");
+    if (arcsec < 5400) return Math.round(arcsec / 60) + " arcminutes";
+    var degrees = arcsec / 3600;
+    return (degrees < 10 ? degrees.toFixed(1) : String(Math.round(degrees))) + " degrees";
+  }
+
+  var MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  function sayDate(iso) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(iso || "");
+    return m ? parseInt(m[3], 10) + " " + MONTHS[parseInt(m[2], 10) - 1] + " " + m[1] : "";
+  }
+
+  var NEAR_ARCSEC = 600;   // ten arcminutes
+  var patchIndex = null;
+  function loadPatchIndex() {
+    if (!patchIndex) {
+      patchIndex = fetch("data/patch-index.json").then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); });
+      patchIndex.catch(function () { patchIndex = null; });
+    }
+    return patchIndex;
+  }
+
+  // The prepared point nearest to a position: { target, sep, obs, date }.
+  function nearestPatch(index, ra, dec) {
+    var best = null;
+    (index.targets || []).forEach(function (t) {
+      var points = t.positions || [[t.ra, t.dec, null, null]];
+      for (var i = 0; i < points.length; i++) {
+        var sep = separation(ra, dec, points[i][0], points[i][1]);
+        if (!best || sep < best.sep) best = { target: t, sep: sep, obs: points[i][2] || null, date: points[i][3] || null };
+      }
+    });
+    return best;
+  }
+
+  // Look a typed position up. opts.open: go straight to step 2 when it is found (a ?ra=&dec= link).
+  function lookUpPosition(raText, decText, opts) {
+    opts = opts || {};
+    if (!raText || !decText) {
+      setMessage("Enter both a right ascension and a declination, or pick an example above.");
+      return Promise.resolve(false);
+    }
+    var ra = parseAngle(raText, true), dec = parseAngle(decText, false);
+    if (ra === null) {
+      setMessage("That right ascension could not be read. Type hours, minutes and seconds, like 08:55:10.8, or degrees from 0 to 360, like 133.79.");
+      return Promise.resolve(false);
+    }
+    if (dec === null) {
+      setMessage("That declination could not be read. Type degrees from -90 to 90, like -07:14:42.5 or -7.24.");
+      return Promise.resolve(false);
+    }
+    setMessage("Looking for that position in the prepared patches...");
+    return loadPatchIndex().then(function (index) {
+      var near = nearestPatch(index, ra, dec);
+      var example = near ? findExample(near.target.id) : null;
+      if (!near || !example) throw new Error("no prepared patches");
+      var inside = near.sep <= near.target.radius_arcsec;
+      // Just outside a star's patch (within NEAR_ARCSEC): most likely the star's catalogue
+      // position. A fast-moving star such as Barnard's Star is several arcminutes from where
+      // its catalogue put it, so offer its patch and say why.
+      var close = !inside && !near.target.moving && near.sep <= NEAR_ARCSEC;
+      if (!inside && !close) {
+        setMessage("No prepared pictures cover that position. The nearest prepared patch is " + example.name + ", about " + sayAngle(near.sep) +
+          " away. This site cannot search the whole archive yet, so for now pick one of the examples above.");
+        return false;
+      }
+      pendingObs = near.target.moving ? near.obs : null;
+      pick(example, { keepPosition: true });
+      setMessage(near.target.moving
+        ? "SPHEREx pictured " + example.name + " at that position on " + sayDate(near.date) + ". Press Next to open that picture."
+        : inside
+          ? "That position is inside the prepared patch for " + example.name + ", about " + sayAngle(near.sep) + " from its centre. Press Next to open it."
+          : "That position is just outside the prepared patch for " + example.name + ", about " + sayAngle(near.sep) +
+            " from its centre. Nearby stars drift, so a catalogue position can be this far from where the star is now. " +
+            example.name + " is selected: press Next to open it.");
+      if (opts.open) { showView("watch", { history: "replace", focus: false }); return openPicked().then(function () { return true; }); }
+      return true;
+    }).catch(function () {
+      setMessage("The list of prepared patches could not be loaded. Pick one of the examples above.");
+      return false;
+    });
+  }
+
   form.addEventListener("submit", function (event) {
     event.preventDefault();
-    var ra = document.getElementById("ra").value.trim();
-    var dec = document.getElementById("dec").value.trim();
-    if (!ra || !dec) {
-      setMessage("Enter both a right ascension and a declination, or pick an example below.");
-      return;
-    }
-    setMessage("Live search is not available yet. Pick one of the examples above; their images are prepared in advance.");
+    lookUpPosition(document.getElementById("ra").value.trim(), document.getElementById("dec").value.trim());
   });
 
   // The colour theme switch lives in js/theme.js (shared by every page).
@@ -306,4 +430,12 @@
   if (picked && startView === "watch") openPicked();
   else showView(startView, { history: "replace", focus: false });
   if (!found || !found.data) { if (target !== "practice") pendingObs = null; }
+  // A link with a position (?ra=<degrees>&dec=<degrees>, or the same forms the box takes): look
+  // it up, and open its pictures if a prepared patch covers it.
+  var linkRa = params.get("ra"), linkDec = params.get("dec");
+  if (!target && !reloaded && linkRa !== null && linkDec !== null) {
+    document.getElementById("ra").value = linkRa;
+    document.getElementById("dec").value = linkDec;
+    lookUpPosition(linkRa.trim(), linkDec.trim(), { open: true });
+  }
 })();

@@ -153,8 +153,13 @@ html[data-tour-seen] .sn-tour { border-color: color-mix(in srgb, var(--rule) 70%
 ::view-transition-old(sn-pill) { display: none; }
 ::view-transition-group(sn-links) { animation-duration: 340ms; }
 
-/* ---------- Narrow windows and phones: a Menu button and a panel ---------- */
-@media (max-width: 959px) {
+/* ---------- Small laptops: the six links without their icons, so the bar still fits ---------- */
+@media (min-width: 1120px) and (max-width: 1279px) { .sn-link .sn-ic { display: none; } }
+
+/* ---------- Narrow windows, tablets and phones: a Menu button and a panel ----------
+   The bar needs about 1120 pixels for its six links, the brand and the tour button. Below that
+   they would overlap, so the menu folds away. js/nav.js uses the same width. */
+@media (max-width: 1119px) {
   .sn { padding-block: 8px; }
   .sn-bar { display: flex; justify-content: space-between; min-height: 48px; }
   .sn-toggle {
@@ -191,7 +196,7 @@ html[data-tour-seen] .sn-tour { border-color: color-mix(in srgb, var(--rule) 70%
   }
   .sn-tour { align-self: flex-start; margin-left: 4px; }
 }
-@media (max-width: 959px) and (prefers-reduced-motion: no-preference) {
+@media (max-width: 1119px) and (prefers-reduced-motion: no-preference) {
   .sn.is-open .sn-menu { animation: sn-drop 200ms var(--ease-out-quart, ease-out) both; }
   .sn-burger i { transition: transform 180ms ease-out, top 180ms ease-out, opacity 120ms; }
 }

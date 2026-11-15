@@ -19,8 +19,8 @@ try { var t = localStorage.getItem("selenites-theme"); if (t === "light" || t ==
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap">
 <link rel="stylesheet" href="css/tokens.css?v=1">
-<link rel="stylesheet" href="css/app.css?v=1">
-<link rel="stylesheet" href="css/nav.css?v=1">
+<link rel="stylesheet" href="css/app.css?v=2">
+<link rel="stylesheet" href="css/nav.css?v=2">
 <link rel="expect" href="#page-ready" blocking="render">
 <link rel="stylesheet" href="css/home.css?v=1">
 </head>
@@ -108,7 +108,7 @@ try { var t = localStorage.getItem("selenites-theme"); if (t === "light" || t ==
     <h2 id="adv-h" class="panel-h">Where to next?</h2>
     <p class="fine adv-lede">Each part of the site has its own guide, ready to show you around. Press <strong>Say hello</strong> to meet them.</p>
     <ul class="adv-list" id="adv-list"></ul>
-    <h3 class="adv-soon-h">Being built this weekend</h3>
+    <h3 class="adv-soon-h">Coming next</h3>
     <ul class="adv-soon" id="adv-soon"></ul>
   </section>
 
@@ -143,7 +143,7 @@ try { var t = localStorage.getItem("selenites-theme"); if (t === "light" || t ==
        picture. -->
   <section class="panel team" id="team" aria-labelledby="team-h">
     <h2 id="team-h" class="panel-h">Meet the Selenites</h2>
-    <p class="fine team-lede">In old stories, Selenites are the people of the Moon. Ours are the six people who made this site. Each card shows the constellation that person's star sign is named after, drawn from real star positions.</p>
+    <p class="fine team-lede">In old stories, Selenites are the people of the Moon. Ours are the people who made this site. Each card shows the constellation that person's star sign is named after, drawn from real star positions.</p>
     <ul class="team-list">
       <li class="team-card team-lead">
         <div class="team-id"><h3 class="team-name">Pawana Shettigar</h3><p class="team-role"><span class="team-tag">Team lead</span> <span class="team-what">Design and sky viewer</span></p></div>
@@ -286,7 +286,7 @@ try { var t = localStorage.getItem("selenites-theme"); if (t === "light" || t ==
         text: "Press [Say hello] on Iris's card. She'll introduce herself, and I'll carry on when she's done.",
         action: { event: "selenites:hello-done" } },
       { id: "soon", page: 2, target: "#adv-soon", title: "Being built",
-        text: "More parts are on their way this weekend: the Cosmic Orchestra with Orpheus, and puzzles made from SPHEREx pictures. They join the menu when they're ready." },
+        text: "More parts are on their way: the Cosmic Orchestra with Orpheus, and puzzles made from SPHEREx pictures. They join the menu when they're ready." },
       { id: "candidates", page: 2, target: '.sn-link[data-section="candidates"]', title: "My candidates",
         text: "In the sky viewer you can mark a picture as a candidate: something worth another look, never a discovery. They're kept here, in this browser only." },
       { id: "skymap", page: 2, target: "#skymap", title: "Your sky map",
@@ -295,7 +295,7 @@ try { var t = localStorage.getItem("selenites-theme"); if (t === "light" || t ==
       { id: "everyone", page: 3, target: ".everyone", title: "No one left out",
         text: "Everything works with a keyboard and a screen reader. Every sound has words, every chart has a table, and nothing moves on until you choose." },
       { id: "team", page: 3, target: "#team", title: "Meet the Selenites",
-        text: "These are the six people who made this site, and me with it. Pawana leads the team. The little sky on each card is a real constellation, drawn from real star positions." },
+        text: "These are the people who made this site, and me with it. Pawana leads the team. The little sky on each card is a real constellation, drawn from real star positions." },
       { id: "themes", page: 3, target: "#themes", title: "Make it yours",
         text: "Switch between Light, Dark and Colour-blind friendly here. Your choice is kept for every page." },
       { id: "go", page: 3, target: "#adv-list", title: "Your turn: pick a place",
@@ -306,7 +306,7 @@ try { var t = localStorage.getItem("selenites-theme"); if (t === "light" || t ==
 })();
 </script>
 <script src="js/selene.js?v=2"></script>
-<script src="js/nav.js?v=1"></script>
+<script src="js/nav.js?v=2"></script>
 <script src="js/theme.js?v=1"></script>
 <script src="js/cloud.js?v=1"></script>
 <script src="js/home.js?v=1"></script>
